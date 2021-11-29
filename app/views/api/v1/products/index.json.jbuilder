@@ -25,6 +25,7 @@ json.set! :genres do
   json.array! @genres do |category|
     json.id category.id
     json.name category.name
+    json.count category.products.length
   end
 end
 

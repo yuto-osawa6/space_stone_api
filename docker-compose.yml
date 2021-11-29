@@ -33,6 +33,8 @@ services:
       - 5900:5900
     volumes:
       - /dev/shm:/dev/shm
+  
+  
 volumes:
   mysql-data:
-    driver: local
+    # driver: local

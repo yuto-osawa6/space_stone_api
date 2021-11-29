@@ -1,5 +1,6 @@
 class Api::V1::ProductsController < ApplicationController
 
+
   def index
     @products = Product.all.where(finished:0).limit(30)
 

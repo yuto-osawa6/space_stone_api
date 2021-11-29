@@ -47,3 +47,5 @@ gem "selenium-webdriver"
 # gem "kaminari"
 # gem 'kaminari'
 gem 'devise-i18n'
+
+gem 'rack-cors'

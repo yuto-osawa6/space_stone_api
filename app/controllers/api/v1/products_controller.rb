@@ -1,7 +1,11 @@
 class Api::V1::ProductsController < ApplicationController
+
+
   def index
     @products = Product.all.where(finished:0).limit(30)
-    render json: { status: 200, message: "Hello World!",products: @products}
+
+    render json: { status: 200, message: "Hello World!",products: @products,styles:@styles,genres:@genres}
+
   end
 
   def red
@@ -9,4 +13,5 @@ class Api::V1::ProductsController < ApplicationController
     render json: { status: 200, message: "Hello World!43",products: @products}
     
   end
+
 end

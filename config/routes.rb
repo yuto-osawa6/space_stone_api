@@ -8,8 +8,13 @@ Rails.application.routes.draw do
           get "left"
         end
       end
+
+      resources :mains,:only => :index do
+        collection do
+        end
+      end
+
     end
   end
-
 end
 

@@ -1,14 +1,14 @@
 class ApplicationController < ActionController::API
-  before_action :first
+  # before_action :first
 
-  def first
-    @styles = Style.all.includes(:products)
-    @genres = Janl.all.includes(:products)
+  # def first
+  #   @styles = Style.all.includes(:products)
+  #   @genres = Janl.all.includes(:products)
 
-    # @styles.products.each do |a|
+  #   # @styles.products.each do |a|
 
-    # end
-    # render json: { status: 201, message: "Hello World!",styles: @styles}
+  #   # end
+  #   # render json: { status: 201, message: "Hello World!",styles: @styles}
 
-  end
+  # end
 end

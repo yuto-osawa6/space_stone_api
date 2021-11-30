@@ -1,7 +1,19 @@
 class Api::V1::ProductsController < ApplicationController
 
+  def left
+    @styles = Style.all.includes(:products)
+    @genres = Janl.all.includes(:products)
+
+    render :left,formats: :json
+
+  end
+
+
+ 
 
   def index
+    # @styles = Style.all.includes(:products)
+    # @genres = Janl.all.includes(:products)
     @products = Product.all.where(finished:0).limit(30)
     # @genre2 = Janl.all.includes(:user)
 

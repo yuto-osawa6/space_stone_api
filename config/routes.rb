@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       resources :products do
         collection do
           get "red"
+          get "left"
         end
       end
     end

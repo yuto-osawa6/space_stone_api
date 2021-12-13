@@ -11,6 +11,10 @@ Rails.application.routes.draw do
 
       resources :mains,:only => :index do
         collection do
+          get "search"
+          get "genressearch"
+          get "grid"
+          get "setgrid"
         end
       end
 

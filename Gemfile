@@ -44,8 +44,8 @@ gem "pry-rails"
 gem "pry-byebug"
 
 gem "selenium-webdriver" 
-# gem "kaminari"
-# gem 'kaminari'
 gem 'devise-i18n'
 
 gem 'rack-cors'
+
+gem 'ransack'

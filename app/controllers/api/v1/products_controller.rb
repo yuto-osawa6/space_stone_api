@@ -1,5 +1,5 @@
 class Api::V1::ProductsController < ApplicationController
-
+  before_action :authenticate_api_v1_user!, only: :red
   def left
     @styles = Style.all.includes(:products)
     @genres = Janl.all.includes(:products)
@@ -75,8 +75,9 @@ class Api::V1::ProductsController < ApplicationController
     # end
 
   def red
-    @products = Product.all.where(finished:0).limit(30)
-    render json: { status: 200, message: "Hello World!43",products: @products}
+    @products = Product.all.where(finished:0).limit(1)
+    # render json: { status: 200, message: "Hello World!43",products: @products,user:current_api_v1_user}
+    render json:current_api_v1_user
     
   end
 

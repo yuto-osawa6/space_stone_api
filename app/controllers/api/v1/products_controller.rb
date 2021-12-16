@@ -75,9 +75,18 @@ class Api::V1::ProductsController < ApplicationController
     # end
 
   def red
-    @products = Product.all.where(finished:0).limit(1)
-    # render json: { status: 200, message: "Hello World!43",products: @products,user:current_api_v1_user}
-    render json:current_api_v1_user
+    # @products = Product.all.where(finished:0).limit(1)
+    # # render json: { status: 200, message: "Hello World!43",products: @products,user:current_api_v1_user}
+    # render json:current_api_v1_user
+    # client = request.headers
+    # client = request.headers[:]
+    # puts client
+    @user = current_api_v1_user
+    if current_api_v1_user
+      render json: { is_login: true, data: current_api_v1_user }
+    else
+      render json: { is_login: false, message: current_api_v1_user }
+    end
     
   end
 

@@ -1,105 +1,138 @@
 
 
-  # class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksController
-  #   # include ActionView::Rendering
-  #   def redirect_callbacks
-  #     super
-  #   end
-  
-  #   def omniauth_success
-  #     super
-  #     # return
-  #     # redirect_to red_api_v1_products_path
-  #   end
-  
-  #   def omniauth_failure
-  #     super
-  #   end
-  
-  #   protected
-  #   def assign_provider_attrs(user, auth_hash)
-  #     case auth_hash['provider']
-  #       when 'twitter'
-  #         # user.assign_attributes({
-  #         #   nickname: auth_hash['info']['nickname'],
-  #         #   name: auth_hash['info']['name'],
-  #         #   image: auth_hash['info']['image'],
-  #         #   email: auth_hash['info']['email']
-  #         # })
-  #         # render json: @resource, status: :ok
-  #       when 'google_oauth2'
-  #         user.assign_attributes({
-  #           nickname: auth_hash['info']['nickname'],
-  #           # nickname: "aaaaaaaa",
-  #           name: auth_hash['info']['name'],
-  #           image: auth_hash['info']['image'],
-  #           email: auth_hash['info']['email']
-  #         })
-  #         puts auth_hash
-  #         # render json: @resource, status: :ok
-  #       # redirect_to red_api_v1_products_path
-
-  #     else
-  #       super
-  #     end
-  #   end
-  # end
-
-
   class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksController
     # include ActionView::Rendering
+    def redirect_callbacks
+      super
+    end
+  
+    def omniauth_success
+      resource_class(User)
+      super
+      update_auth_header
+      # return
+      # redirect_to red_api_v1_products_path
+    end
+  
+    def omniauth_failure
+      super
+    end
+  
+    protected
+    def assign_provider_attrs(user, auth_hash)
+      case auth_hash['provider']
+        when 'twitter'
+          # user.assign_attributes({
+          #   nickname: auth_hash['info']['nickname'],
+          #   name: auth_hash['info']['name'],
+          #   image: auth_hash['info']['image'],
+          #   email: auth_hash['info']['email']
+          # })
+          # render json: @resource, status: :ok
+        when 'google_oauth2'
+          user.assign_attributes({
+            # nickname: auth_hash['info']['nickname'],
+            nickname: "llllllllll",
 
-  # def facebook
-  #   callback_for(:facebook)
-  # end
+            name: auth_hash['info']['name'],
+            image: auth_hash['info']['image'],
+            email: auth_hash['info']['email']
+          })
+          puts auth_hash
+          # session[:userinfo] = request.env['omniauth.auth']['info']
+          # session[:user_id]
+          # render json: @resource, status: :ok
+        # redirect_to red_api_v1_products_path
 
-  # def twitter
-  #   callback_for(:twitter)
-  # end
+      else
+        super
+      end
 
-  # def google_oauth2
-  #   callback_for(:google)
-  # end
 
-  # # common callback method
-  # def callback_for(provider)
-  #   @user = User.from_omniauth(request.env["omniauth.auth"])
-  #   if @user.persisted?
-  #     sign_in_and_redirect @user, event: :authentication #this will throw if @user is not activated
-  #     set_flash_message(:notice, :success, kind: "#{provider}".capitalize) if is_navigational_format?
-  #   else
-  #     session["devise.#{provider}_data"] = request.env["omniauth.auth"].except("extra")
-  #     redirect_to new_user_registration_url
-  #   end
-  # end
 
-  # def failure
-  #   redirect_to root_path
-  # end
+      def render_data_or_redirect(message, data, user_data = {})
+        if Rails.env.production?
+          # if ['inAppBrowser', 'newWindow'].include?(omniauth_window_type)
+          #   render_data(message, user_data.merge(data))
+          # elsif auth_origin_url
+          #   redirect_to DeviseTokenAuth::Url.generate(auth_origin_url, data.merge(blank: true))
+          # else
+          #   fallback_render data[:error] || 'An error occurred'
+          # end
+        else
+          # @resource.credentials = auth_hash["credentials"]
+
+          # わかりやすい様に開発時はjsonとして結果を返す
+          # session[:userinfo] = request.env['omniauth.auth']['info']
+          render json: {data: @resource, status: :ok,user_id:current_api_v1_user.id}
+          
+        end
+      end
+
+
+
+    end
+  end
+
+
+#   class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksController
+#     def omniauth_success
+#       get_resource_from_auth_hash
+#       create_token_info
+#       set_token_on_resource
+#       create_auth_params
+
+#       # ここは使わないのでコメントアウト
+#       #if resource_class.devise_modules.include?(:confirmable)
+#       #  # don't send confirmation email!!!
+#       #  @resource.skip_confirmation!
+#       #end
+
+#       sign_in(:user, @resource, store: false, bypass: false)
+
+#       # 動作確認用にユーザ情報を保存できたらjsonをそのまま返す処理
+#       if @resource.save!
+#         # update_token_authをつけることでレスポンスヘッダーに認証情報を付与できる。
+#         update_auth_header
+#         yield @resource if block_given?
+#         render json: @resource, status: :ok
+#       else
+#         render json: { message: "failed to login" }, status: 500
+#       end
+
+#       # 本実装時はこちらを使用する
+#       # @resource.save!
+#       #       
+#       # update_auth_header # これは自分で追加する
+#       # yield @resource if block_given?
+#       #
+#       # render_data_or_redirect('deliverCredentials', @auth_params.as_json, @resource.as_json)
+
+#     end
+
+#     protected
+#     def get_resource_from_auth_hash
+#       # find or create user by provider and provider uid
+#       @resource = resource_class.where({
+#         uid:      auth_hash['uid'],
+#         provider: auth_hash['provider']
+#       }).first_or_initialize
+
+#       if @resource.new_record?
+#         @oauth_registration = true
+#         # これが呼ばれるとエラーになるのでコメントアウトする
+#         #set_random_password
+#       end
+
+#       # sync user info with provider, update/generate auth token
+#       assign_provider_attrs(@resource, auth_hash)
+
+#       # assign any additional (whitelisted) attributes
+#       extra_params = whitelisted_params
+#       @resource.assign_attributes(extra_params) if extra_params
+
+#       @resource
+#     end
 #   puts "aaaaaaaaaaaaaaaaaaaaaaaaaa"
-
-# def authenticate_social_auth_user
-#   #  params is the response I receive from the client with the data from the provider about the user
-#   @user = User.signin_or_create_from_provider(params) # this method add a user who is new or logins an old one
-#   if @user.persisted?
-#     # I log the user in at this point
-#     sign_in(@user)
-#     # after user is loggedIn, I generate a new_token here
-#     login_token = @user.create_new_auth_token
-#     render json: {
-#       status: 'SUCCESS',
-#       message: "user was successfully logged in through #{params[:provider]}",
-#       headers: login_token
-#     },
-#            status: :created
-#   else
-#     render json: {
-#       status: 'FAILURE',
-#       message: "There was a problem signing you in through #{params[:provider]}",
-#       data: @user.errors
-#     },
-#            status: :unprocessable_entity
-#   end
 # end
-end
   

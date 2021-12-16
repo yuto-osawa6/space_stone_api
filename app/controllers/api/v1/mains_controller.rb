@@ -2,7 +2,10 @@ class Api::V1::MainsController < ApplicationController
   def index
     @q = Product.ransack(params[:q])
     @products = @q.result.where(finished:0).limit(30)
+    # redirect_to root_path
+    # puts "ggggggggggggggggggggggggggggggggggggggggggggggggggg"
     render :index,formats: :json
+    # redirect_to root_path
   end 
   def search
     # puts @grid
@@ -67,7 +70,11 @@ class Api::V1::MainsController < ApplicationController
     if params[:grid] === ""
       if session[:grid_id]
         @grid = session[:grid_id]
-        puts "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
+        # puts "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
+        # puts "ggggggggggggggggggggggggggggggggggggggggggggggggggg"
+
+        # redirect_to red_api_v1_products_path
+        #  puts "ggggggggggggggggggggggggggggggggggggggggggggggggggg"
       else
         puts session[:grid_id]
         puts session

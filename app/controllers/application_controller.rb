@@ -1,6 +1,10 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
   include ActionController::Cookies # 追加
+
+  # skip_before_action :verify_authenticity_token
+  helper_method :current_api_v1_user, :user_signed_in?
+
   # before_action :first
 
   # before_action :check_xhr_header

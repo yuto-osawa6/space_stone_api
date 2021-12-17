@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
   include ActionController::Cookies # 追加
 
   # skip_before_action :verify_authenticity_token
-  helper_method :current_api_v1_user, :user_signed_in?
+  # helper_method :current_api_v1_user, :api_v1_user_signed_in?
 
   # before_action :first
 

@@ -14,4 +14,20 @@ class User < ActiveRecord::Base
           omniauth_providers: [:google_oauth2]
 
   include DeviseTokenAuth::Concerns::User
+
+  def self.signin_or_create_from_provider(provider_data)
+    puts"vvvvvvvvvvvfffffffffffffffffffffffffffffff"
+    puts provider_data
+    puts "aaaaaaaaaaaa"
+    puts provider_data[:provider]
+    puts provider_data[:body][:provider]
+    puts provider_data[:body][:info][:email]
+
+    where(provider: provider_data[:body][:provider], uid: provider_data[:body][:uid]).first_or_create do |user|
+      user.email = provider_data[:body][:info][:email]
+      user.password = Devise.friendly_token[0, 20]
+      # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmation
+    end
+  end
+
 end

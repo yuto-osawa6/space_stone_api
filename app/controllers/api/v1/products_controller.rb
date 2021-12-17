@@ -1,5 +1,5 @@
 class Api::V1::ProductsController < ApplicationController
-
+  # before_action :authenticate_api_v1_user!, only: :red
   def left
     @styles = Style.all.includes(:products)
     @genres = Janl.all.includes(:products)
@@ -75,9 +75,26 @@ class Api::V1::ProductsController < ApplicationController
     # end
 
   def red
-    @products = Product.all.where(finished:0).limit(30)
-    render json: { status: 200, message: "Hello World!43",products: @products}
+    # @products = Product.all.where(finished:0).limit(1)
+    # # render json: { status: 200, message: "Hello World!43",products: @products,user:current_api_v1_user}
+    # render json:current_api_v1_user
+    # client = request.headers
+    # client = request.headers[:]
+    # puts client
+    # puts request.headers.sort.map { |k, v| logger.info "#{k}:#{v}" }
+    puts session.to_hash
+    @user = current_user
+    puts session.to_hash
+
+    # puts session.to_hash
+    if current_user
+      render json: { is_login: true, data:current_user  }
+    else
+      render json: { is_login: false, message: current_user }
+    end
     
+    # puts session.to_hash
+
   end
 
 end

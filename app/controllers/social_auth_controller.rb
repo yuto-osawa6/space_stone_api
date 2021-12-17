@@ -25,7 +25,8 @@ class SocialAuthController < ApplicationController
         # status: 'SUCCESS',
         status:200,
         message: "user was successfully logged in through #{params[:provider]}",
-        headers: login_token
+        headers: login_token,
+        data:@user
       },
              status: :created
     else

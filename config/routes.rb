@@ -30,6 +30,8 @@ Rails.application.routes.draw do
         end
       end
 
+      get "session_user", to:"session_user#login_check"
+
     end
   end
   # mount_devise_token_auth_for 'User', at: 'auth', controllers: {

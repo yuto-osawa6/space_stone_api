@@ -42,18 +42,20 @@ class Api::V1::MainsController < ApplicationController
 
         filteredIdArray = pushIdArrays.flatten.group_by{|e| e}.select{|k,v| v.size > 1}.map(&:first)
         
-        @products = @q.result(distinct: true).where(id:filteredIdArray).where(finished:0).includes(:styles,:janls).limit(30)
+        @products = @q.result(distinct: true).where(id:filteredIdArray).where(finished:0).includes(:styles,:janls).page(params[:page]).per(50)
 
       elsif pushIdArrays.length == 1
         # print "ccccccccccccc"
         
-        @products = @q.result(distinct: true).where(id:pushIdArrays).where(finished:0).includes(:styles,:janls).limit(30)
+        @products = @q.result(distinct: true).where(id:pushIdArrays).where(finished:0).includes(:styles,:janls).page(params[:page]).per(50)
 
       else
-        @products = @q.result(distinct: true).where(finished:0).includes(:styles,:janls).limit(30)
+        @products = @q.result(distinct: true).where(finished:0).includes(:styles,:janls).page(params[:page]).per(50)
         # @products_styles = @products.styles.name
 
     end
+    puts "lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll"
+    puts @products.total_pages
 
     render :search,formats: :json
   end

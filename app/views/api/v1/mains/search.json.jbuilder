@@ -12,4 +12,12 @@ json.set! :products do
       json.array! product.janls
     end
   end
+  # json.page @products.ids
+  # json.set! page, @products.num_page
 end
+
+
+
+json.set! :products_pages do
+  json.page @products.total_pages
+end 

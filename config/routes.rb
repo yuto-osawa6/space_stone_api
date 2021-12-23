@@ -19,6 +19,7 @@ Rails.application.routes.draw do
           get "red"
           get "left"
         end
+        resources :likes, only: [:create, :destroy]
       end
 
       resources :mains,:only => :index do

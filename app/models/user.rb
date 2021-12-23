@@ -15,6 +15,9 @@ class User < ActiveRecord::Base
 
   include DeviseTokenAuth::Concerns::User
 
+  has_many :likes, dependent: :destroy
+  has_many :liked_products, through: :likes, source: :product
+
   def self.signin_or_create_from_provider(provider_data)
     puts"vvvvvvvvvvvfffffffffffffffffffffffffffffff"
     puts provider_data
@@ -28,6 +31,10 @@ class User < ActiveRecord::Base
       user.password = Devise.friendly_token[0, 20]
       # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmation
     end
+  end
+
+  def already_liked?(id)
+    self.likes.exists?(post_id: id)
   end
 
 end

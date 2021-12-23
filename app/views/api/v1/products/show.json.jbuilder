@@ -15,3 +15,6 @@ json.set! :products do
     json.array! @product.janls
   end
 end
+json.set! :liked do
+json.liked @liked
+end

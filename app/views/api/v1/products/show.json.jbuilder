@@ -17,4 +17,5 @@ json.set! :products do
 end
 json.set! :liked do
 json.liked @liked
+json.like @like
 end

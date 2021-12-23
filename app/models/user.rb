@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   # extend Devise::Models 
+  has_many :likes, dependent: :destroy
+  has_many :liked_products, through: :likes, source: :product
   devise  :database_authenticatable, 
           :registerable,
           :recoverable, 
@@ -14,6 +16,9 @@ class User < ActiveRecord::Base
           omniauth_providers: [:google_oauth2]
 
   include DeviseTokenAuth::Concerns::User
+
+  # has_many :likes, dependent: :destroy
+  # has_many :liked_products, through: :likes, source: :product
 
   def self.signin_or_create_from_provider(provider_data)
     puts"vvvvvvvvvvvfffffffffffffffffffffffffffffff"
@@ -28,6 +33,10 @@ class User < ActiveRecord::Base
       user.password = Devise.friendly_token[0, 20]
       # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmation
     end
+  end
+
+  def already_liked?(id)
+    self.likes.exists?(product_id: id)
   end
 
 end

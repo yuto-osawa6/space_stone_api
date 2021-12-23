@@ -41,6 +41,15 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def show
+    # puts current_user.id
+    if current_user
+      @liked = current_user.already_liked?(params[:id])
+      if @liked
+        @like = Like.find_by(product_id: params[:id], user_id: current_user.id)
+      end
+    else
+      @liked = false
+    end
     @product = Product.find(params[:id])
     # .includes(:genres,:styles)
 

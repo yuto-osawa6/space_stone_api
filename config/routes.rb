@@ -24,6 +24,8 @@ Rails.application.routes.draw do
             get "check"
           end
         end
+        resources :scores, only:[:create, :update] do
+        end
       end
 
       resources :mains,:only => :index do

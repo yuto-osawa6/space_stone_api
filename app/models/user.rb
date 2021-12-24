@@ -6,6 +6,11 @@ class User < ActiveRecord::Base
   # extend Devise::Models 
   has_many :likes, dependent: :destroy
   has_many :liked_products, through: :likes, source: :product
+
+  has_many :scores, dependent: :destroy
+  has_many :scores_products, through: :scores, source: :product
+
+
   devise  :database_authenticatable, 
           :registerable,
           :recoverable, 

@@ -19,3 +19,8 @@ json.set! :liked do
 json.liked @liked
 json.like @like
 end
+
+json.set! :scored do
+  json.scored @scored
+  json.score @score
+  end

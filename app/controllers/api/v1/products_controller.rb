@@ -44,11 +44,16 @@ class Api::V1::ProductsController < ApplicationController
     # puts current_user.id
     if current_user
       @liked = current_user.already_liked?(params[:id])
+      @scored = current_user.scores.exists?(product_id: params[:id])
       if @liked
         @like = Like.find_by(product_id: params[:id], user_id: current_user.id)
       end
+      if @scored
+        @score = Score.find_by(product_id: params[:id], user_id: current_user.id)
+      end
     else
       @liked = false
+      @scored = false
     end
     @product = Product.find(params[:id])
     # .includes(:genres,:styles)

@@ -1,5 +1,7 @@
 json.set! :liked do
   json.liked @liked
-  json.like @like.id
+    if @liked
+      json.like @like.id
+    end
   json.message "aaaaaaaa"
   end

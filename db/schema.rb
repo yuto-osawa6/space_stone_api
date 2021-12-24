@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_24_162622) do
+ActiveRecord::Schema.define(version: 2021_12_24_200428) do
+
+  create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.integer "count", default: 0
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_acsesses_on_product_id"
+  end
 
   create_table "cast_products", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "cast_id"
@@ -113,6 +121,7 @@ ActiveRecord::Schema.define(version: 2021_12_24_162622) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "acsesses", "products"
   add_foreign_key "cast_products", "casts"
   add_foreign_key "cast_products", "products"
   add_foreign_key "janl_products", "janls"

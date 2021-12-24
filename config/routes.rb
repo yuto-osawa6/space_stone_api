@@ -26,6 +26,8 @@ Rails.application.routes.draw do
         end
         resources :scores, only:[:create, :update] do
         end
+        resources :acsesses,only:[:create] do
+        end
       end
 
       resources :mains,:only => :index do

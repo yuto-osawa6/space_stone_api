@@ -3,11 +3,13 @@ class Api::V1::LikesController < ApplicationController
     # @like = current_user.likes.create(product_id: params[:product_id])
     # puts current_user.id
     @user = User.find(params[:like][:user_id])
+    # @like_count = Product.find(params[:like][:product_id]).likes.count
     @like = @user.likes.new(like_params)
     # current_user
     
     if @like.save
-      render json: { status: 200, like: @like } 
+      @like_count = Product.find(params[:like][:product_id]).likes.count
+      render json: { status: 200, like: @like,like_count: @like_count} 
     else
       render json: { status: 500, message: "失敗しました"  } 
     end
@@ -19,8 +21,9 @@ class Api::V1::LikesController < ApplicationController
     @user = User.find(params[:like][:user_id])
     @like = Like.find_by(product_id: params[:product_id], user_id: @user.id)
     @like.destroy
+    @like_count = Product.find(params[:product_id]).likes.count
     # doneyet
-    render json: { status: 200, message: "削除されました"  } 
+    render json: { status: 200, message: "削除されました",like_count:@like_count } 
   end
 
   def check

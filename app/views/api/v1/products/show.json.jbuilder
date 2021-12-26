@@ -7,6 +7,9 @@ json.set! :products do
   json.title @product.title
   json.image_url @product.image_url
   json.arasuzi @product.description
+  # 追加
+  json.average_score @average_score
+  json.like_count @like_count
   # # json.products_style product.styles.name
   json.product_styles do
     json.array! @product.styles
@@ -24,3 +27,10 @@ json.set! :scored do
   json.scored @scored
   json.score @score
   end
+json.set! :stats do
+  json.stats @stats_array
+end
+json.set! :acsesses do 
+  json.acsess_array @acsesses_array
+  json.month_array @month_array
+end

@@ -1,7 +1,8 @@
 class Api::V1::AcsessesController < ApplicationController
   def create
     # @user = User.find(params[:like][:user_id])
-    @acsess = Acsess.where(product_id: params[:product_id]).first_or_create
+    today = params[:current_time]
+    @acsess = Acsess.where(product_id: params[:product_id],date:today.in_time_zone.all_month).first_or_create
     @acesess_count = @acsess.count + 1
 
     

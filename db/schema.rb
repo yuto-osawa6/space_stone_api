@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_24_200428) do
+ActiveRecord::Schema.define(version: 2021_12_25_231857) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.integer "count", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "date"
     t.index ["product_id"], name: "index_acsesses_on_product_id"
   end
 

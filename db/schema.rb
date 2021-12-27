@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_25_231857) do
+ActiveRecord::Schema.define(version: 2021_12_27_075253) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -19,6 +19,34 @@ ActiveRecord::Schema.define(version: 2021_12_25_231857) do
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "date"
     t.index ["product_id"], name: "index_acsesses_on_product_id"
+  end
+
+  create_table "active_storage_attachments", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", charset: "utf8mb4", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
   create_table "cast_products", charset: "utf8mb4", force: :cascade do |t|
@@ -72,6 +100,18 @@ ActiveRecord::Schema.define(version: 2021_12_25_231857) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "reviews", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "user_id", null: false
+    t.text "title"
+    t.string "discribe"
+    t.text "content", size: :long
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_reviews_on_product_id"
+    t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
   create_table "scores", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.bigint "user_id", null: false
@@ -123,12 +163,16 @@ ActiveRecord::Schema.define(version: 2021_12_25_231857) do
   end
 
   add_foreign_key "acsesses", "products"
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cast_products", "casts"
   add_foreign_key "cast_products", "products"
   add_foreign_key "janl_products", "janls"
   add_foreign_key "janl_products", "products"
   add_foreign_key "likes", "products"
   add_foreign_key "likes", "users"
+  add_foreign_key "reviews", "products"
+  add_foreign_key "reviews", "users"
   add_foreign_key "scores", "products"
   add_foreign_key "scores", "users"
   add_foreign_key "style_products", "products"

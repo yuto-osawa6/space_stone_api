@@ -16,7 +16,9 @@ Rails.application.routes.draw do
       # post 'social_auth/callback', to: 'social_auth#authenticate_social_auth_user' # this is the line where we add our routes
       resources :products do
         collection do
-          get "red"
+          # get "red"
+          post "red"
+
           get "left"
         end
         resources :likes, only: [:create, :destroy] do

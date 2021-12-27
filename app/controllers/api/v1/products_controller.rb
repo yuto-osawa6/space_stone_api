@@ -110,19 +110,11 @@ class Api::V1::ProductsController < ApplicationController
   def search()
     puts @grid
   end
-  def red
-    puts session.to_hash
-    @user = current_user
-    puts session.to_hash
 
-    # puts session.to_hash
-    if current_user
-      render json: { is_login: true, data:current_user  }
-    else
-      render json: { is_login: false, message: current_user }
-    end
-    
-    # puts session.to_hash
+  def red
+    content = params[:content]
+    review  = Review.create({title:params[:text],discribe:params[:discribe],content:content,user_id:3,product_id:11})
+    render json: {review:review}
 
   end
 
@@ -187,8 +179,16 @@ class Api::V1::ProductsController < ApplicationController
     @average_score = @product.scores.average(:value).round(1)
     @like_count = @product.likes.count
 
+    # 追加 reviews
+    @reviews = @product.reviews.limit(1)
+
 
     render :show,formats: :json
   end 
+
+  private
+    def user_params
+      params.require(:review).permit(:content).merge(product_id:11,user_id:3,title:"aaa")
+    end
 
 end

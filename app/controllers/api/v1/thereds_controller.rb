@@ -2,8 +2,8 @@ class Api::V1::TheredsController < ApplicationController
   def create 
     content = params[:content]
     thered = Thered.new(reviews_params)
-    thered.thered_quesions.build
-    if review.save
+    # thered.thered_question_questions.build
+    if thered.save
       render json: {thered:thered}
     else
       render json: {status:500,thered:thered}

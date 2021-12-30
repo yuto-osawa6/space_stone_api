@@ -32,6 +32,8 @@ Rails.application.routes.draw do
         end
         resources :reviews,only:[:create] do
         end
+        resources :thereds,only:[:create] do
+        end
       end
 
       resources :mains,:only => :index do

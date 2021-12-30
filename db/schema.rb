@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_27_075253) do
+ActiveRecord::Schema.define(version: 2021_12_28_073633) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -100,6 +100,12 @@ ActiveRecord::Schema.define(version: 2021_12_27_075253) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "questions", charset: "utf8mb4", force: :cascade do |t|
+    t.string "question"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "reviews", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.bigint "user_id", null: false
@@ -135,6 +141,27 @@ ActiveRecord::Schema.define(version: 2021_12_27_075253) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "thered_quesitons", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "thered_id", null: false
+    t.bigint "question_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["question_id"], name: "index_thered_quesitons_on_question_id"
+    t.index ["thered_id"], name: "index_thered_quesitons_on_thered_id"
+  end
+
+  create_table "thereds", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "user_id", null: false
+    t.text "title"
+    t.string "discribe"
+    t.text "content", size: :long
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_thereds_on_product_id"
+    t.index ["user_id"], name: "index_thereds_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", force: :cascade do |t|
@@ -177,4 +204,8 @@ ActiveRecord::Schema.define(version: 2021_12_27_075253) do
   add_foreign_key "scores", "users"
   add_foreign_key "style_products", "products"
   add_foreign_key "style_products", "styles"
+  add_foreign_key "thered_quesitons", "questions"
+  add_foreign_key "thered_quesitons", "thereds"
+  add_foreign_key "thereds", "products"
+  add_foreign_key "thereds", "users"
 end

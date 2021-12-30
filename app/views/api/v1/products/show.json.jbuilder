@@ -20,6 +20,9 @@ json.set! :products do
   json.product_reviews do
     json.array! @product.reviews.limit(4)
   end
+  json.questions do 
+    json.array! @quesion
+  end
 end
 json.set! :liked do
 json.liked @liked
@@ -38,7 +41,6 @@ json.set! :acsesses do
   json.month_array @month_array
 end
 
-# json.set! :reviews do 
-#   json.describe @reviews.des
-#   json.content @reviews.content
+# json.set! :questions do 
+#   json.array! @quesion
 # end

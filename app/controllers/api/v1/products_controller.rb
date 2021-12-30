@@ -180,7 +180,11 @@ class Api::V1::ProductsController < ApplicationController
     @like_count = @product.likes.count
 
     # 追加 reviews
-    @reviews = @product.reviews.limit(1)
+    # @reviews = @product.reviews.limit(1)
+
+    # 追加
+    # @quesionids = @product.thereds.thered_question_questions
+    @quesion = Question.all
 
 
     render :show,formats: :json

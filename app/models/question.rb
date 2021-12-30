@@ -1,4 +1,4 @@
 class Question < ApplicationRecord
-  has_many :thered_quesions, dependent: :destroy
-  has_many :thered_question_thereds, through: :thered_quesions, source: :thered
+  has_many :thered_quesitons, dependent: :destroy
+  has_many :thereds, through: :thered_quesitons, source: :thered
 end

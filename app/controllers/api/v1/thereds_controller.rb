@@ -1,17 +1,26 @@
 class Api::V1::TheredsController < ApplicationController
   def create 
     content = params[:content]
-    thered = Thered.new(reviews_params)
     # thered.thered_question_questions.build
-    if thered.save
-      render json: {thered:thered}
+
+    @thered = Thered.new(reviews_params)
+    puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    # puts params[:question_ids]
+    puts params[:text]
+    puts Thered.find(8).questions[0].thered_quesitons.ids
+    @thered.question_ids
+    puts "jkh"
+
+    # thered.thered_question_questions.build
+    if @thered.save
+      render json: {thered:@thered}
     else
-      render json: {status:500,thered:thered}
+      render json: {status:500,thered:@thered}
     end
   end
 
   private 
   def reviews_params
-    params.require(:thered).permit(:title,:discribe,:content,:user_id,:product_id,thered_question_questions_ids:[])
+    params.require(:thered).permit(:title,:discribe,:content,:user_id,:product_id, question_ids:[])
   end
 end

@@ -16,4 +16,10 @@ class Product < ApplicationRecord
 
   has_many :acsesses, dependent: :destroy
 
+  has_many :reviews, dependent: :destroy
+  has_many :reviews_users, through: :reviews, source: :user
+
+  has_many :thereds, dependent: :destroy
+  has_many :thereds_users, through: :thereds, source: :user
+
 end

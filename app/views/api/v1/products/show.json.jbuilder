@@ -17,6 +17,15 @@ json.set! :products do
   json.product_genres do
     json.array! @product.janls
   end
+  json.product_reviews do
+    json.array! @product.reviews.limit(4)
+  end
+  json.product_thereds do
+    json.array! @product.thereds.limit(4)
+  end
+  json.questions do 
+    json.array! @quesion
+  end
 end
 json.set! :liked do
 json.liked @liked
@@ -34,3 +43,7 @@ json.set! :acsesses do
   json.acsess_array @acsesses_array
   json.month_array @month_array
 end
+
+# json.set! :questions do 
+#   json.array! @quesion
+# end

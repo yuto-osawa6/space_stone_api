@@ -10,6 +10,12 @@ class User < ActiveRecord::Base
   has_many :scores, dependent: :destroy
   has_many :scores_products, through: :scores, source: :product
 
+  has_many :reviews, dependent: :destroy
+  has_many :reviews_products, through: :reviews, source: :product
+
+  has_many :thereds, dependent: :destroy
+  has_many :thereds_products, through: :thereds, source: :product
+
 
   devise  :database_authenticatable, 
           :registerable,

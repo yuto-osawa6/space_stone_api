@@ -20,6 +20,9 @@ json.set! :products do
   json.product_reviews do
     json.array! @product.reviews.limit(4)
   end
+  json.product_thereds do
+    json.array! @product.thereds.limit(4)
+  end
   json.questions do 
     json.array! @quesion
   end

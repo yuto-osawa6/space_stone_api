@@ -176,7 +176,11 @@ class Api::V1::ProductsController < ApplicationController
     @month_hash.map{|key,value|@acsesses_array.push(@month_hash[key])}
 
     # 追加
-    @average_score = @product.scores.average(:value).round(1)
+    if @product.scores.exists?
+      # puts @product.scores.exists?
+      # puts "aaaaaaaa"
+      @average_score = @product.scores.average(:value).round(1)
+    end
     @like_count = @product.likes.count
 
     # 追加 reviews

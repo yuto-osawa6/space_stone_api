@@ -208,13 +208,17 @@ class ScrapeProducts
   end
 
   def sample2
-
+    # doneyet(sleep時間、ページの読み込みがおわるまでに変える必要ある。)
     # options = Selenium::WebDriver::Chrome::Options.new
     # options.add_argument('--headless')
     # options.add_argument('--lang=ja-JP')
 
     # chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome()
     url="https://www.netflix.com/jp/title/81143589"
+
+    # url="https://www.netflix.com/jp/title/81511191"
+    # 80107103
+
     # driver = Selenium::WebDriver.for(
     #   :remote,
     #   url: "http://#{ENV['SELENIUM_HOST']}:4444/wd/hub",
@@ -225,8 +229,9 @@ class ScrapeProducts
     driver.navigate.to(url)
     # ltr-111bn9j 
 
-    wait = Selenium::WebDriver::Wait.new(timeout: 30)
-    wait.until { driver.find_element(:class, 'dropdown-toggle').displayed? }
+    # wait = Selenium::WebDriver::Wait.new(timeout: 30)
+    # wait.until { driver.find_element(:class, 'dropdown-toggle').displayed? }
+    sleep(5)
     puts "sff"
     puts driver.find_elements(:class, 'dropdown-toggle').length
     puts "lll"
@@ -296,13 +301,14 @@ class ScrapeProducts
 
           # e.episord = a
           # e.product_id = 1
-          e.title = driver.find_elements(:class, 'titleCardList-title')[l-1].text
+          e.title = driver.find_elements(:class, 'titleCardList-title')[l-1].find_element(:class, 'titleCard-title_text').text
           e.arasuzi = driver.find_elements(:class, 'titleCard-synopsis')[l-1].text
           # # e.season = s
           e.season_title = driver.find_elements(:class, 'episodeSelector-season-label')[s-1].text
           # 0の値が別にあるため、+1してます。
           e.time =  driver.find_elements(:class, 'duration')[l-1+1].text
-          e.image = driver.find_elements(:class, 'ptrack-content')[l-1].find_element(:tag_name, 'img').attribute('src')
+          e.image = driver.find_elements(:class, 'titleCard-imageWrapper')[l-1].find_element(:class, 'ptrack-content').find_element(:tag_name, 'img').attribute('src')
+          # titleCard-imageWrapper
         end
         @episord.save
         l += 1
@@ -310,7 +316,41 @@ class ScrapeProducts
 
       end
      
+    else
+      puts "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+      # collapsed
+      driver.find_element(:class, 'collapsed').find_element(:tag_name, 'button').click
+      1.times do
+        # sleep(3)
+        driver.execute_script('window.scroll(0,1000000);')
+      end
+      puts driver.find_elements(:class, 'collapsed')
 
+      a = 1
+      l = 1
+      driver.find_elements(:class, 'titleCard-title_index').each do |i|
+
+        # a = 1
+        puts i.text
+        puts a
+        @episord= Episord.where(episord:a,product_id:2,season:1).first_or_initialize do |e|
+
+          # e.episord = a
+          # e.product_id = 1
+          e.title = driver.find_elements(:class, 'titleCardList-title')[l-1].find_element(:class, 'titleCard-title_text').text
+          e.arasuzi = driver.find_elements(:class, 'titleCard-synopsis')[l-1].text
+          # # e.season = s
+          e.season_title = "シーズン1"
+          # 0の値が別にあるため、+1してます。
+          e.time =  driver.find_elements(:class, 'duration')[l-1+1].text
+          e.image = driver.find_elements(:class, 'titleCard-imageWrapper')[l-1].find_element(:class, 'ptrack-content').find_element(:tag_name, 'img').attribute('src')
+          # titleCard-imageWrapper
+        end
+        @episord.save
+        l += 1
+        a += 1
+
+      end
      
     end
     puts "aaaaaa"
@@ -327,7 +367,7 @@ class ScrapeProducts
 
     # lists = []
     book = Product.all
-    book.find_in_batches(batch_size: 50,start:start) do |b|
+    book.find_in_batches(batch_size: 1,start:start) do |b|
 
       b.each do |c|
     
@@ -346,31 +386,52 @@ class ScrapeProducts
 
      
         
-        
+        puts driver.find_elements(:class, 'supplemental-message').length
         
 
-        if driver.find_element(:class, 'supplemental-message').displayed?
+        if driver.find_elements(:class, 'supplemental-message').length > 0
 
           puts driver.find_element(:class, 'supplemental-message').displayed?
+          # puts driver.find_element(:class, 'supplemental-message').displayed?
+
         # wait.until { driver.find_element(:class, 'supplemental-message').displayed? }
 
           title = driver.find_element(:class, "supplemental-message").text
 
           book_to.end_day = title
-          book_to.save
+          # book_to.save
 
         end
+
+        if driver.find_elements(:class, 'videoMetadata--second-line').length > 0
+          book_to.year = driver.find_element(:class, 'videoMetadata--second-line').find_element(:class, 'year').text
+          book_to.duration = driver.find_element(:class, 'videoMetadata--second-line').find_element(:class, 'duration').text
+
+          puts driver.find_elements(:class, 'episodeSelector-label').length
+          puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        else
+          book_to.finished = true
+
+        end
+
+        # book_to.duration = 
+        book_to.save
+
 
         # episords
-        if driver.find_element(:class, 'ltr-16khy1u').displayed?
-          puts driver.find_element(:class, 'ltr-16khy1u').displayed?
+        # if driver.find_element(:class, 'ltr-16khy1u').displayed?
+        #   puts driver.find_element(:class, 'ltr-16khy1u').displayed?
 
-          driver.find_element(:class, 'ltr-16khy1u').click
-          driver.find_element(:class, 'ltr-bbkt7g').click
+        #   driver.find_element(:class, 'ltr-16khy1u').click
+        #   driver.find_element(:class, 'ltr-bbkt7g').click
 
-          episodeSelector-season-label
+        #   episodeSelector-season-label
          
-        end
+        # end
+        product_id = c.id
+        # if book_to.styles.
+        episord_create(driver,product_id)
+        # puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 
 
@@ -380,11 +441,11 @@ class ScrapeProducts
         book_to.save
       end
     rescue Selenium::WebDriver::Error::NoSuchElementError
-
+      puts "2666666666666666666666666666666666666666666666666666666666"
     # rescue Mechanize::ResponseCodeError
     #   book = Product.where(link: link)
-    #   book.finished = true
-    #   book.save
+      # book.finished = true
+      # book.save
     #   # puts "Hello World!!#{link}"
     end
           # lists << list
@@ -392,5 +453,125 @@ class ScrapeProducts
       end
   end
 
+  def episord_create(driver,product_id)
+    if driver.find_elements(:class, 'dropdown-toggle').length > 0
+      # puts driver.find_element(:class, 'dropdown-toggle').displayed?
+
+      driver.find_element(:class, 'dropdown-toggle').click
+      season = driver.find_elements(:class, 'ltr-bbkt7g').length
+      # puts driver.find_elements(:class, 'dropdown-toggle').length
+
+      puts  season
+      driver.find_elements(:class, 'ltr-bbkt7g')[season-1].click
+
+      puts driver.find_elements(:class, 'episodeSelector-season-label').length
+      puts driver.find_elements(:class, 'episodeSelector-season-label')
+
+      # driver.find_elements(:class, 'titleCard-title_index').each.with_index(1) do |i,a|
+      puts driver.find_elements(:class, 'titleCard-title_index').length
+
+
+      # wait = Selenium::WebDriver::Wait.new(timeout: 30)
+      # wait.until { driver.find_element(:class, 'episodeSelector-season-label')[season-1].displayed? }
+      sleep(5)
+
+      1.times do
+        # sleep(3)
+        driver.execute_script('window.scroll(0,1000000);')
+      end
+
+      puts driver.find_elements(:class, 'titleCardList-title').length
+      puts driver.find_elements(:class, 'titleCard-synopsis').length
+      puts driver.find_elements(:class, 'episodeSelector-season-label').length
+      puts driver.find_elements(:class, 'duration').length
+
+      puts driver.find_elements(:class, 'episodeSelector-season-label').length
+
+
+      puts driver.find_elements(:class, 'ellipsized').length
+      puts driver.find_elements(:class, 'previewModal--small-text').length
+      # previewModal--small-text
+      puts driver.find_elements(:class, 'ptrack-content').length
+
+
+      a=1
+      l=1
+      s=1
+      driver.find_elements(:class, 'titleCard-title_index').each do |i|
+
+        # a = 1
+        puts i.text
+        puts a
+        if i.text == a.to_s
+        # a += 1
+        puts a
+        puts "aaaaaa"
+        else
+          # puts i.text,a
+        a = 1
+        s += 1
+        # a += 1
+        puts"lllllllllll"
+        end
+        puts a
+        # puts driver.find_elements(:class, 'titleCardList-title')[l].text
+        # Episord.where(episord:a,product_id:1,season:s).first_or_create do |e|
+        @episord= Episord.where(episord:a,product_id:product_id,season:s).first_or_initialize do |e|
+
+          # e.episord = a
+          # e.product_id = 1
+          e.title = driver.find_elements(:class, 'titleCardList-title')[l-1].find_element(:class, 'titleCard-title_text').text
+          e.arasuzi = driver.find_elements(:class, 'titleCard-synopsis')[l-1].text
+          # # e.season = s
+          e.season_title = driver.find_elements(:class, 'episodeSelector-season-label')[s-1].text
+          # 0の値が別にあるため、+1してます。
+          e.time =  driver.find_elements(:class, 'duration')[l-1+1].text
+          e.image = driver.find_elements(:class, 'titleCard-imageWrapper')[l-1].find_element(:class, 'ptrack-content').find_element(:tag_name, 'img').attribute('src')
+          # titleCard-imageWrapper
+        end
+        @episord.save
+        l += 1
+        a += 1
+
+      end
+     
+    else
+      puts "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+      # collapsed
+      driver.find_element(:class, 'collapsed').find_element(:tag_name, 'button').click
+      1.times do
+        # sleep(3)
+        driver.execute_script('window.scroll(0,1000000);')
+      end
+      puts driver.find_elements(:class, 'collapsed')
+
+      a = 1
+      l = 1
+      driver.find_elements(:class, 'titleCard-title_index').each do |i|
+
+        # a = 1
+        puts i.text
+        puts a
+        @episord= Episord.where(episord:a,product_id:product_id,season:1).first_or_initialize do |e|
+
+          # e.episord = a
+          # e.product_id = 1
+          e.title = driver.find_elements(:class, 'titleCardList-title')[l-1].find_element(:class, 'titleCard-title_text').text
+          e.arasuzi = driver.find_elements(:class, 'titleCard-synopsis')[l-1].text
+          # # e.season = s
+          e.season_title = "シーズン1"
+          # 0の値が別にあるため、+1してます。
+          e.time =  driver.find_elements(:class, 'duration')[l-1+1].text
+          e.image = driver.find_elements(:class, 'titleCard-imageWrapper')[l-1].find_element(:class, 'ptrack-content').find_element(:tag_name, 'img').attribute('src')
+          # titleCard-imageWrapper
+        end
+        @episord.save
+        l += 1
+        a += 1
+
+      end
+     
+    end
+  end 
 
 end

@@ -208,14 +208,112 @@ class ScrapeProducts
   end
 
   def sample2
-    chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome()
-    url="https://www.netflix.com/jp/title/81330849"
-    driver = Selenium::WebDriver.for(
-      :remote,
-      url: "http://#{ENV['SELENIUM_HOST']}:4444/wd/hub",
-      desired_capabilities: chrome_capabilities
-    )
-    driver.navigate.to(url) 
+
+    # options = Selenium::WebDriver::Chrome::Options.new
+    # options.add_argument('--headless')
+    # options.add_argument('--lang=ja-JP')
+
+    # chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome()
+    url="https://www.netflix.com/jp/title/81143589"
+    # driver = Selenium::WebDriver.for(
+    #   :remote,
+    #   url: "http://#{ENV['SELENIUM_HOST']}:4444/wd/hub",
+    #   desired_capabilities: chrome_capabilities,
+    #   # options:options
+    # )
+    driver = netflixlogin()
+    driver.navigate.to(url)
+    # ltr-111bn9j 
+
+    wait = Selenium::WebDriver::Wait.new(timeout: 30)
+    wait.until { driver.find_element(:class, 'dropdown-toggle').displayed? }
+    puts "sff"
+    puts driver.find_elements(:class, 'dropdown-toggle').length
+    puts "lll"
+    if driver.find_elements(:class, 'dropdown-toggle').length > 0
+      # puts driver.find_element(:class, 'dropdown-toggle').displayed?
+
+      driver.find_element(:class, 'dropdown-toggle').click
+      season = driver.find_elements(:class, 'ltr-bbkt7g').length
+      # puts driver.find_elements(:class, 'dropdown-toggle').length
+
+      puts  season
+      driver.find_elements(:class, 'ltr-bbkt7g')[season-1].click
+
+      puts driver.find_elements(:class, 'episodeSelector-season-label').length
+      puts driver.find_elements(:class, 'episodeSelector-season-label')
+
+      # driver.find_elements(:class, 'titleCard-title_index').each.with_index(1) do |i,a|
+      puts driver.find_elements(:class, 'titleCard-title_index').length
+
+
+      # wait = Selenium::WebDriver::Wait.new(timeout: 30)
+      # wait.until { driver.find_element(:class, 'episodeSelector-season-label')[season-1].displayed? }
+      sleep(5)
+
+      1.times do
+        # sleep(3)
+        driver.execute_script('window.scroll(0,1000000);')
+      end
+
+      puts driver.find_elements(:class, 'titleCardList-title').length
+      puts driver.find_elements(:class, 'titleCard-synopsis').length
+      puts driver.find_elements(:class, 'episodeSelector-season-label').length
+      puts driver.find_elements(:class, 'duration').length
+
+      puts driver.find_elements(:class, 'episodeSelector-season-label').length
+
+
+      puts driver.find_elements(:class, 'ellipsized').length
+      puts driver.find_elements(:class, 'previewModal--small-text').length
+      # previewModal--small-text
+      puts driver.find_elements(:class, 'ptrack-content').length
+
+
+      a=1
+      l=1
+      s=1
+      driver.find_elements(:class, 'titleCard-title_index').each do |i|
+
+        # a = 1
+        puts i.text
+        puts a
+        if i.text == a.to_s
+        # a += 1
+        puts a
+        puts "aaaaaa"
+        else
+          # puts i.text,a
+        a = 1
+        s += 1
+        # a += 1
+        puts"lllllllllll"
+        end
+        puts a
+        # puts driver.find_elements(:class, 'titleCardList-title')[l].text
+        # Episord.where(episord:a,product_id:1,season:s).first_or_create do |e|
+        @episord= Episord.where(episord:a,product_id:1,season:s).first_or_initialize do |e|
+
+          # e.episord = a
+          # e.product_id = 1
+          e.title = driver.find_elements(:class, 'titleCardList-title')[l-1].text
+          e.arasuzi = driver.find_elements(:class, 'titleCard-synopsis')[l-1].text
+          # # e.season = s
+          e.season_title = driver.find_elements(:class, 'episodeSelector-season-label')[s-1].text
+          # 0の値が別にあるため、+1してます。
+          e.time =  driver.find_elements(:class, 'duration')[l-1+1].text
+          e.image = driver.find_elements(:class, 'ptrack-content')[l-1].find_element(:tag_name, 'img').attribute('src')
+        end
+        @episord.save
+        l += 1
+        a += 1
+
+      end
+     
+
+     
+    end
+    puts "aaaaaa"
 
   end
 
@@ -246,29 +344,9 @@ class ScrapeProducts
         wait = Selenium::WebDriver::Wait.new(timeout: 50)
         wait.until { driver.find_element(:class, 'about-header').displayed? }
 
-        # puts "aaa"
-
-        # book_to.janl
-        # janl = driver.find_element(:class, "about-container").find_elements(:class, "previewModal--tags")[1].find_elements(:class, "tag-item")
-        # # janl_field = driver.find_elements(relative: {tag_name: 'a', below: janl})
-
-        # janl_list = {}
-        # janl.each do |a|
-        #   # print a.text.delete("、")
-        #   # print a.attribute("href")
-        #   janl_list.store(a.find_element(:tag_name,"a").text.delete(","),a.find_element(:tag_name,"a").attribute("href"))
-        # end
-
-
-
-        # print janl_list
-
-        # janl_list.each do |a,b|
-        #   janl_field = Janl.find_by(name: a)
-        #   janl_field.link = b
-        #   janl_field.save
-        # end
-
+     
+        
+        
         
 
         if driver.find_element(:class, 'supplemental-message').displayed?
@@ -282,6 +360,20 @@ class ScrapeProducts
           book_to.save
 
         end
+
+        # episords
+        if driver.find_element(:class, 'ltr-16khy1u').displayed?
+          puts driver.find_element(:class, 'ltr-16khy1u').displayed?
+
+          driver.find_element(:class, 'ltr-16khy1u').click
+          driver.find_element(:class, 'ltr-bbkt7g').click
+
+          episodeSelector-season-label
+         
+        end
+
+
+
       else
         # book = Product.where(list: list)
         book_to.finished = true

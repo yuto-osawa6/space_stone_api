@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_28_073633) do
+ActiveRecord::Schema.define(version: 2022_01_04_083807) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -62,6 +62,20 @@ ActiveRecord::Schema.define(version: 2021_12_28_073633) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "episords", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.string "title"
+    t.text "arasuzi"
+    t.integer "episord"
+    t.integer "season"
+    t.string "season_title"
+    t.string "time"
+    t.text "image"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_episords_on_product_id"
   end
 
   create_table "janl_products", charset: "utf8mb4", force: :cascade do |t|
@@ -194,6 +208,7 @@ ActiveRecord::Schema.define(version: 2021_12_28_073633) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cast_products", "casts"
   add_foreign_key "cast_products", "products"
+  add_foreign_key "episords", "products"
   add_foreign_key "janl_products", "janls"
   add_foreign_key "janl_products", "products"
   add_foreign_key "likes", "products"

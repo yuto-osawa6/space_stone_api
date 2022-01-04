@@ -22,4 +22,6 @@ class Product < ApplicationRecord
   has_many :thereds, dependent: :destroy
   has_many :thereds_users, through: :thereds, source: :user
 
+  has_many :episords,dependent: :destroy
+
 end

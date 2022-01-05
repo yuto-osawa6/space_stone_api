@@ -103,7 +103,7 @@ class ScrapeProducts
     print links
     print title
     links.each do |link|
-      get_book("https://www.netflix.com/title/#{link}",title)
+      get_book("https://www.netflix.com/title/#{link}",title,news=0)
     end
   end
   #productの内容の獲得 追記new エラーチェックまだしてない。
@@ -189,7 +189,7 @@ class ScrapeProducts
       # book.finished = false
       # 追記注意
       if new_product == 1
-        book.new_contents = true
+        book.new_content = true
       end
 
       puts link
@@ -484,7 +484,7 @@ class ScrapeProducts
     print "ccc"
 
     links3.each do |link|
-      get_book("https://www.netflix.com/title/#{link}",go = 0)
+      get_book("https://www.netflix.com/title/#{link}",go = 0,news = 0)
     end
 
   end
@@ -538,6 +538,8 @@ class ScrapeProducts
 
           book_to.end_day = title
           # book_to.save
+        else
+          book_to.end_day = ""
 
         end
 
@@ -557,7 +559,10 @@ class ScrapeProducts
         if driver.find_elements(:class, 'episodeSelector-header').length > 0
           if driver.find_elements(:class, 'videoMetadata--second-line').length > 0
             book_to.style_ids = [2]
+          else
+            book_to.style_ids = [3]
           end
+
         else
           book_to.style_ids = [1]
         end
@@ -593,7 +598,7 @@ class ScrapeProducts
 
       else
         # book = Product.where(list: list)
-        book_to.finished = true
+        book_to.end = true
         book_to.save
       end
     # rescue Selenium::WebDriver::Error::NoSuchElementError
@@ -806,7 +811,20 @@ class ScrapeProducts
 
     end
 
+
+    # new情報の更新
+
+    # b_list = []
+    # before_new = Product.where(new_content:true)
+    # before_new.each do |b|
+    #   b_list.append(b.list.slice(/\d+/))
+    #   b.new_content = false
+    #   b.save
+    # end
+
     list = list.uniq
+
+    # b_list - list
 
     puts "a"
     puts list
@@ -937,4 +955,50 @@ class ScrapeProducts
     
   end
 
+  # new情報の更新
+  # def
+    
+  # end
+
+  # aboutnetflix new情報獲得
+  def aboutnetflix()
+    chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome()
+    driver = Selenium::WebDriver.for(
+      :remote,
+      url: "http://#{ENV['SELENIUM_HOST']}:4444/wd/hub",
+      desired_capabilities: chrome_capabilities
+    )
+
+    url = "https://about.netflix.com/ja/new-to-watch"
+    driver.navigate.to(url)
+    sleep(5)
+    #スクロール
+    driver.execute_script('window.scroll(0,1000000);') 
+    len = driver.find_elements(:class, "ejJeDM").length
+
+    number_list = []
+
+    len.times do |i|
+      # eleme = driver.find_elements(:class, "cGrGmh")
+      eleme = driver.find_elements(:class, "ehxjCL")
+
+      eleme.each do |a|
+        number_list.append(a.find_element(:class, "cGrGmh").attribute("href").slice(/\d+/))
+      end
+      if i == len -1
+        break
+      end
+      driver.find_elements(:class, "ejJeDM")[i+1].find_element(:tag_name,"button").click
+      sleep(5)
+      driver.execute_script('window.scroll(0,1000000);') 
+      # puts number_list
+    end
+    puts number_list.uniq
+
+    number_list.uniq.each do |link|
+      get_book("https://www.netflix.com/title/#{link}",go=0,new_product=0)
+    end
+
+
+  end
 end

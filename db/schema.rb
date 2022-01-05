@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_04_161711) do
+ActiveRecord::Schema.define(version: 2022_01_05_100818) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 2022_01_04_161711) do
     t.string "year"
     t.string "duration"
     t.boolean "new_content", default: false, null: false
+    t.boolean "end", default: false, null: false
   end
 
   create_table "questions", charset: "utf8mb4", force: :cascade do |t|

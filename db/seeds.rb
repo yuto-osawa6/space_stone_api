@@ -18,3 +18,5 @@ question_list = [
 question_list.each do |i|
   Question.create(question: i)
 end
+
+# style の追加[3]

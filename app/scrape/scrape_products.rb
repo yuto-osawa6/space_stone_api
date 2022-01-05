@@ -928,8 +928,10 @@ class ScrapeProducts
       puts list.length
       puts "a"
 
+      
+
       list.each do |link|
-        get_book("https://www.netflix.com/title/#{link}",go=0)
+        get_book("https://www.netflix.com/title/#{link}",go=0,o=0)
       end
     # end
     

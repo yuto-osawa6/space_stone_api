@@ -155,6 +155,7 @@ class Api::V1::ProductsController < ApplicationController
 
     # acsesses_array
     to = Time.current.at_beginning_of_day
+    to2 = Time.current.end_of_day
     d = Date.today
     dm = d.month
     @month_array = []
@@ -169,7 +170,7 @@ class Api::V1::ProductsController < ApplicationController
       end
 
     from  = (to - 1.year).next_month.beginning_of_month
-    @acsesses = Product.find(params[:id]).acsesses.where(date: from...to).group(:date).sum(:count)
+    @acsesses = Product.find(params[:id]).acsesses.where(date: from...to2).group(:date).sum(:count)
     @acsesses.map{|key,value|@month_hash[key.month]=value}
 
     @acsesses_array = []

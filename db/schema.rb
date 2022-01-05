@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(version: 2022_01_04_161711) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "year"
     t.string "duration"
+    t.boolean "new_content", default: false, null: false
   end
 
   create_table "questions", charset: "utf8mb4", force: :cascade do |t|

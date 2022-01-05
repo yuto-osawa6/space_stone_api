@@ -3,22 +3,26 @@ require 'selenium-webdriver'
 require "date"
 require 'time'
 
+# 順番 最初 products_movie products_tvshow setup_janl_links oo1 product_end
+# 追記 週一 product_new product_scheduled setup_janl_links oo1  product_end
+
 class ScrapeProducts
   def war
     puts("waaaaaaaaaaa")
   end
 
+  # movie 一覧
   def products_movie
     link = "https://www.netflix.com/jp/browse/genre/34399?so=su"
     movie = 1
     products_list(link,movie)
   end
-
+  # tv show 一覧
   def products_tvshow
     link = "https://www.netflix.com/jp/browse/genre/83?so=su"
     products_list(link,movie=0)
   end
-
+  # netflixログイン
   def netflixlogin
     # driver = Selenium::WebDriver.for :chrome
     chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome()
@@ -40,7 +44,7 @@ class ScrapeProducts
     return driver
 
   end
-
+  # 作品一覧の表示 
   def netflix(driver,url)
     driver.navigate.to(url) 
     driver.find_element(:class, "aro-grid-toggle").click
@@ -89,7 +93,7 @@ class ScrapeProducts
     return links,title
 
   end
-
+  #productのリンクを獲得
   def products_list(url,movie)
 
     driver = netflixlogin()
@@ -102,8 +106,8 @@ class ScrapeProducts
       get_book("https://www.netflix.com/title/#{link}",title)
     end
   end
-
-  def get_book(links,janl_name)
+  #productの内容の獲得 追記new エラーチェックまだしてない。
+  def get_book(links,janl_name,new_product)
 
     link = links
     style = janl_name
@@ -181,7 +185,12 @@ class ScrapeProducts
       else
         book.style_ids = style_book.id
       end
-      book.finished = false
+      #消しました注意!!!!!
+      # book.finished = false
+      # 追記注意
+      if new_product == 1
+        book.new_contents = true
+      end
 
       puts link
       
@@ -356,8 +365,137 @@ class ScrapeProducts
     puts "aaaaaa"
 
   end
+  # ジャンルのリンクを取得
+  def setup_janl_links
+    driver = netflixlogin()
+    genre = Janl.all
+    list = []
+    # list_name = []
+    genre.each do |g|
+      list << g.products.first.list
+      # g.products.first.janls.each do |a|
+        #  list_name << a.name 
 
-  # selenium product_end 追加カラム
+      # end
+    end
+    
+    lists = list.uniq
+
+    # print list_name.uniq
+    # print list_name.uniq.length
+    lists.each do |g|
+      otamesi2(g,driver)
+    end
+    # otamesi2(url="https://www.netflix.com/title/81442047",driver)
+  end
+
+  def otamesi2(links,driver)
+    
+    #指定したURLに遷移する
+    driver.navigate.to(links)
+
+    wait = Selenium::WebDriver::Wait.new(timeout: 50)
+    wait.until { driver.find_element(:class, 'about-container').displayed? }
+
+    #I'm Feeling Luckyボタン要素をname属性名から取得
+    # element = driver.find_element(:name,'btnI')
+
+    # janl = driver.find_element(:class, "about-container").find_elements(:xpath, "//*[@data-uia='previewModal--tags-genre']")[2].find_elements(:class, "tag-item")
+    janl1 = driver.find_element(:class, "about-container")
+    janl2 = janl1.find_elements(:xpath, "//*[@data-uia='previewModal--tags-genre']")
+
+    if janl2.length == 2
+      janl = janl1.find_elements(:xpath, "//*[@data-uia='previewModal--tags-genre']")[1].find_elements(:class, "tag-item")
+    elsif janl2.length == 4
+      janl = janl1.find_elements(:xpath, "//*[@data-uia='previewModal--tags-genre']")[2].find_elements(:class, "tag-item")
+    end
+    janl.each do |b|
+      print b.text
+    end
+    # print aaa
+    # janl_field = driver.find_elements(relative: {tag_name: 'a', below: janl})
+
+    janl_list = {}
+    janl.each do |a|
+      # print a.text.delete("、")
+      # print a.attribute("href")
+      janl_list.store(a.find_element(:tag_name,"a").text.delete(","),a.find_element(:tag_name,"a").attribute("href"))
+    end
+
+
+
+    print janl_list
+
+    janl_list.each do |a,b|
+      janl_field = Janl.find_by(name: a)
+      janl_field.link = b
+      janl_field.save
+    end
+
+  end
+  # 全ての作品を獲得
+  def self.oo1
+    
+    print "開始位置を入力してください"
+    start = gets.chomp.to_i
+
+    driver = netflixlogin()
+    # genre = Janl.all
+    Janl.find_in_batches(batch_size: 5,start:start) do |i|
+      print "あああああああああああああ"
+      # print i
+      all_netflix(i,driver)
+    end
+
+  end
+
+  def self.all_netflix(i,driver)
+    # driver = netflixlogin()
+    # products = Product.all
+    # genre = Janl.all
+
+
+    all_links = []
+    i.each do |a|
+      
+      if a.link.present?
+        links,title = netflix(driver,a.link)
+        all_links = (all_links + links).uniq
+        print "aaa"
+        print all_links.length
+      end
+
+    end
+
+    print all_links.length
+    # 配列の結合
+
+    links2 = []
+    Product.all.each do |a|
+      links2.append(a.list.slice(/\d+/))
+    end 
+
+    links3 = all_links - links2
+
+    print "bbb"
+    print all_links.length
+    print links2.length
+    print links3.length
+    print "ccc"
+
+    links3.each do |link|
+      get_book("https://www.netflix.com/title/#{link}",go = 0)
+    end
+
+  end
+
+
+
+
+
+
+
+  # 全ての作品の詳細など selenium product_end 追加カラム 、追加(year,message,during,episord)
   def product_end
 
     driver = netflixlogin()
@@ -377,7 +515,7 @@ class ScrapeProducts
 
       driver.navigate.to(list)
 
-    begin
+    # begin
       if driver.current_url == list
           
 
@@ -414,8 +552,26 @@ class ScrapeProducts
 
         end
 
+        # movie tvshow 判別(まだ正確かどうかわかっていないdoneyet)
+        puts driver.find_elements(:class, 'episodeSelector-header').length
+        if driver.find_elements(:class, 'episodeSelector-header').length > 0
+          if driver.find_elements(:class, 'videoMetadata--second-line').length > 0
+            book_to.style_ids = [2]
+          end
+        else
+          book_to.style_ids = [1]
+        end
+
         # book_to.duration = 
         book_to.save
+
+        # 
+        # if driver.find_elements(:class, 'episodeSelector-label').length > 0
+        #   book_to.style_ids[1]
+        # else
+        #   book_to.style_ids[2]
+        # end
+        
 
 
         # episords
@@ -440,19 +596,19 @@ class ScrapeProducts
         book_to.finished = true
         book_to.save
       end
-    rescue Selenium::WebDriver::Error::NoSuchElementError
-      puts "2666666666666666666666666666666666666666666666666666666666"
+    # rescue Selenium::WebDriver::Error::NoSuchElementError
+    #   puts "2666666666666666666666666666666666666666666666666666666666"
     # rescue Mechanize::ResponseCodeError
     #   book = Product.where(link: link)
       # book.finished = true
       # book.save
     #   # puts "Hello World!!#{link}"
-    end
+    # end
           # lists << list
     end
       end
   end
-
+  # episordの情報を保存
   def episord_create(driver,product_id)
     if driver.find_elements(:class, 'dropdown-toggle').length > 0
       # puts driver.find_element(:class, 'dropdown-toggle').displayed?
@@ -538,7 +694,10 @@ class ScrapeProducts
     else
       puts "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
       # collapsed
-      driver.find_element(:class, 'collapsed').find_element(:tag_name, 'button').click
+      
+      if driver.find_elements(:class, 'collapsed').length > 0
+        driver.find_element(:class, 'collapsed').find_element(:tag_name, 'button').click
+      end
       1.times do
         # sleep(3)
         driver.execute_script('window.scroll(0,1000000);')
@@ -573,5 +732,207 @@ class ScrapeProducts
      
     end
   end 
+  # 新着作品の情報を獲得
+  def product_new
+    driver = netflixlogin()
+    url = "https://www.netflix.com/latest"
+    driver.navigate.to(url)
+
+    list = []
+    num = 3
+    loop do
+    # 4.times do |i|
+      puts num
+    driver.action.move_to(driver.find_elements(:class, 'lolomoRow')[0].find_element(:class, "slider-item-#{num}")).perform
+      wait = Selenium::WebDriver::Wait.new(timeout: 10)
+      wait.until { driver.find_element(:class, 'focus-trap-wrapper').displayed? }
+      # puts driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk').length
+      driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk')[3].click
+
+      current_url = driver.current_url.slice(/\d+/)
+      # puts current_url
+      list << current_url
+      driver.find_element(:class,'previewModal-close').click
+      num -= 1
+      puts list
+      puts num
+      sleep(3)
+      if num == -1 
+        puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        driver.action.move_to(driver.find_elements(:class,'handleNext')[0]).perform
+        sleep(2)
+        puts driver.find_elements(:class,'indicator-icon').length
+        puts "iiiiiiiiii"
+        driver.find_elements(:class,'handleNext')[0].find_element(:class,'indicator-icon').click
+        break
+      end
+    end
+    # end
+    # driver.action.move_to(driver.find_elements(:class,'indicator-icon')[0]).perform
+    # driver.find_element(:class,'indicator-icon').click
+    sleep(2)
+
+    num = 4
+    loop do
+      # puts num
+    driver.action.move_to(driver.find_elements(:class, 'lolomoRow')[0].find_element(:class, "slider-item-#{num}")).perform
+      wait = Selenium::WebDriver::Wait.new(timeout: 10)
+      wait.until { driver.find_element(:class, 'focus-trap-wrapper').displayed? }
+      # puts driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk').length
+      driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk')[3].click
+
+      current_url = driver.current_url.slice(/\d+/)
+      puts current_url
+      list << current_url
+      sleep(1)
+
+      driver.find_element(:class,'previewModal-close').click
+      num -= 1
+      puts list
+      sleep(3)
+
+      if num == 0
+        num = 4
+        driver.action.move_to(driver.find_elements(:class,'handleNext')[0]).perform
+        sleep(2)
+        # puts driver.find_elements(:class,'indicator-icon').length
+        driver.find_elements(:class,'handleNext')[0].find_element(:class,'indicator-icon').click
+        sleep(2)
+      end
+
+      if (list.count - list.uniq.count) > 0 
+        break
+      end
+
+    end
+
+    list = list.uniq
+
+    puts "a"
+    puts list
+    puts "a"
+
+    list.each do |link|
+      get_book("https://www.netflix.com/title/#{link}",go=0,new_product=1)
+    end
+  end
+
+  # 配信予定作品の情報を獲得
+  def product_scheduled
+    driver = netflixlogin()
+    url = "https://www.netflix.com/latest"
+    driver.navigate.to(url)
+
+    driver.execute_script("arguments[0].scrollIntoView();",driver.find_elements(:class, 'lolomoRow')[1].find_element(:class, "slider-item-#{0}") )
+
+    list = []
+    # num = 0
+    ii = 2
+    3.times do |i|
+    # list{i} =[]
+    # instance_variable_set("list#{i}",[])
+    list[i] = []
+    # puts "h"
+    # puts 
+    # puts "h"
+    num = 3
+      loop do
+      # 4.times do |i|
+        puts num
+      driver.action.move_to(driver.find_elements(:class, 'lolomoRow')[ii].find_element(:class, "slider-item-#{num}")).perform
+        wait = Selenium::WebDriver::Wait.new(timeout: 10)
+        wait.until { driver.find_element(:class, 'focus-trap-wrapper').displayed? }
+        puts driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk').length
+        len = driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk').length
+        driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk')[len-1].click
+
+        current_url = driver.current_url.slice(/\d+/)
+        # puts current_url
+        list[i] << current_url
+        sleep(2)
+        driver.find_element(:class,'previewModal-close').click
+        num -= 1
+        puts  list[i]
+        puts num
+        sleep(3)
+        if num == -1 
+          puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          driver.action.move_to(driver.find_elements(:class,'handleNext')[ii]).perform
+          sleep(2)
+          puts driver.find_elements(:class,'indicator-icon').length
+          puts "iiiiiiiiii"
+          driver.find_elements(:class,'handleNext')[ii].find_element(:class,'indicator-icon').click
+          break
+        end
+      end
+    # end
+    # driver.action.move_to(driver.find_elements(:class,'indicator-icon')[0]).perform
+    # driver.find_element(:class,'indicator-icon').click
+    sleep(2)
+
+    num = 4
+      loop do
+        # puts num
+      driver.action.move_to(driver.find_elements(:class, 'lolomoRow')[ii].find_element(:class, "slider-item-#{num}")).perform
+        wait = Selenium::WebDriver::Wait.new(timeout: 10)
+        wait.until { driver.find_element(:class, 'focus-trap-wrapper').displayed? }
+        puts driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk').length
+        len = driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk').length
+        driver.find_element(:class, 'focus-trap-wrapper').find_elements(:class,'ltr-79elbk')[len-1].click
+
+        current_url = driver.current_url.slice(/\d+/)
+        puts current_url
+        list[i] << current_url
+        sleep(2)
+
+        driver.find_element(:class,'previewModal-close').click
+        num -= 1
+        puts list[i]
+        sleep(3)
+
+        if num == 0
+          num = 4
+          driver.action.move_to(driver.find_elements(:class,'handleNext')[ii]).perform
+          sleep(2)
+          # puts driver.find_elements(:class,'indicator-icon').length
+          driver.find_elements(:class,'handleNext')[ii].find_element(:class,'indicator-icon').click
+          sleep(2)
+        end
+
+        if (list[i].count - list[i].uniq.count) > 0 
+          break
+        end
+
+      end
+      ii += 1
+      puts ii
+      puts i
+
+    end
+      
+      list = list[0]+list[1]+list[2]
+      list = list.uniq
+      puts "a"
+      puts list[0]
+      puts list[0].length
+      puts "a"
+      puts list[1]
+      puts list[1].length
+      puts "a"
+      puts list[2]
+      puts list[2].length
+      puts "a"
+
+      puts "a"
+      puts list
+      puts list.length
+      puts "a"
+
+      list.each do |link|
+        get_book("https://www.netflix.com/title/#{link}",go=0)
+      end
+    # end
+    
+  end
 
 end

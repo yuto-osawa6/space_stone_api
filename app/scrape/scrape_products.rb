@@ -549,6 +549,7 @@ class ScrapeProducts
 
           puts driver.find_elements(:class, 'episodeSelector-label').length
           puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          book_to.finished = false
         else
           book_to.finished = true
 
@@ -568,6 +569,7 @@ class ScrapeProducts
         end
 
         # book_to.duration = 
+        book_to.end = false
         book_to.save
 
         # 

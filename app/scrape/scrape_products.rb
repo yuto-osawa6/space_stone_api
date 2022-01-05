@@ -4,7 +4,7 @@ require "date"
 require 'time'
 
 # 順番 最初 products_movie products_tvshow setup_janl_links oo1 product_end
-# 追記 週一 product_new product_scheduled setup_janl_links oo1  product_end
+# 追記 週一 products_movie products_tvshow product_new product_scheduled setup_janl_links oo1  product_end
 
 class ScrapeProducts
   def war
@@ -543,9 +543,11 @@ class ScrapeProducts
 
         end
 
+        puts "aoiep"
+        puts  driver.find_elements(:class, 'videoMetadata--second-line').length
         if driver.find_elements(:class, 'videoMetadata--second-line').length > 0
           book_to.year = driver.find_element(:class, 'videoMetadata--second-line').find_element(:class, 'year').text
-          book_to.duration = driver.find_element(:class, 'videoMetadata--second-line').find_element(:class, 'duration').text
+          book_to.duration = driver.find_element(:class, 'videoMetadata--second-line').find_element(:class, 'duration').text if driver.find_element(:class, 'videoMetadata--second-line').find_elements(:class, 'duration').length > 0
 
           puts driver.find_elements(:class, 'episodeSelector-label').length
           puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -554,6 +556,8 @@ class ScrapeProducts
           book_to.finished = true
 
         end
+
+        puts "aoiep"
 
         # movie tvshow 判別(まだ正確かどうかわかっていないdoneyet)
         puts driver.find_elements(:class, 'episodeSelector-header').length
@@ -701,16 +705,21 @@ class ScrapeProducts
     else
       puts "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
       # collapsed
-      
-      if driver.find_elements(:class, 'collapsed').length > 0
-        driver.find_element(:class, 'collapsed').find_element(:tag_name, 'button').click
+       sleep(1)
+       puts driver.find_elements(:class, 'collapsed').length
+       puts driver.find_elements(:class,'episodeSelector-container').length
+      #  puts driver.find_elements(:class,'episodeSelector-container').find_elements(:class, 'collapsed').length
+      if driver.find_elements(:class,'episodeSelector-container').length > 0
+        if  driver.find_elements(:class,'episodeSelector-container')[0].find_elements(:class, 'collapsed').length > 0
+            driver.find_elements(:class,'episodeSelector-container')[0].find_element(:class, 'collapsed').find_element(:tag_name, 'button').click
+        end
       end
       1.times do
         # sleep(3)
         driver.execute_script('window.scroll(0,1000000);')
       end
       puts driver.find_elements(:class, 'collapsed')
-
+      puts "ppppppppppppppppppp"
       a = 1
       l = 1
       driver.find_elements(:class, 'titleCard-title_index').each do |i|
@@ -723,11 +732,12 @@ class ScrapeProducts
           # e.episord = a
           # e.product_id = 1
           e.title = driver.find_elements(:class, 'titleCardList-title')[l-1].find_element(:class, 'titleCard-title_text').text
-          e.arasuzi = driver.find_elements(:class, 'titleCard-synopsis')[l-1].text
+          e.arasuzi = driver.find_elements(:class, 'titleCard-synopsis')[l-1].text if driver.find_elements(:class, 'episode-item')[l-1].find_elements(:class, "titleCard-synopsis").length > 0
           # # e.season = s
           e.season_title = "シーズン1"
           # 0の値が別にあるため、+1してます。
-          e.time =  driver.find_elements(:class, 'duration')[l-1+1].text
+          e.time =  driver.find_elements(:class, 'duration')[l-1+1].text 
+          # if driver.find_elements(:class, 'duration').length > 0
           e.image = driver.find_elements(:class, 'titleCard-imageWrapper')[l-1].find_element(:class, 'ptrack-content').find_element(:tag_name, 'img').attribute('src')
           # titleCard-imageWrapper
         end

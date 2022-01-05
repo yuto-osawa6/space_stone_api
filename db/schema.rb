@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_05_100818) do
+ActiveRecord::Schema.define(version: 2022_01_05_145057) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -103,6 +103,12 @@ ActiveRecord::Schema.define(version: 2022_01_05_100818) do
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
+  create_table "periods", charset: "utf8mb4", force: :cascade do |t|
+    t.string "period"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "products", charset: "utf8mb4", force: :cascade do |t|
     t.string "title"
     t.text "image_url"
@@ -182,6 +188,19 @@ ActiveRecord::Schema.define(version: 2022_01_05_100818) do
     t.index ["user_id"], name: "index_thereds_on_user_id"
   end
 
+  create_table "toptens", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "period_id", null: false
+    t.bigint "product_id"
+    t.string "title"
+    t.string "list"
+    t.string "category"
+    t.integer "rank"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["period_id"], name: "index_toptens_on_period_id"
+    t.index ["product_id"], name: "index_toptens_on_product_id"
+  end
+
   create_table "users", charset: "utf8mb4", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -227,4 +246,6 @@ ActiveRecord::Schema.define(version: 2022_01_05_100818) do
   add_foreign_key "thered_quesitons", "thereds"
   add_foreign_key "thereds", "products"
   add_foreign_key "thereds", "users"
+  add_foreign_key "toptens", "periods"
+  add_foreign_key "toptens", "products"
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_28_073633) do
+ActiveRecord::Schema.define(version: 2022_01_05_223108) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -64,6 +64,31 @@ ActiveRecord::Schema.define(version: 2021_12_28_073633) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "comprehensives", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.string "like"
+    t.string "score"
+    t.string "acsess"
+    t.integer "rank_count"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_comprehensives_on_product_id"
+  end
+
+  create_table "episords", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.string "title"
+    t.text "arasuzi"
+    t.integer "episord"
+    t.integer "season"
+    t.string "season_title"
+    t.string "time"
+    t.text "image"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_episords_on_product_id"
+  end
+
   create_table "janl_products", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "janl_id"
     t.bigint "product_id"
@@ -89,6 +114,18 @@ ActiveRecord::Schema.define(version: 2021_12_28_073633) do
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
+  create_table "month_durings", charset: "utf8mb4", force: :cascade do |t|
+    t.datetime "month"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "periods", charset: "utf8mb4", force: :cascade do |t|
+    t.string "period"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "products", charset: "utf8mb4", force: :cascade do |t|
     t.string "title"
     t.text "image_url"
@@ -98,6 +135,10 @@ ActiveRecord::Schema.define(version: 2021_12_28_073633) do
     t.boolean "finished", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "year"
+    t.string "duration"
+    t.boolean "new_content", default: false, null: false
+    t.boolean "end", default: false, null: false
   end
 
   create_table "questions", charset: "utf8mb4", force: :cascade do |t|
@@ -143,6 +184,16 @@ ActiveRecord::Schema.define(version: 2021_12_28_073633) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "tags", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "month_during_id", null: false
+    t.bigint "product_id", null: false
+    t.string "tag"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["month_during_id"], name: "index_tags_on_month_during_id"
+    t.index ["product_id"], name: "index_tags_on_product_id"
+  end
+
   create_table "thered_quesitons", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "thered_id", null: false
     t.bigint "question_id", null: false
@@ -162,6 +213,19 @@ ActiveRecord::Schema.define(version: 2021_12_28_073633) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["product_id"], name: "index_thereds_on_product_id"
     t.index ["user_id"], name: "index_thereds_on_user_id"
+  end
+
+  create_table "toptens", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "period_id", null: false
+    t.bigint "product_id"
+    t.string "title"
+    t.string "list"
+    t.string "category"
+    t.integer "rank"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["period_id"], name: "index_toptens_on_period_id"
+    t.index ["product_id"], name: "index_toptens_on_product_id"
   end
 
   create_table "users", charset: "utf8mb4", force: :cascade do |t|
@@ -194,6 +258,8 @@ ActiveRecord::Schema.define(version: 2021_12_28_073633) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cast_products", "casts"
   add_foreign_key "cast_products", "products"
+  add_foreign_key "comprehensives", "products"
+  add_foreign_key "episords", "products"
   add_foreign_key "janl_products", "janls"
   add_foreign_key "janl_products", "products"
   add_foreign_key "likes", "products"
@@ -204,8 +270,12 @@ ActiveRecord::Schema.define(version: 2021_12_28_073633) do
   add_foreign_key "scores", "users"
   add_foreign_key "style_products", "products"
   add_foreign_key "style_products", "styles"
+  add_foreign_key "tags", "month_durings"
+  add_foreign_key "tags", "products"
   add_foreign_key "thered_quesitons", "questions"
   add_foreign_key "thered_quesitons", "thereds"
   add_foreign_key "thereds", "products"
   add_foreign_key "thereds", "users"
+  add_foreign_key "toptens", "periods"
+  add_foreign_key "toptens", "products"
 end

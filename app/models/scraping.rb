@@ -14,50 +14,15 @@ class Scraping
  
   def self.en
     require 'selenium-webdriver'
-    # driver = webdriver.Remote(
-    #   command_executor="http://selenium_chrome:4444/wd/hub",
-    #   options=options,
-    # )
-    # driver = Selenium::WebDriver.for :chrome 
-    # driver = Selenium::WebDriver.for(:remote,
-    #   :url => "http://localhost:4444/wd/hub",)
-    # chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome
-    # driver = Selenium::WebDriver.for(
-    # :remote,
-    # url: "http://selenium-server:4444/wd/hub",
-    # desired_capabilities: chrome_capabilities
-    # )
-      # :desired_capabilities => caps)
-    #使用するブラウザを選択
-    # driver.navigate.to "http://www.google.com" #URL指定
-    # puts driver.title #ページタイトルを出力
-
-    # element = driver.find_element(:name, 'description') #セレクタ指定
-    # puts element.attribute('content') #コンソールに出力
-
-    # driver.quit #ブラウザを閉じて終了
     chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome()
     driver = Selenium::WebDriver.for(
       :remote,
       url: "http://#{ENV['SELENIUM_HOST']}:4444/wd/hub",
       desired_capabilities: chrome_capabilities
     )
-
-    # driver.navigate.to "https://qiita.com/yutachaos/items/4a1da5d55a3bf0df889e" #URL指定
     driver.get('http://www.google.com')
     driver.navigate.to "https://www.oddspark.com" #URL指定
-
-    # driver.navigate.to "http://www.google.com" #URL指定
-
     puts driver.title #ページタイトルを出力
-
-    # driver.close()
-
-    # element = driver.find_element(:name, 'description') #セレクタ指定
-    # puts element.attribute('content') #コンソールに出力
-
-    # driver.quit 
-
   end
 
   def self.oi
@@ -225,28 +190,7 @@ class Scraping
       get_book("https://www.netflix.com/title/#{link}",go = 0)
     end
 
-    # links.each do |link|
-    #   get_book("https://www.netflix.com/title/#{link}",title)
-    # end
-
   end
-
-  # def self.otamesi10
-  #   a = [1,3,4]
-  #   c = [1,2,3]
-  #   all = []
-  #   a.each do |b|
-  #     c.append(b+1)
-  #     all = (all+c)
-
-  #   end
-  #   print all
-
-  # end
-
-  
-
-
 
 
   def self.products_list(url,movie)
@@ -257,62 +201,6 @@ class Scraping
 
     print links
     print title
-
-
-  
-    # driver.navigate.to(url) 
-  
-    # driver.find_element(:class, "aro-grid-toggle").click
-    # driver.find_element(:class, "sortGallery").click
-  
-    # driver.find_elements(:class, "sub-menu-item")[3].click
-  
-    # 35.times do
-    #   sleep(3)
-    #   driver.execute_script('window.scroll(0,1000000);')
-    # end
-  
-    # sleep(3)
-
-    # number_list = []
-    # eleme = driver.find_elements(:class, "slider-refocus")
-    # eleme.each do |a|
-    #   number_list.append(a.attribute("href").slice(/\d+/))
-    # end
-  
-    # print number_list
-    # puts number_list.uniq.length
-    # puts number_list[-1]
-
-    # driver.find_element(:class, "aro-grid-toggle").click
-    # driver.find_element(:class, "sortGallery").click
-    # driver.find_elements(:class, "sub-menu-item")[2].click
-    # 35.times do 
-    #   sleep(3)
-    #   driver.execute_script('window.scroll(0,1000000);') 
-    # end
-  
-    # sleep(3)
-
-    # eleme2 = driver.find_elements(:class, "slider-refocus")
-    # eleme2.each do |a|
-    #   number_list.append(a.attribute("href").slice(/\d+/))
-    # end
-
-    # print number_list
-    # puts number_list.uniq.length
-    # puts number_list[-1]
-
-    # title = driver.find_element(:class, "genreTitle").text
-
-    # print title
-
-    # links = number_list.uniq
-
-    # if movie = 1
-
-    # end
-
     links.each do |link|
       get_book("https://www.netflix.com/title/#{link}",title)
     end
@@ -323,23 +211,14 @@ class Scraping
 
 
   def self.get_book(links,janl_name)
-  # def self.get_book()
 
     link = links
     style = janl_name
-    # style = "アニメ"
 
-
-    # link = "https://www.netflix.com/title/70205012"
-    # link= "https://www.netflix.com/browse/genre/2070675?bc=83"
     agent = Mechanize.new
     agent.request_headers = {
-      # 'Origin' => 'https://michadameyo.com',
       'accept-language' => 'ja',
-      # 'Upgrade-Insecure-Requests' => '1',
-      # 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     }
-    # agent.Accept-Language
     begin
       page = agent.get(link)
       # puts page.at(".")
@@ -349,28 +228,6 @@ class Scraping
       cast = page.search(".item-cast") if page.search('.item-cast')
       detail = page.at(".title-info-synopsis").inner_text if page.at('.title-info-synopsis')
       janl = page.search(".item-genres") if page.search('.item-genres')
-      # end_day = page.at(".hook-header") if page.at('.hook-header')
-
-     
-      # end_day1 = end_day.inner_text.slice(/\d.*/) if page.at('.hook-header')
-
-
-      # puts end_day1
-      # puts end_day2
-
-
-      # today = Date.today
-      # end_day2 = "#{today.year}-#{end_day1}"
-
-      # # tr_today = "2018-12-05"    # 文字列型の日付（変換前） 
-      # end_day.to_date
-      # puts end_day.to_date
-
-      # puts tr_today
-      # end_day_df = Date.strptime(end_day,'%Y年%m月%d日') 
-      # puts end_day
-      # puts end_day_df
-      # puts aaaaaa
 
       image = page.at(".hero-image-desktop")[:style].slice(/h.*"/).chop!
 
@@ -385,11 +242,6 @@ class Scraping
       janl.each do |c|
         puts c
       end
-
-      # image_url = page.at('.fuga-content img')[:src] if page.at('.fuga-content img')
-      # detail = page.at('.fuga-content p').inner_text if page.at('.fuga-content p')
-      # puts "Hello World!!#{title}"
-      # puts cast
       puts detail
       puts image
 
@@ -553,8 +405,8 @@ class Scraping
     #   # puts "Hello World!!#{link}"
     end
           # lists << list
-  end
     end
+      end
   end
 
 

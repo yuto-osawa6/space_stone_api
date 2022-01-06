@@ -22,4 +22,14 @@ class Product < ApplicationRecord
   has_many :thereds, dependent: :destroy
   has_many :thereds_users, through: :thereds, source: :user
 
+  has_many :episords,dependent: :destroy
+
+  has_many :toptens, dependent: :destroy
+  has_many :toptens_periods, through: :thereds, source: :period
+
+  has_many :tags, dependent: :destroy
+  has_many :tags_month_durings, through: :thereds, source: :month_during
+
+  has_many :comprehensives,dependent: :destroy
+
 end

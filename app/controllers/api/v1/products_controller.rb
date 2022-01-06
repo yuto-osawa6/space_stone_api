@@ -155,6 +155,7 @@ class Api::V1::ProductsController < ApplicationController
 
     # acsesses_array
     to = Time.current.at_beginning_of_day
+    to2 = Time.current.end_of_day
     d = Date.today
     dm = d.month
     @month_array = []
@@ -169,14 +170,18 @@ class Api::V1::ProductsController < ApplicationController
       end
 
     from  = (to - 1.year).next_month.beginning_of_month
-    @acsesses = Product.find(params[:id]).acsesses.where(date: from...to).group(:date).sum(:count)
+    @acsesses = Product.find(params[:id]).acsesses.where(date: from...to2).group(:date).sum(:count)
     @acsesses.map{|key,value|@month_hash[key.month]=value}
 
     @acsesses_array = []
     @month_hash.map{|key,value|@acsesses_array.push(@month_hash[key])}
 
     # 追加
-    @average_score = @product.scores.average(:value).round(1)
+    if @product.scores.exists?
+      # puts @product.scores.exists?
+      # puts "aaaaaaaa"
+      @average_score = @product.scores.average(:value).round(1)
+    end
     @like_count = @product.likes.count
 
     # 追加 reviews

@@ -1,0 +1,2 @@
+class MonthDuring < ApplicationRecord
+end

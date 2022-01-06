@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_05_145057) do
+ActiveRecord::Schema.define(version: 2022_01_05_223108) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -64,6 +64,17 @@ ActiveRecord::Schema.define(version: 2022_01_05_145057) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "comprehensives", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.string "like"
+    t.string "score"
+    t.string "acsess"
+    t.integer "rank_count"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_comprehensives_on_product_id"
+  end
+
   create_table "episords", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.string "title"
@@ -101,6 +112,12 @@ ActiveRecord::Schema.define(version: 2022_01_05_145057) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["product_id"], name: "index_likes_on_product_id"
     t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "month_durings", charset: "utf8mb4", force: :cascade do |t|
+    t.datetime "month"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "periods", charset: "utf8mb4", force: :cascade do |t|
@@ -167,6 +184,16 @@ ActiveRecord::Schema.define(version: 2022_01_05_145057) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "tags", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "month_during_id", null: false
+    t.bigint "product_id", null: false
+    t.string "tag"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["month_during_id"], name: "index_tags_on_month_during_id"
+    t.index ["product_id"], name: "index_tags_on_product_id"
+  end
+
   create_table "thered_quesitons", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "thered_id", null: false
     t.bigint "question_id", null: false
@@ -231,6 +258,7 @@ ActiveRecord::Schema.define(version: 2022_01_05_145057) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cast_products", "casts"
   add_foreign_key "cast_products", "products"
+  add_foreign_key "comprehensives", "products"
   add_foreign_key "episords", "products"
   add_foreign_key "janl_products", "janls"
   add_foreign_key "janl_products", "products"
@@ -242,6 +270,8 @@ ActiveRecord::Schema.define(version: 2022_01_05_145057) do
   add_foreign_key "scores", "users"
   add_foreign_key "style_products", "products"
   add_foreign_key "style_products", "styles"
+  add_foreign_key "tags", "month_durings"
+  add_foreign_key "tags", "products"
   add_foreign_key "thered_quesitons", "questions"
   add_foreign_key "thered_quesitons", "thereds"
   add_foreign_key "thereds", "products"

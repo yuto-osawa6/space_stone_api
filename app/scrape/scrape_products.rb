@@ -534,9 +534,42 @@ class ScrapeProducts
 
         # wait.until { driver.find_element(:class, 'supplemental-message').displayed? }
 
+          # 変えました（doneyet 確認）
           title = driver.find_element(:class, "supplemental-message").text
+          week = ["日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"]
+          if week.any? { |t| title.include?(t)}
+            week_selected = week.select { |i| text.include?(i) }
+            today_week = Date.today.wday
+            # week_hash作る。
+            hash = {}
+            i = 0
+            s = 0
+            week.each do |w|
+              puts w
+              if today_week+i > 6
+                key = week[s]
+                hash[key] = i
+                s += 1
+              else
+                key = week[today_week+i]
+                hash[key] = i
+              end
+              i += 1
+            end
+            # puts hash
+            later = hash[week_selected[0]]
+            later_week = Date.today.since(later.days).strftime('%-m月%d日')
+            re_text = text.delete(week_selected[0])
+            rere_text = later_week + re_text
 
-          book_to.end_day = title
+            book_to.end_day = rere_text
+          else
+            book_to.end_day = title
+          end
+          
+         
+
+          # book_to.end_day = title
           # book_to.save
         else
           book_to.end_day = ""

@@ -25,6 +25,7 @@ services:
     tty: true
     environment:
       SELENIUM_HOST: chrome
+      TZ: Asia/Tokyo
   chrome:
     #  image: selenium/standalone-chrome:latest
     image: selenium/standalone-chrome-debug:latest

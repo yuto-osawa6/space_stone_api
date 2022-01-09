@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_07_093103) do
+ActiveRecord::Schema.define(version: 2022_01_09_092344) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -120,6 +120,14 @@ ActiveRecord::Schema.define(version: 2022_01_07_093103) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "newmessages", charset: "utf8mb4", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.integer "judge"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "periods", charset: "utf8mb4", force: :cascade do |t|
     t.string "period"
     t.datetime "created_at", precision: 6, null: false
@@ -141,9 +149,9 @@ ActiveRecord::Schema.define(version: 2022_01_07_093103) do
     t.boolean "end", default: false, null: false
     t.boolean "pickup", default: false, null: false
     t.boolean "decision_news", default: false, null: false
-    t.string "delivery_end"
-    t.string "delivery_start"
-    t.string "episord_start"
+    t.date "delivery_end"
+    t.date "delivery_start"
+    t.date "episord_start"
   end
 
   create_table "questions", charset: "utf8mb4", force: :cascade do |t|

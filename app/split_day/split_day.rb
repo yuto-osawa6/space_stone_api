@@ -58,21 +58,40 @@ class SplitDay
     product_end = Product.where("end_day LIKE ?", "%配信終了%")
     product_end.each do |p1|
       text = p1.end_day.match(/\w+月+\w+日/)
-      p1.delivery_end = text 
+      puts text
+      if text != nil
+        # puts "aaaaaaaa"
+        text2 = Date.strptime("#{text}", '%m月%d日')
+        puts text2
+      end
+      p1.delivery_end = text2
       p1.save
     end
 
     product_start = Product.where("end_day LIKE ?", "%配信開始%")
     product_start.each do |p1|
       text = p1.end_day.match(/\w+月+\w+日/)
-      p1.delivery_start = text 
+      # puts text
+      if text != nil
+        puts "aaaaaaaa"
+        text2 = Date.strptime("#{text}", '%m月%d日')
+        puts text2
+        else
+        p1.decision_news = true
+      end
+      p1.delivery_start = text2
       p1.save
     end
 
     product_episord = Product.where("end_day LIKE ?", "%新着エピソード%")
     product_episord.each do |p1|
       text = p1.end_day.match(/\w+月+\w+日/)
-      p1.episord_start = text 
+      if text != nil
+        # puts "aaaaaaaa"
+        text2 = Date.strptime("#{text}", '%m月%d日')
+        puts text2
+      end
+      p1.episord_start = text2
       p1.save
     end
 
@@ -101,8 +120,16 @@ class SplitDay
 
  
 
-
+    # {jugde number 1:netflix 2:article 3update}
     product3 = Product.where("end_day LIKE ?", "%信開%")
+
+    product_news = Product.where(decision_news:true)
+    product_news.each do |p|
+      newmessage = Newmessage.where(description:p.end_day).first_or_initialize
+      newmessage.title = p.title
+      newmessage.judge = 1
+      newmessage.save
+    end
   end
 
 end

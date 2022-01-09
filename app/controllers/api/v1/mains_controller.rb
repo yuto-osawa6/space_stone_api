@@ -1,11 +1,17 @@
 class Api::V1::MainsController < ApplicationController
   def index
-    @q = Product.ransack(params[:q])
-    @products = @q.result.where(finished:0).limit(30)
-    # redirect_to root_path
-    # puts "ggggggggggggggggggggggggggggggggggggggggggggggggggg"
+    # @q = Product.ransack(params[:q])
+    # @products = @q.result.where(finished:0).limit(30)
+    # render :index,formats: :json
+
+    # doneyet newcontentsとdelivery_startが両方入っている問題
+    range = Date.yesterday.beginning_of_day..Date.yesterday.end_of_day
+    @new_netflix = Product.where("delivery_start <= ?", Date.today).or(Product.where(new_content:true)).order(delivery_start:"desc")
+    # @decision_news = Product.where(decision_news:true)
+    @decision_news = Newmessage.all.order(updated_at:"desc")
+    # puts @new_netflix.ids
     render :index,formats: :json
-    # redirect_to root_path
+
   end 
   def search
     # puts @grid

@@ -1005,6 +1005,37 @@ class ScrapeProducts
     
   # end
 
+  def toptens
+    driver = netflixlogin()
+    latest_period = Period.all.order(created_at:"desc").limit(1)
+    lists1 = latest_period[0].toptens.where(product_id:nil)
+    puts lists1.length
+    links = []
+    lists1.each do |l|
+      links.push(l.list.slice(/\d+/))
+    end
+    # puts list
+    links.each do |link|
+      get_book("https://www.netflix.com/title/#{link}",title=0,news=0)
+    end
+  end
+
+  def toptens2
+    # driver = netflixlogin()
+    latest_period = Period.all.order(created_at:"desc").limit(1)
+    lists1 = latest_period[0].toptens.where(product_id:nil)
+    # puts lists1.length
+    lists1.each do |l|
+      # product = Product.find_by(list:"https://www.netflix.com/title/#{d.attribute("data-id")}")
+      product = Product.find_by(list:l.list)
+      if product
+       l.product_id = product.id
+       l.save
+      end
+    end
+  
+  end
+
   # aboutnetflix new情報獲得
   def aboutnetflix()
     chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome()

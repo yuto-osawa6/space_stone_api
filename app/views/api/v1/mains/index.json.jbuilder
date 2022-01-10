@@ -43,3 +43,54 @@ json.set! :decision_news do
     # json.arasuzi product.description
   end
 end
+
+json.set! :pickup do
+  json.array! @pickup do |product|
+    json.id product.id
+    json.title product.title
+    json.image_url product.image_url
+    json.arasuzi product.description
+    # # json.products_style product.styles.name
+    # json.product_styles do
+    #   json.array! product.styles
+    # end
+    # json.product_genres do
+    #   json.array! product.janls
+    # end
+  end
+end
+
+json.set! :delivery_end do
+  json.array! @delivery_end do |product|
+    json.id product.id
+    json.title product.title
+    json.image_url product.image_url
+    json.arasuzi product.description
+    json.delivery_end product.delivery_end
+    # # json.products_style product.styles.name
+    # json.product_styles do
+    #   json.array! product.styles
+    # end
+    # json.product_genres do
+    #   json.array! product.janls
+    # end
+  end
+end
+
+
+json.set! :delivery_start do
+  json.array! @delivery_start do |product|
+    json.id product.id
+    json.title product.title
+    json.image_url product.image_url
+    json.arasuzi product.description
+    json.delivery_start product.delivery_start
+    # # json.products_style product.styles.name
+    # json.product_styles do
+    #   json.array! product.styles
+    # end
+    # json.product_genres do
+    #   json.array! product.janls
+    # end
+  end
+end

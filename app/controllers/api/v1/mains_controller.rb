@@ -9,6 +9,19 @@ class Api::V1::MainsController < ApplicationController
     @new_netflix = Product.where("delivery_start <= ?", Date.today).or(Product.where(new_content:true)).order(delivery_start:"desc")
     # @decision_news = Product.where(decision_news:true)
     @decision_news = Newmessage.all.order(updated_at:"desc")
+    @pickup = Product.where(pickup:true)
+    # @delivery_end = Product.where("end_day LIKE ?", "%配信終了%")
+    @delivery_end = Product.where("length(delivery_end) > 0")
+    
+    # @delivery_start = Product.where("end_day LIKE?","%配信開始%")
+    @delivery_start = Product.where("length(delivery_start) > 0")
+
+
+    # puts @delivery_end.length
+    # puts @delivery_start.length
+    # puts @renn = @delivery_start - @delivery_start2
+    # puts @renn[0].id
+
     # puts @new_netflix.ids
     render :index,formats: :json
 

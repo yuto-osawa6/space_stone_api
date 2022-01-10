@@ -47,7 +47,9 @@ class SplitDay
 
   def split_day
     # puts product1 = Product.find(3423).end_day
-    Product.update_all(pickup: 0,decision_news:0,delivery_end:"",delivery_start:"",episord_start:"")
+    # Product.update_all(pickup: 0,decision_news:0,delivery_end:"",delivery_start:"",episord_start:"")
+    Product.update_all(pickup: 0,decision_news:0)
+
     re_product = Product.where("end_day LIKE ?", "%﻿%")
     re_product.each do |r|
       r.end_day = r.end_day.delete!('﻿')

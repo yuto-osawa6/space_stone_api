@@ -46,22 +46,45 @@ class ScrapeNetflix
     i = 1
     driver.find_elements(:class, "list-table")[0].find_elements(:tag_name, "tbody")[0].find_elements(:tag_name,"tr").each do |d|
       category = driver.find_elements(:class, "css-1vm6co7-container")[1].find_elements(:class,"css-1d8n9bt")[0].text
-      product = Product.find_by(list:"https://www.netflix.com/title/#{d.attribute("data-id")}")
-      topten = Topten.where(period_id:period_id,category:category,list:"https://www.netflix.com/title/#{d.attribute("data-id")}").first_or_initialize
-      
-      if product
-        topten.product_id = product.id
-        topten.title = product.title
-        topten.rank = i
-       
-      else
-        topten.title = d.find_elements(:tag_name,"td")[1].text
-        topten.rank = i
+      puts product = Product.where(list:"https://www.netflix.com/title/#{d.attribute("data-id")}")
 
+      topten = Topten.where(period_id:period_id,category:category,list:"https://www.netflix.com/title/#{d.attribute("data-id")}").first_or_initialize
+      # 追記
+      sleep(1)
+      img = driver.find_elements(:class,"banner-image")[i-1].attribute("src")
+
+      # puts product.length
+      if product.length == 0
+        topten.product_id = nil
+      else
+        topten.product_id = product[0].id
       end
+      
+      topten.rank = i
+      topten.title = d.find_elements(:tag_name,"td")[1].text
+      topten.image_url = img
       topten.save
       i += 1
     end
+  end
+
+  def ren
+    # chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome()
+    # driver = Selenium::WebDriver.for(
+    #   :remote,
+    #   url: "http://#{ENV['SELENIUM_HOST']}:4444/wd/hub",
+    #   desired_capabilities: chrome_capabilities
+    # )
+    # url = "https://translate.google.co.jp/translate?u=https://top10.netflix.com/films"
+    # driver.navigate.to(url)
+    # driver.find_elements(:class,"banner-image").each do |a|
+    #   a.attribute("src")
+    # end
+
+    # puts driver.find_elements(:class,"banner-image")[0].attribute("src")
+    # puts driver.find_elements(:class,"banner-image")[9].attribute("src")
+    puts Product.where(list:"https://www.netflix.com/title/60004481").length
+
   end
 
 end

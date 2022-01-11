@@ -16,6 +16,19 @@ class Api::V1::MainsController < ApplicationController
     # @delivery_start = Product.where("end_day LIKE?","%配信開始%")
     @delivery_start = Product.where("length(delivery_start) > 0")
 
+    # 世界的に人気な映画 TV
+    @period = Period.order(created_at:"desc").limit(1)
+    @topten = @period[0].toptens.where.not(product_id:nil)
+    # @topten = @period[0].toptens.where.not(product_id:nil)
+    # @topten = @period[0].toptens.where.not(product_id:nil)
+
+
+    # puts @period[].id
+    @topten.each do |a|
+      puts a.product.title
+      puts a.product.description
+    end
+
 
     # puts @delivery_end.length
     # puts @delivery_start.length

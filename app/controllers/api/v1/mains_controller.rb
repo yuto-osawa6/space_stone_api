@@ -19,23 +19,43 @@ class Api::V1::MainsController < ApplicationController
     # 世界的に人気な映画 TV
     @period = Period.order(created_at:"desc").limit(1)
     @topten = @period[0].toptens.where.not(product_id:nil)
-    # @topten = @period[0].toptens.where.not(product_id:nil)
-    # @topten = @period[0].toptens.where.not(product_id:nil)
+    
+    # top10
+    now = Time.current 
+    from = now.prev_month
+    to = now
+    # @like_topten_month = Product.joins(:likes).where(updated_at:from...to).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10)
+    # @like_topten_all = Product.joins(:likes).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10)
+   
+    # @score_topten_month = Acsess.where(date: from...to).order(count: "DESC").limit(10)
+    # @score_topten_all = Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
 
+    # @acsess_topten_month = Product.joins(:acsesses).where(date:Time.current.prev_month.beginning_of_month...to).order(count: "DESC").limit(10)
+    # @acsess_topten_all = Product.joins(:acsesses).group("product_id").order(Arel.sql('sum(count) DESC')).limit(10)
 
-    # puts @period[].id
-    @topten.each do |a|
-      puts a.product.title
-      puts a.product.description
-    end
+    # puts @acsess_topten_month = Product.joins(:acsesses)
+    # puts @like_topten_month.ids
+    # puts @like_topten_all.ids
+    # puts @score_topten_month.ids
+    # puts @score_topten_all.ids
+    # # puts @acsess_topten_month.ids
+    # puts @acsess_topten_all.ids
+    @like_topten_month =  Like.where(updated_at: from...to).group(:product_id).order("count_all DESC").limit(10).count
+    @like_topten_all =  Like.group(:product_id).order("count_all DESC").limit(10).count
+    @score_topten_month = Score.where(updated_at: from...to).group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
+    @score_topten_all = Score.group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
+    @acsess_topten_month = Acsess.where(date: Time.current.prev_month.beginning_of_month...to).group(:product_id).order("sum_count DESC").limit(10).sum(:count)
+    @acsess_topten_all = Acsess.group(:product_id).order('sum_count DESC').limit(100).sum(:count)
+    
+    # puts  Like.where(updated_at: from...to).group(:product_id).order("count_all DESC").limit(10).count
+    puts @like_topten_month
+    puts @like_topten_all
+    puts @score_topten_month
+    puts @score_topten_all
+    puts @acsess_topten_month
+    puts @acsess_topten_all
+    # 
 
-
-    # puts @delivery_end.length
-    # puts @delivery_start.length
-    # puts @renn = @delivery_start - @delivery_start2
-    # puts @renn[0].id
-
-    # puts @new_netflix.ids
     render :index,formats: :json
 
   end 

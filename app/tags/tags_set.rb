@@ -13,6 +13,12 @@ class TagsSet
       season.save
     end
   end
+  # def ren
+  #   # product = Product.where("length(year) = 4").pluck(:year)
+  #   # puts product
+  #   season = Season.where("length(season) < 14").pluck(:season)
+  #   puts season
+  end
   def month_tags_set
     puts "月までの日付を入力してください（例202201）"
     month = gets.chomp

@@ -61,11 +61,15 @@ class Api::V1::MainsController < ApplicationController
     puts Date.today
     
     # tags
-    @year = Year.all
-    @season = Season.all
+    @year = Year.all.order(year:"asc")
+    # donecheck
+    @season = Season.where("length(season) = 13").order(season:"asc")
+    # .where("length(year) = 4")
+    # @season = Season.all.order(season:"asc")
+    
     from = Date.today.ago(3.years)
     to = Date.today
-    @tags = MonthDuring.where(month:from...to)
+    @tags = MonthDuring.where(month:from...to).order(month:"asc")
 
     render :index,formats: :json
 

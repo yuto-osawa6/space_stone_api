@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_07_093103) do
+ActiveRecord::Schema.define(version: 2022_01_12_091156) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -120,6 +120,14 @@ ActiveRecord::Schema.define(version: 2022_01_07_093103) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "newmessages", charset: "utf8mb4", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.integer "judge"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "periods", charset: "utf8mb4", force: :cascade do |t|
     t.string "period"
     t.datetime "created_at", precision: 6, null: false
@@ -141,9 +149,9 @@ ActiveRecord::Schema.define(version: 2022_01_07_093103) do
     t.boolean "end", default: false, null: false
     t.boolean "pickup", default: false, null: false
     t.boolean "decision_news", default: false, null: false
-    t.string "delivery_end"
-    t.string "delivery_start"
-    t.string "episord_start"
+    t.date "delivery_end"
+    t.date "delivery_start"
+    t.date "episord_start"
   end
 
   create_table "questions", charset: "utf8mb4", force: :cascade do |t|
@@ -174,6 +182,12 @@ ActiveRecord::Schema.define(version: 2022_01_07_093103) do
     t.index ["user_id"], name: "index_scores_on_user_id"
   end
 
+  create_table "seasons", charset: "utf8mb4", force: :cascade do |t|
+    t.string "season"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "style_products", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "style_id"
     t.bigint "product_id"
@@ -195,6 +209,9 @@ ActiveRecord::Schema.define(version: 2022_01_07_093103) do
     t.string "tag"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "rank"
+    t.integer "genre"
+    t.string "month_title"
     t.index ["month_during_id"], name: "index_tags_on_month_during_id"
     t.index ["product_id"], name: "index_tags_on_product_id"
   end
@@ -229,6 +246,8 @@ ActiveRecord::Schema.define(version: 2022_01_07_093103) do
     t.integer "rank"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "image_url"
+    t.boolean "netflix_japan", default: false, null: false
     t.index ["period_id"], name: "index_toptens_on_period_id"
     t.index ["product_id"], name: "index_toptens_on_product_id"
   end
@@ -256,6 +275,12 @@ ActiveRecord::Schema.define(version: 2022_01_07_093103) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
+  end
+
+  create_table "years", charset: "utf8mb4", force: :cascade do |t|
+    t.string "year"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "acsesses", "products"

@@ -563,3 +563,19 @@ json.set! :acsess_topten_all do
     i += 1
   end
 end
+
+json.set! :tags do
+  json.array! @year do |year|
+    json.year_id year.id
+    json.year year.year
+  end
+  json.array! @season do |season|
+    json.season_id season.id
+    json.season season.season
+  end
+  json.array! @tags do |tag|
+    json.tag_id tag.id
+    json.season tag.month.strftime("%Y年%-m月")
+  end
+
+end

@@ -24,6 +24,7 @@ class Api::V1::MainsController < ApplicationController
     now = Time.current 
     from = now.prev_month
     to = now
+    # した消さない productテーブルから関連モデルのgroupかした情報を持ってくる方法。
     # @like_topten_month = Product.joins(:likes).where(updated_at:from...to).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10)
     # @like_topten_all = Product.joins(:likes).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10)
    
@@ -58,7 +59,13 @@ class Api::V1::MainsController < ApplicationController
     puts now < Date.today
     puts now
     puts Date.today
-    # 
+    
+    # tags
+    @year = Year.all
+    @season = Season.all
+    from = Date.today.ago(3.years)
+    to = Date.today
+    @tags = MonthDuring.where(month:from...to)
 
     render :index,formats: :json
 

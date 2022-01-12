@@ -45,7 +45,7 @@ class Api::V1::MainsController < ApplicationController
     @score_topten_month = Score.where(updated_at: from...to).group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
     @score_topten_all = Score.group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
     @acsess_topten_month = Acsess.where(date: Time.current.prev_month.beginning_of_month...to).group(:product_id).order("sum_count DESC").limit(10).sum(:count)
-    @acsess_topten_all = Acsess.group(:product_id).order('sum_count DESC').limit(100).sum(:count)
+    @acsess_topten_all = Acsess.group(:product_id).order('sum_count DESC').limit(10).sum(:count)
     
     # puts  Like.where(updated_at: from...to).group(:product_id).order("count_all DESC").limit(10).count
     puts @like_topten_month
@@ -54,6 +54,10 @@ class Api::V1::MainsController < ApplicationController
     puts @score_topten_all
     puts @acsess_topten_month
     puts @acsess_topten_all
+
+    puts now < Date.today
+    puts now
+    puts Date.today
     # 
 
     render :index,formats: :json

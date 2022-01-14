@@ -30,7 +30,12 @@ Rails.application.routes.draw do
         end
         resources :acsesses,only:[:create] do
         end
-        resources :reviews,only:[:create] do
+        resources :reviews,only:[:create,:show] do
+          resources :like_reviews,only:[:create,:destroy] do
+            collection do
+              get "check"
+            end
+          end
         end
         resources :thereds,only:[:create] do
         end

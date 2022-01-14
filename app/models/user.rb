@@ -16,6 +16,10 @@ class User < ActiveRecord::Base
   has_many :thereds, dependent: :destroy
   has_many :thereds_products, through: :thereds, source: :product
 
+  # 
+  has_many :like_reviews, dependent: :destroy
+  has_many :like_reviews_reviews, through: :thereds, source: :review
+
 
   devise  :database_authenticatable, 
           :registerable,

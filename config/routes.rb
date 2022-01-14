@@ -36,6 +36,11 @@ Rails.application.routes.draw do
               get "check"
             end
           end
+          resources :comment_reviews,only:[:create] do
+            # collection do
+            #   get "check"
+            # end
+          end
         end
         resources :thereds,only:[:create] do
         end

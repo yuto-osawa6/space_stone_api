@@ -14,6 +14,7 @@ class Api::V1::ReviewsController < ApplicationController
     puts params[:id]
     @review = Review.find(params[:id])
     @product = @review.product
+    @review_comments = @review.comment_reviews
 
     # likecheck
       # @user = User.find(params[:user_id])

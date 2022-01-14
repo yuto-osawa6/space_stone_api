@@ -1,3 +1,4 @@
+json.set! :status, 200
 json.set! :like do
   json.liked @liked
   json.score @score 

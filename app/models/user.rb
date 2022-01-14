@@ -18,7 +18,10 @@ class User < ActiveRecord::Base
 
   # 
   has_many :like_reviews, dependent: :destroy
-  has_many :like_reviews_reviews, through: :thereds, source: :review
+  has_many :like_reviews_reviews, through: :like_reviews, source: :review
+
+  has_many :comment_reviews, dependent: :destroy
+  has_many :comment_reviews_reviews, through: :comment_reviews, source: :reviews
 
 
   devise  :database_authenticatable, 

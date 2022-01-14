@@ -43,17 +43,18 @@ class Api::V1::LikeReviewsController < ApplicationController
   def check
     @review_length = LikeReview.where(review_id:params[:review_id]).length
     @review_good = LikeReview.where(review_id:params[:review_id],goodbad:1).length
-    # puts `#{@review_length}aaaaaaaaaaaaaaa#{@review_good}`
-
     if  @review_length==0 && @review_good==0
       @score = 0
       puts "aaaaaaaaaaaaaaa"
-      else
+    else
       @score = @review_good / @review_length * 100
-      end
+    end
+    @user_check = User.exists?(id:params[:user_id])
+    if @user_check == false 
+      render json: { status: 201, message: "ログインされてません.",score:@score,review_length:@review_length,review_good:@review_good}
+      return
+    end
 
-    # @score = @review_good / @review_length * 100
-    # puts `#{@review_length}aaaaaaaaaaaaaaa#{@review_good}`
     @user = User.find(params[:user_id])
     # @like_review = LikeReview.where(user_id:params[:user_id])
     @liked = @user.like_reviews.exists?(review_id: params[:review_id])

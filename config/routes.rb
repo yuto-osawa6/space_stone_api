@@ -57,7 +57,16 @@ Rails.application.routes.draw do
 
       get "session_user", to:"session_user#login_check"
 
+      namespace :comment do
+        resources :like_comment_reviews,only:[:create,:destroy] do
+            collection do
+              get "check"
+            end
+        end
+      end
+
     end
+
   end
   # mount_devise_token_auth_for 'User', at: 'auth', controllers: {
   #   omniauth_callbacks: 'overrides/omniauth_callbacks'

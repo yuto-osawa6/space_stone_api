@@ -7,7 +7,7 @@ class Api::V1::CommentReviewsController < ApplicationController
     puts params[:review_id]
     puts params[:comment]
     if  @commentReview.save
-      render json: {status:200}
+      render json: {status:200,commentReview:@commentReview}
     else
       render json: {status:500}
 

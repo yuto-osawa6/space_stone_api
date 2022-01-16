@@ -19,6 +19,16 @@ class Api::V1::TheredsController < ApplicationController
     end
   end
 
+  def show
+    puts params[:product_id]
+    puts params[:id]
+    @review = Thered.find(params[:id])
+    @product = @review.product
+    @review_comments = @review.comment_threads
+
+    render :show,formats: :json
+  end
+
   private 
   def reviews_params
     params.require(:thered).permit(:title,:discribe,:content,:user_id,:product_id, question_ids:[])

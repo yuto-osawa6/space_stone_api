@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
   has_many :thereds, dependent: :destroy
   has_many :thereds_products, through: :thereds, source: :product
 
-  # 
+  # review
   has_many :like_reviews, dependent: :destroy
   has_many :like_reviews_reviews, through: :like_reviews, source: :review
 
@@ -29,6 +29,18 @@ class User < ActiveRecord::Base
   has_many :like_return_comment_reviews,dependent: :destroy
   has_many :like_return_comment_reviews_return_comment_reviews,through: :like_return_comment_reviews,source: :return_comment_review
 
+  # thread
+  has_many :like_threads, dependent: :destroy
+  has_many :like_reviews_threads, through: :like_threads, source: :thered
+
+  # like_comment_threads
+
+  has_many :like_comment_threads,dependent: :destroy
+  has_many :like_comment_threads_comment_threads,through: :like_comment_threads,source: :comment_thread
+
+  # like_return_comment_threads
+  has_many :like_return_comment_threads,dependent: :destroy
+  has_many :like_return_comment_threads_return_comment_threads,through: :like_return_comment_threads,source: :return_comment_thread
   
 
 

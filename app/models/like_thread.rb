@@ -1,0 +1,2 @@
+class LikeThread < ApplicationRecord
+end

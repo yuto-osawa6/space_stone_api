@@ -42,7 +42,15 @@ Rails.application.routes.draw do
             # end
           end
         end
-        resources :thereds,only:[:create] do
+        resources :thereds,only:[:create,:show] do
+          resources :like_threads,only:[:create,:destroy] do
+            collection do
+              get "check"
+            end
+          end
+          resources :comment_threads,only:[:create] do
+          end
+
         end
       end
 
@@ -68,6 +76,20 @@ Rails.application.routes.draw do
             post "returnreturn"
           end
           resources :like_return_comment_reviews,only:[:create,:destroy,:index] do
+           
+          end
+        end
+
+        resources :like_comment_threads,only:[:create,:destroy] do
+          collection do
+            get "check"
+          end
+        end
+        resources :return_comment_threads,only:[:index,:create] do
+          collection do
+            post "returnreturn"
+          end
+          resources :like_return_comment_threads,only:[:create,:destroy,:index] do
            
           end
         end

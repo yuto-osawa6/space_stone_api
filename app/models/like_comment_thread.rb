@@ -1,0 +1,2 @@
+class LikeCommentThread < ApplicationRecord
+end

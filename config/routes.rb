@@ -63,6 +63,15 @@ Rails.application.routes.draw do
               get "check"
             end
         end
+        resources :return_comment_reviews,only:[:index,:create] do
+          collection do
+            post "returnreturn"
+          end
+          resources :like_return_comment_reviews,only:[:create,:destroy,:index] do
+           
+          end
+        end
+
       end
 
     end

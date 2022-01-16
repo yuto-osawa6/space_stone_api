@@ -54,7 +54,7 @@ class Api::V1::LikeReviewsController < ApplicationController
       render json: { status: 201, message: "ログインされてません.",score:@score,review_length:@review_length,review_good:@review_good}
       return
     end
-
+    # puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     @user = User.find(params[:user_id])
     # @like_review = LikeReview.where(user_id:params[:user_id])
     @liked = @user.like_reviews.exists?(review_id: params[:review_id])

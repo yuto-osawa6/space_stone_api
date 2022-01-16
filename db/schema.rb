@@ -212,9 +212,11 @@ ActiveRecord::Schema.define(version: 2022_01_13_095035) do
 
   create_table "return_return_comment_reviews", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "return_comment_review_id", null: false
+    t.bigint "return_return_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["return_comment_review_id"], name: "index_return_return_comment_reviews_on_return_comment_review_id"
+    t.index ["return_return_id"], name: "index_return_return_comment_reviews_on_return_return_id"
   end
 
   create_table "reviews", charset: "utf8mb4", force: :cascade do |t|
@@ -362,6 +364,7 @@ ActiveRecord::Schema.define(version: 2022_01_13_095035) do
   add_foreign_key "return_comment_reviews", "comment_reviews"
   add_foreign_key "return_comment_reviews", "users"
   add_foreign_key "return_return_comment_reviews", "return_comment_reviews"
+  add_foreign_key "return_return_comment_reviews", "return_comment_reviews", column: "return_return_id"
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"
   add_foreign_key "scores", "products"

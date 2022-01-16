@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_12_091156) do
+ActiveRecord::Schema.define(version: 2022_01_13_095035) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -64,6 +64,16 @@ ActiveRecord::Schema.define(version: 2022_01_12_091156) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "comment_reviews", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "review_id", null: false
+    t.bigint "user_id", null: false
+    t.text "comment", size: :long
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["review_id"], name: "index_comment_reviews_on_review_id"
+    t.index ["user_id"], name: "index_comment_reviews_on_user_id"
+  end
+
   create_table "comprehensives", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.string "like"
@@ -103,6 +113,36 @@ ActiveRecord::Schema.define(version: 2022_01_12_091156) do
     t.text "link"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "like_comment_reviews", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "comment_review_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "goodbad", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["comment_review_id"], name: "index_like_comment_reviews_on_comment_review_id"
+    t.index ["user_id"], name: "index_like_comment_reviews_on_user_id"
+  end
+
+  create_table "like_return_comment_reviews", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "return_comment_review_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "goodbad", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["return_comment_review_id"], name: "index_like_return_comment_reviews_on_return_comment_review_id"
+    t.index ["user_id"], name: "index_like_return_comment_reviews_on_user_id"
+  end
+
+  create_table "like_reviews", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "review_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "goodbad", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["review_id"], name: "index_like_reviews_on_review_id"
+    t.index ["user_id"], name: "index_like_reviews_on_user_id"
   end
 
   create_table "likes", charset: "utf8mb4", force: :cascade do |t|
@@ -158,6 +198,25 @@ ActiveRecord::Schema.define(version: 2022_01_12_091156) do
     t.string "question"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "return_comment_reviews", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "comment_review_id", null: false
+    t.bigint "user_id", null: false
+    t.text "comment", size: :long
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["comment_review_id"], name: "index_return_comment_reviews_on_comment_review_id"
+    t.index ["user_id"], name: "index_return_comment_reviews_on_user_id"
+  end
+
+  create_table "return_return_comment_reviews", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "return_comment_review_id", null: false
+    t.bigint "return_return_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["return_comment_review_id"], name: "index_return_return_comment_reviews_on_return_comment_review_id"
+    t.index ["return_return_id"], name: "index_return_return_comment_reviews_on_return_return_id"
   end
 
   create_table "reviews", charset: "utf8mb4", force: :cascade do |t|
@@ -288,12 +347,24 @@ ActiveRecord::Schema.define(version: 2022_01_12_091156) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cast_products", "casts"
   add_foreign_key "cast_products", "products"
+  add_foreign_key "comment_reviews", "reviews"
+  add_foreign_key "comment_reviews", "users"
   add_foreign_key "comprehensives", "products"
   add_foreign_key "episords", "products"
   add_foreign_key "janl_products", "janls"
   add_foreign_key "janl_products", "products"
+  add_foreign_key "like_comment_reviews", "comment_reviews"
+  add_foreign_key "like_comment_reviews", "users"
+  add_foreign_key "like_return_comment_reviews", "return_comment_reviews"
+  add_foreign_key "like_return_comment_reviews", "users"
+  add_foreign_key "like_reviews", "reviews"
+  add_foreign_key "like_reviews", "users"
   add_foreign_key "likes", "products"
   add_foreign_key "likes", "users"
+  add_foreign_key "return_comment_reviews", "comment_reviews"
+  add_foreign_key "return_comment_reviews", "users"
+  add_foreign_key "return_return_comment_reviews", "return_comment_reviews"
+  add_foreign_key "return_return_comment_reviews", "return_comment_reviews", column: "return_return_id"
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"
   add_foreign_key "scores", "products"

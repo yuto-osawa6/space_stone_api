@@ -30,7 +30,17 @@ Rails.application.routes.draw do
         end
         resources :acsesses,only:[:create] do
         end
-        resources :reviews,only:[:create] do
+        resources :reviews,only:[:create,:show] do
+          resources :like_reviews,only:[:create,:destroy] do
+            collection do
+              get "check"
+            end
+          end
+          resources :comment_reviews,only:[:create] do
+            # collection do
+            #   get "check"
+            # end
+          end
         end
         resources :thereds,only:[:create] do
         end
@@ -47,7 +57,25 @@ Rails.application.routes.draw do
 
       get "session_user", to:"session_user#login_check"
 
+      namespace :comment do
+        resources :like_comment_reviews,only:[:create,:destroy] do
+            collection do
+              get "check"
+            end
+        end
+        resources :return_comment_reviews,only:[:index,:create] do
+          collection do
+            post "returnreturn"
+          end
+          resources :like_return_comment_reviews,only:[:create,:destroy,:index] do
+           
+          end
+        end
+
+      end
+
     end
+
   end
   # mount_devise_token_auth_for 'User', at: 'auth', controllers: {
   #   omniauth_callbacks: 'overrides/omniauth_callbacks'

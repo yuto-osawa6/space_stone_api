@@ -16,6 +16,21 @@ class User < ActiveRecord::Base
   has_many :thereds, dependent: :destroy
   has_many :thereds_products, through: :thereds, source: :product
 
+  # 
+  has_many :like_reviews, dependent: :destroy
+  has_many :like_reviews_reviews, through: :like_reviews, source: :review
+
+  has_many :comment_reviews, dependent: :destroy
+  has_many :comment_reviews_reviews, through: :comment_reviews, source: :reviews
+
+  has_many :like_comment_reviews,dependent: :destroy
+  has_many :like_comment_reviews_comment_reviews,through: :like_comment_reviews,source: :comment_review
+
+  has_many :like_return_comment_reviews,dependent: :destroy
+  has_many :like_return_comment_reviews_return_comment_reviews,through: :like_return_comment_reviews,source: :return_comment_review
+
+  
+
 
   devise  :database_authenticatable, 
           :registerable,

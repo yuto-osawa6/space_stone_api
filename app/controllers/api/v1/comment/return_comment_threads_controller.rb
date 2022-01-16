@@ -11,7 +11,9 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
     @commentReview = ReturnCommentThread.new(create_params)
    
     if  @commentReview.save
-      render json: {status:200,commentReview:@commentReview}
+      # render json: {status:200,commentReview:@commentReview}
+      render :create, formats: :json
+      # render :returnreturn, formats: :json
     else
       render json: {status:500}
 
@@ -20,14 +22,20 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
   def returnreturn
     puts params[:return_comment_thread_id]
     @commentReview = ReturnCommentThread.new(create_params)
-    @commentReview.return_return_comment_threads.build(return_create_params)
-    # @commentReview.return_return_comment_reviews.build(return_return_id:2)
+    # @commentReview.return_return_comment_threads.build(return_create_params)
+
+    @commentReview.return_return_comment_threads.build(return_comment_thread_id:@commentReview.id,return_return_thread_id:params[:return_return_comment_thread][:return_return_thread_id])
 
 
-    if  @commentReview.save
+    
+
+    if  @commentReview.save!
       # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
-
-      render json: {status:200,commentReview:@commentReview}
+      # : {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>12}}
+      # {"return_comment_review"=>{"comment_review_id"=>13, "user_id"=>4, "comment"=>"<p>u</p><p><br></p>"}, "return_return_comment_review"=>{"return_return_id"=>30}}
+      # {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>14}}
+      # render json: {status:200,commentReview:@commentReview}
+      render :returnreturn, formats: :json
     else
       render json: {status:500}
 
@@ -39,8 +47,10 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
     # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
   end
 
-  def return_create_params
-    params.require(:return_return_comment_thread).permit(:return_comment_thread_id,:return_return_thread_id)
-  end
+  # def return_create_params
+  #   params.require(:return_return_comment_thread).permit(:return_comment_thread_id)
+  # end
   
 end
+
+

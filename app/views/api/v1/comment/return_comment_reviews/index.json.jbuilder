@@ -18,7 +18,7 @@ json.set! :returncomment do
     json.id returncomment.id
     json.comment returncomment.comment
     json.user_id returncomment.user_id
-    json.comment_review_id returncomment.comment_thread_id
+    json.comment_review_id returncomment.comment_review_id
     if returncomment.return_returns[0].present?
     json.return returncomment.return_returns[0].user_id
     end

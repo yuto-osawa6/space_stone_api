@@ -27,7 +27,8 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
     if  @commentReview.save
       # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
 
-      render json: {status:200,commentReview:@commentReview}
+      # render json: {status:200,commentReview:@commentReview}
+      render :returnreturn, formats: :json
     else
       render json: {status:500}
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_19_165409) do
+ActiveRecord::Schema.define(version: 2022_01_19_194056) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -49,8 +49,16 @@ ActiveRecord::Schema.define(version: 2022_01_19_165409) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "articles", charset: "utf8mb4", force: :cascade do |t|
+  create_table "article_products", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "article_id"
     t.bigint "product_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id"], name: "index_article_products_on_article_id"
+    t.index ["product_id"], name: "index_article_products_on_product_id"
+  end
+
+  create_table "articles", charset: "utf8mb4", force: :cascade do |t|
     t.text "content", size: :long
     t.string "title"
     t.boolean "weekormonth"
@@ -58,7 +66,6 @@ ActiveRecord::Schema.define(version: 2022_01_19_165409) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["product_id"], name: "index_articles_on_product_id"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
@@ -424,7 +431,6 @@ ActiveRecord::Schema.define(version: 2022_01_19_165409) do
   add_foreign_key "acsesses", "products"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "articles", "products"
   add_foreign_key "articles", "users"
   add_foreign_key "cast_products", "casts"
   add_foreign_key "cast_products", "products"

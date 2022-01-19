@@ -21,6 +21,11 @@ class Api::V1::Admin::ArticlesController < ApplicationController
     end
   end
 
+  def productlist
+    @products = Product.all
+    render :productlist, formats: :json
+  end
+
   # def  sum
   #   1 2
 
@@ -28,7 +33,7 @@ class Api::V1::Admin::ArticlesController < ApplicationController
 
   private
   def create_params
-    params.require(:article).permit(:content,:user_id)
+    params.require(:article).permit(:content,:user_id,:title,:weekormonth,{product_ids:[]})
   end
 
   def create_params2

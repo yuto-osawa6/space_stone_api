@@ -100,6 +100,7 @@ Rails.application.routes.draw do
         resources :articles,only:[:create,:destroy] do
           collection do
             post "uploadfile"
+            get "productlist"
           end
         end
       end

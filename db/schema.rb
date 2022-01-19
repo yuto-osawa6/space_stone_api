@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_16_193649) do
+ActiveRecord::Schema.define(version: 2022_01_19_024155) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -53,8 +53,7 @@ ActiveRecord::Schema.define(version: 2022_01_16_193649) do
     t.bigint "product_id"
     t.text "content", size: :long
     t.string "title"
-    t.boolean "week"
-    t.boolean "month"
+    t.boolean "weekormonth"
     t.datetime "time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -119,6 +118,12 @@ ActiveRecord::Schema.define(version: 2022_01_16_193649) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["product_id"], name: "index_episords_on_product_id"
+  end
+
+  create_table "images", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "janl_products", charset: "utf8mb4", force: :cascade do |t|

@@ -4,8 +4,7 @@ class CreateArticles < ActiveRecord::Migration[6.1]
       t.references :product, foreign_key: true
       t.text  :content,size: :long
       t.string :title 
-      t.boolean :week
-      t.boolean :month
+      t.boolean :weekormonth
       t.datetime :time
       t.timestamps
     end

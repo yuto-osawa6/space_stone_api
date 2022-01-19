@@ -25,7 +25,9 @@ class Scra2
 
   end
 
-  # def war2
-  #   ¥
-  # end
+  def war2
+    @image = Image.find(1)
+    # puts Rails.application.routes.url_helpers.polymorphic_url(@image.image,only_path: true)
+    # render json :{Image.find(1), methods: [:image_url]}
+  end
 end

@@ -64,3 +64,5 @@ gem 'dotenv-rails'
 
 #kaminari
 gem 'kaminari'
+#carrierwave
+gem 'carrierwave'

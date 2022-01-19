@@ -96,6 +96,14 @@ Rails.application.routes.draw do
 
       end
 
+      namespace :admin do
+        resources :articles,only:[:create,:destroy] do
+          collection do
+            post "uploadfile"
+          end
+        end
+      end
+
     end
 
   end

@@ -2,6 +2,7 @@ class Api::V1::Admin::ArticlesController < ApplicationController
 
 
   def create
+    puts params[:article][:user_id] 
     @article = Article.new(create_params)
     if @article.save
       render json: {status:200}

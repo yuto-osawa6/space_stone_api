@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_16_060753) do
+ActiveRecord::Schema.define(version: 2022_01_19_194056) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -47,6 +47,26 @@ ActiveRecord::Schema.define(version: 2022_01_16_060753) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "article_products", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "article_id"
+    t.bigint "product_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id"], name: "index_article_products_on_article_id"
+    t.index ["product_id"], name: "index_article_products_on_product_id"
+  end
+
+  create_table "articles", charset: "utf8mb4", force: :cascade do |t|
+    t.text "content", size: :long
+    t.string "title"
+    t.boolean "weekormonth"
+    t.datetime "time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
   create_table "cast_products", charset: "utf8mb4", force: :cascade do |t|
@@ -107,6 +127,12 @@ ActiveRecord::Schema.define(version: 2022_01_16_060753) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["product_id"], name: "index_episords_on_product_id"
+  end
+
+  create_table "images", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "janl_products", charset: "utf8mb4", force: :cascade do |t|
@@ -390,6 +416,7 @@ ActiveRecord::Schema.define(version: 2022_01_16_060753) do
     t.text "tokens"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "administrator_gold", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
@@ -404,6 +431,7 @@ ActiveRecord::Schema.define(version: 2022_01_16_060753) do
   add_foreign_key "acsesses", "products"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "articles", "users"
   add_foreign_key "cast_products", "casts"
   add_foreign_key "cast_products", "products"
   add_foreign_key "comment_reviews", "reviews"

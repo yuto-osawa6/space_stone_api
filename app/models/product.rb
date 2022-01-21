@@ -32,4 +32,8 @@ class Product < ApplicationRecord
 
   has_many :comprehensives,dependent: :destroy
 
+  # 
+  has_many :article_products, dependent: :destroy
+  has_many :articles, through: :article_products, source: :article
+
 end

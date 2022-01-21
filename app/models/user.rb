@@ -42,6 +42,8 @@ class User < ActiveRecord::Base
   has_many :like_return_comment_threads,dependent: :destroy
   has_many :like_return_comment_threads_return_comment_threads,through: :like_return_comment_threads,source: :return_comment_thread
   
+  # article
+  has_many :articles
 
 
   devise  :database_authenticatable, 

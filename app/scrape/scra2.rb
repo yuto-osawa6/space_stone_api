@@ -13,19 +13,21 @@ class Scra2
     # puts @b.return_return_comment_threads.ids
 
 
-    @a = ReturnCommentReview.find(31)
-    puts @a.rereturn_returns.ids
+    # @a = ReturnCommentReview.find(31)
+    # puts @a.rereturn_returns.ids
 
     # @b = ReturnCommentThread.find(2)
 
     # puts @b.rereturn_returns.ids
-
-
-
+    # @user = User.find(4)
+    # @user.administrator_gold = true
+    # @user.save
 
   end
 
-  # def war2
-  #   ¥
-  # end
+  def war2
+    @image = Image.find(1)
+    # puts Rails.application.routes.url_helpers.polymorphic_url(@image.image,only_path: true)
+    # render json :{Image.find(1), methods: [:image_url]}
+  end
 end

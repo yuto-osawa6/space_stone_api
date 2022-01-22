@@ -61,6 +61,7 @@ Rails.application.routes.draw do
           get "grid"
           get "setgrid"
           get "castssearch"
+          get "findcast"
         end
       end
 

@@ -135,6 +135,12 @@ class Api::V1::MainsController < ApplicationController
     render :genressearch,formats: :json
   end
 
+  def castssearch
+    genres_title = params[:data]
+    @casts = Cast.where("name LIKE ?", "%#{genres_title}%")
+    render json:{casts:@casts}
+  end
+
   def grid
     if params[:grid] === ""
       if session[:grid_id]

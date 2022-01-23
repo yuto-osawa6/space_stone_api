@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_19_194056) do
+ActiveRecord::Schema.define(version: 2022_01_23_203122) do
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -258,6 +258,9 @@ ActiveRecord::Schema.define(version: 2022_01_19_194056) do
     t.date "delivery_end"
     t.date "delivery_start"
     t.date "episord_start"
+    t.integer "season"
+    t.time "time"
+    t.date "year2"
   end
 
   create_table "questions", charset: "utf8mb4", force: :cascade do |t|

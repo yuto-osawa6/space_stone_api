@@ -77,7 +77,7 @@ class Api::V1::MainsController < ApplicationController
   def search
     @q = Product.ransack(params[:q])
 
-
+    puts Product.where("delivery_end >= ?", params[:q][:delivery_end_qteq]).ids
    
     @categories = params[:q][:janls_id_in].drop(1)
     @casts = params[:q][:casts_id_in].drop(1)
@@ -137,10 +137,22 @@ class Api::V1::MainsController < ApplicationController
       # puts pushIdArrays
       # print pushIdArrays
       # print pushIdArrays.flatten.group_by{|e| e}
+        # puts params[:q][:new_content]
+        # puts params[:q][:new_content] == "true"
+        # if params[:q][:new_content] == "true"
+        #   puts "aaaaaaaa"
+        # # @products = @q.result(distinct: true).where(finished:0).where(new_content:true).or(Product.where("delivery_start <= ?", Date.today)).includes(:styles,:janls).page(params[:page]).per(50)
+        # @product_push = Product.where(new_content:true)
+        # @products = @q.result(distinct: true).where(finished:0).where("delivery_start <= ?", Date.today).includes(:styles,:janls).page(params[:page]).per(50)
+        # @products2 = @products << @product_hash
+        # puts @products2
 
-
+        # # elsif params[:q][:_true] == true
+        # elsif params[:q][:finished] == true
+        #   @products = @q.result(distinct: true).where(finished:1).where("delivery_start > ?", Date.today).includes(:styles,:janls).page(params[:page]).per(50)
+        # else
         @products = @q.result(distinct: true).where(finished:0).includes(:styles,:janls).page(params[:page]).per(50)
-
+        # end
 
     end
     # puts "lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll"

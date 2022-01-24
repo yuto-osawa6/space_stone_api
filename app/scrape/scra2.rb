@@ -85,20 +85,24 @@ class Scra2
   end
 
   def ota
-    l = "2時間30分"
-    b = "30分"
-    c = "11時間"
+    # l = "2時間30分"
+    # b = "30分"
+    # c = "11時間"
 
-    puts a = l.match(/分/).pre_match.split(/s*時間s*/)[1]
+    # puts a = l.match(/分/).pre_match.split(/s*時間s*/)[1]
     # puts aa = c.match(/時間/).pre_match
     # puts b.match(/時間/).pre_match
     # puts "%02d" % aa.to_i
 
-    ll = "12:00:00"
+    # ll = "12:00:00"
     # puts ll.to_time
     # puts l.include?("時間")
 
+    # @product = Product.where(year2:"1945-01-01")
+    # puts @product.length
 
+    today = Date.current
+    puts today
 
   end
 end

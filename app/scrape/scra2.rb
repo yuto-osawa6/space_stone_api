@@ -103,6 +103,7 @@ class Scra2
 
     today = Date.current
     puts today
-
+    @score_topten_all = Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
+    puts @score_topten_all
   end
 end

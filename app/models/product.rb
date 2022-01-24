@@ -36,4 +36,19 @@ class Product < ApplicationRecord
   has_many :article_products, dependent: :destroy
   has_many :articles, through: :article_products, source: :article
 
+  ransacker :likes_count do
+    query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'
+    Arel.sql(query)
+  end
+
+  ransacker :average_score do
+    query = '(SELECT avg(scores.value) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+
+  ransacker :acsess_count do
+    query = '(SELECT sum(acsesses.count) FROM acsesses where acsesses.product_id = products.id GROUP BY acsesses.product_id)'
+    Arel.sql(query)
+  end
+
 end

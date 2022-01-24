@@ -25,9 +25,85 @@ class Scra2
 
   end
 
-  def war2
-    @image = Image.find(1)
-    # puts Rails.application.routes.url_helpers.polymorphic_url(@image.image,only_path: true)
-    # render json :{Image.find(1), methods: [:image_url]}
+  def split_during
+    # doneyet(変更後試してない。)
+    @product = Product.where("duration LIKE ?", "%シーズン%")
+    @product.each do |pp|
+      pp.season = pp.duration.delete("シーズン").to_i
+      pp.save
+    end
+    
+  end
+
+  def split_during
+    # doneyet(変更後試してない。)
+    @product = Product.where("duration LIKE ?", "%シーズン%").or(Product.where("duration LIKE ?", "%パート%")).or(Product.where("duration LIKE ?", "%シリーズ%")).or(Product.where("duration LIKE ?", "%コレクション%"))
+    @product.each do |pp|
+      pp.season = pp.duration.delete("シーズンパトリコレクショ").to_i
+      pp.save
+    end
+    
+  end
+
+  def split_during_time
+    # doneyet(変更後試してない。)
+    @product = Product.where("duration LIKE ?", "%時間%").or(Product.where("duration LIKE ?", "%分%"))
+    @product.each do |pp|
+      if pp.duration.include?("時間")
+        @h = pp.duration.match(/時間/).pre_match
+        @h = "%02d" % @h.to_i 
+      else
+        @h = "00"
+      end
+
+      if pp.duration.include?("分")
+        if pp.duration.include?("時間")
+          @m = pp.duration.match(/分/).pre_match.split(/s*時間s*/)[1]
+          @m = "%02d" % @m.to_i
+        else
+          @m = pp.duration.match(/分/).pre_match.split(/s*時間s*/)[0]
+          @m = "%02d" % @m.to_i
+        end
+      else
+        @m = "00"
+      end
+      time = "#{@h}:#{@m}:00"
+      # puts time
+      pp.time = time
+      pp.save
+    end
+    
+  end
+
+  def year_set
+    @product = Product.where("length(year) = 4")
+    # puts @product.length
+    @product.each do |pp| 
+      pp.year2 = "#{pp.year}0101"
+      pp.save
+    end
+  end
+
+  def ota
+    # l = "2時間30分"
+    # b = "30分"
+    # c = "11時間"
+
+    # puts a = l.match(/分/).pre_match.split(/s*時間s*/)[1]
+    # puts aa = c.match(/時間/).pre_match
+    # puts b.match(/時間/).pre_match
+    # puts "%02d" % aa.to_i
+
+    # ll = "12:00:00"
+    # puts ll.to_time
+    # puts l.include?("時間")
+
+    # @product = Product.where(year2:"1945-01-01")
+    # puts @product.length
+
+    today = Date.current
+    puts today
+    @score_topten_all = Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
+    puts @score_topten_all
   end
 end

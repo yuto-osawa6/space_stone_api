@@ -75,25 +75,33 @@ class Api::V1::MainsController < ApplicationController
 
   end 
   def search
-    # puts @grid
     @q = Product.ransack(params[:q])
-    # @search_title = params[:q][:"title_cont"]
-    # @products = @q.result(distinct: true).where(finished:0).limit(30)
-    # render :search,formats: :json
 
-
+    puts Product.where("delivery_end >= ?", params[:q][:delivery_end_qteq]).ids
    
     @categories = params[:q][:janls_id_in].drop(1)
+    @casts = params[:q][:casts_id_in].drop(1)
 
-    @genres = Janl.where(id:@categories)
+    # @genres = Janl.where(id:@categories)
 
     pushIdArrays = []
  
     unless @categories.length < 2
       @matchAllCategories = JanlProduct.where(janl_id: @categories).select(:product_id).group(:product_id).having('count(product_id) = ?', @categories.length)
       categoryRestaurantIds = @matchAllCategories.map(&:product_id)
+      puts @matchAllCategories
       pushIdArrays.push(categoryRestaurantIds)
     end
+
+    unless  @casts.length < 2
+      @matchAllCasts = CastProduct.where(cast_id: @casts).select(:product_id).group(:product_id).having('count(product_id) = ?', @casts.length)
+      # puts @matchAllCasts
+      castsIds = @matchAllCasts.map(&:product_id)
+      pushIdArrays.push(castsIds)
+    end
+
+
+
     @tags = params[:q][:styles_id_eq]
     @style_names = Style.where(id:@tags)
 
@@ -101,28 +109,54 @@ class Api::V1::MainsController < ApplicationController
     unless @tags.empty?
       matchAllTags = StyleProduct.where(style_id: @tags).select(:product_id).group(:product_id).having('count(product_id) = ?', @tags.length)
       tagRestaurantIds = matchAllTags.map(&:product_id)
+      # print tagRestaurantIds
       pushIdArrays.push(tagRestaurantIds)
      
     end
 
     if pushIdArrays.length > 1
+      # puts "aa"
+      # puts pushIdArrays
+      # print pushIdArrays
 
         filteredIdArray = pushIdArrays.flatten.group_by{|e| e}.select{|k,v| v.size > 1}.map(&:first)
-        
+        # print filteredIdArray
         @products = @q.result(distinct: true).where(id:filteredIdArray).where(finished:0).includes(:styles,:janls).page(params[:page]).per(50)
 
       elsif pushIdArrays.length == 1
-        # print "ccccccccccccc"
-        
+      # puts "ii"
+      # puts pushIdArrays
+      # print pushIdArrays
+      # print pushIdArrays.flatten.group_by{|e| e}
+
+
         @products = @q.result(distinct: true).where(id:pushIdArrays).where(finished:0).includes(:styles,:janls).page(params[:page]).per(50)
 
       else
+      # puts "uu" 
+      # puts pushIdArrays
+      # print pushIdArrays
+      # print pushIdArrays.flatten.group_by{|e| e}
+        # puts params[:q][:new_content]
+        # puts params[:q][:new_content] == "true"
+        # if params[:q][:new_content] == "true"
+        #   puts "aaaaaaaa"
+        # # @products = @q.result(distinct: true).where(finished:0).where(new_content:true).or(Product.where("delivery_start <= ?", Date.today)).includes(:styles,:janls).page(params[:page]).per(50)
+        # @product_push = Product.where(new_content:true)
+        # @products = @q.result(distinct: true).where(finished:0).where("delivery_start <= ?", Date.today).includes(:styles,:janls).page(params[:page]).per(50)
+        # @products2 = @products << @product_hash
+        # puts @products2
+
+        # # elsif params[:q][:_true] == true
+        # elsif params[:q][:finished] == true
+        #   @products = @q.result(distinct: true).where(finished:1).where("delivery_start > ?", Date.today).includes(:styles,:janls).page(params[:page]).per(50)
+        # else
         @products = @q.result(distinct: true).where(finished:0).includes(:styles,:janls).page(params[:page]).per(50)
-        # @products_styles = @products.styles.name
+        # end
 
     end
-    puts "lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll"
-    puts @products.total_pages
+    # puts "lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll"
+    # puts @products.total_pages
 
     render :search,formats: :json
   end
@@ -134,6 +168,17 @@ class Api::V1::MainsController < ApplicationController
 
     render :genressearch,formats: :json
   end
+
+  def castssearch
+    genres_title = params[:data]
+    @casts = Cast.where("name LIKE ?", "%#{genres_title}%")
+    render json:{casts:@casts}
+  end
+
+  def findcast
+    @cast = Cast.find(params[:id])
+    render json:{cast:@cast}
+  end 
 
   def grid
     if params[:grid] === ""

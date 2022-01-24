@@ -60,6 +60,8 @@ Rails.application.routes.draw do
           get "genressearch"
           get "grid"
           get "setgrid"
+          get "castssearch"
+          get "findcast"
         end
       end
 

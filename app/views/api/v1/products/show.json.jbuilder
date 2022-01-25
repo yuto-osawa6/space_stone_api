@@ -26,6 +26,9 @@ json.set! :products do
   json.questions do 
     json.array! @quesion
   end
+  json.episords do
+    json.array! @product.episords
+  end
 end
 json.set! :liked do
 json.liked @liked

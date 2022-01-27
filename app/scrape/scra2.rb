@@ -101,9 +101,11 @@ class Scra2
     # @product = Product.where(year2:"1945-01-01")
     # puts @product.length
 
-    today = Date.current
-    puts today
-    @score_topten_all = Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
-    puts @score_topten_all
+    # today = Date.current
+    # puts today
+    # @score_topten_all = Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
+    # puts @score_topten_all
+    @article = Article.find(12)
+    puts @article.products
   end
 end

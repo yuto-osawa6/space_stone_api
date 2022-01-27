@@ -71,6 +71,10 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :articles,:only => [:index,:show] do
+  
+      end
+
       get "session_user", to:"session_user#login_check"
 
       namespace :comment do

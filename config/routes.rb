@@ -72,7 +72,9 @@ Rails.application.routes.draw do
       end
 
       resources :articles,:only => [:index,:show] do
-  
+        collection do
+          get "associate"
+        end
       end
 
       get "session_user", to:"session_user#login_check"

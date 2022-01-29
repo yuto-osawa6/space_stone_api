@@ -3,6 +3,9 @@ class Api::V1::ProductsController < ApplicationController
   def left
     @styles = Style.all.includes(:products)
     @genres = Janl.all.includes(:products)
+    # @articles_week = Articles.where(weekormonth:0).page(params[:page_week]).per(50)
+    # @articles_month = Articles.where(weekormonth:1).page(params[:page_month]).per(50)
+
 
     render :left,formats: :json
 

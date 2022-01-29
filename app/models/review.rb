@@ -8,4 +8,9 @@ class Review < ApplicationRecord
 
   has_many :comment_reviews, dependent: :destroy
   has_many :comment_reviews_users, through: :comment_reviews, source: :user
+
+  # scope :goodbad_count do
+  #   query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'
+  #   Arel.sql(query)
+  # end
 end

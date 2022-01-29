@@ -31,6 +31,9 @@ Rails.application.routes.draw do
         resources :acsesses,only:[:create] do
         end
         resources :reviews,only:[:create,:show] do
+          collection do
+            get "sort"
+          end
           resources :like_reviews,only:[:create,:destroy] do
             collection do
               get "check"
@@ -43,6 +46,9 @@ Rails.application.routes.draw do
           end
         end
         resources :thereds,only:[:create,:show] do
+          collection do
+            get "sort"
+          end
           resources :like_threads,only:[:create,:destroy] do
             collection do
               get "check"
@@ -62,6 +68,13 @@ Rails.application.routes.draw do
           get "setgrid"
           get "castssearch"
           get "findcast"
+        end
+      end
+
+      resources :articles,:only => [:index,:show] do
+        collection do
+          get "associate"
+          get "article_associate"
         end
       end
 

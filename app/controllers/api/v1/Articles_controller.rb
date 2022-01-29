@@ -1,12 +1,25 @@
 class Api::V1::ArticlesController < ApplicationController
     def index
       # doneyet n+1 include
-      if params[:weekormonth].present?
-        @Articles = Article.where(weekormonth:params[:weekormonth]).page(params[:page]).per(2).order(created_at:"desc")
-        @Article_length = Article.where(weekormonth:params[:weekormonth]).count
+      puts params[:product_id].present?
+      if params[:product_id].present?
+        if params[:weekormonth].present?
+          article = Product.find(params[:product_id])
+          @Articles = Article.where(weekormonth:params[:weekormonth]).joins(:article_products).where(article_products: { product_id: article.id }).page(params[:page]).per(2).order(created_at:"desc")
+          @Article_length = Article.where(weekormonth:params[:weekormonth]).joins(:article_products).where(article_products: { product_id: article.id }).count
+        else
+          article = Product.find(params[:product_id])
+          @Article_length = Article.joins(:article_products).where(article_products: { product_id: article.id }).count
+          @Articles = Article.joins(:article_products).where(article_products: { product_id: article.id }).page(params[:page]).per(2).order(created_at:"desc")
+        end
       else
-        @Article_length = Article.count
-        @Articles = Article.page(params[:page]).per(2).order(created_at:"desc")
+        if params[:weekormonth].present?
+          @Articles = Article.where(weekormonth:params[:weekormonth]).page(params[:page]).per(2).order(created_at:"desc")
+          @Article_length = Article.where(weekormonth:params[:weekormonth]).count
+        else
+          @Article_length = Article.count
+          @Articles = Article.page(params[:page]).per(2).order(created_at:"desc")
+        end
       end
       puts @Articles
       render :index, formats: :json
@@ -29,4 +42,8 @@ class Api::V1::ArticlesController < ApplicationController
       # product_ids = article.group(:product_id).plunk(:product_id)
       render :article_associate,formats: :json
     end
+
+    # def product_search
+    #   @products = Product.where("name LIKE ?", "%#{params[:product_title]}%")
+    # end
 end

@@ -68,6 +68,7 @@ Rails.application.routes.draw do
           get "setgrid"
           get "castssearch"
           get "findcast"
+          get "productSearch"
         end
       end
 

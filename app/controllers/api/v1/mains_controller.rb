@@ -175,6 +175,13 @@ class Api::V1::MainsController < ApplicationController
     render json:{casts:@casts}
   end
 
+
+  def productSearch
+    @products = Product.where("title LIKE ?", "%#{params[:product_title]}%")
+    render json:{products:@products}
+  end
+
+
   def findcast
     @cast = Cast.find(params[:id])
     render json:{cast:@cast}

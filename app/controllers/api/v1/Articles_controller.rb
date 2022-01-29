@@ -13,7 +13,8 @@ class Api::V1::ArticlesController < ApplicationController
     end
 
     def show
-      puts params[:id]
+      @article = Article.find(params[:article_id])
+      render :show, formats: :json
     end
 
     def associate

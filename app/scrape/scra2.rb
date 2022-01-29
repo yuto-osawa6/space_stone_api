@@ -105,7 +105,19 @@ class Scra2
     # puts today
     # @score_topten_all = Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
     # puts @score_topten_all
-    @article = Article.find(12)
-    puts @article.products
+    # @article = Article.find(12)
+    # puts @article.products
+
+    article = ArticleProduct.where(article_id:12)
+    puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id).pluck(:article_id)
+    puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id).order("count(article_id) desc").pluck(:article_id)
+    # puts Article.where(id:article_ids).ids
+    # puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id).order("count(article_id) desc").article
+    # Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
+    # puts Article.joins(:article_products).group(:article_id).order("count(article_id) desc").ids
+    puts Article.joins(:article_products).where(article_products: { product_id: article.pluck(:product_id) }).group(:article_id).order("count(article_id) desc")
+    # puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id)
+
+
   end
 end

@@ -20,4 +20,12 @@ class Api::V1::ArticlesController < ApplicationController
       @product = Product.find(params[:product_id])
       render :associate,formats: :json
     end
+
+    def article_associate
+      article = ArticleProduct.where(article_id:params[:article_id]).pluck(:product_id)
+      puts article
+      @articles = Article.joins(:article_products).where(article_products: { product_id: article }).group(:article_id).order("count(article_id) desc").limit(6)
+      # product_ids = article.group(:product_id).plunk(:product_id)
+      render :article_associate,formats: :json
+    end
 end

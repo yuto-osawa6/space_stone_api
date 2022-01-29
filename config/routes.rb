@@ -74,6 +74,7 @@ Rails.application.routes.draw do
       resources :articles,:only => [:index,:show] do
         collection do
           get "associate"
+          get "article_associate"
         end
       end
 

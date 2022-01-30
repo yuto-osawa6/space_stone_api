@@ -71,6 +71,9 @@ class User < ActiveRecord::Base
     where(provider: provider_data[:body][:provider], uid: provider_data[:body][:uid]).first_or_create do |user|
       user.email = provider_data[:body][:info][:email]
       user.password = Devise.friendly_token[0, 20]
+      # doneyet (確認していない)
+      user.nickname =  provider_data[:body][:info][:name]
+      user.image = provider_data[:body][:info][:image]
       # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmation
     end
   end

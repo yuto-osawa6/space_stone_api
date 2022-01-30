@@ -60,6 +60,12 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :users,only:[:show] do
+        collection do
+          patch "setting"
+        end
+      end
+
       resources :mains,:only => :index do
         collection do
           get "search"

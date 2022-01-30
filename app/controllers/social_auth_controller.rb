@@ -7,6 +7,8 @@ class SocialAuthController < ApplicationController
     # puts "ddddddddddddddddddddddd"
     # puts current_api_v1_user
     @user = User.signin_or_create_from_provider(params) # this method add a user who is new or logins an old one
+    # @user.image = params[:body][:info][:image]
+    # @user.save
     if @user.persisted?
       # I log the user in at this point
       sign_in(@user)

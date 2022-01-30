@@ -49,6 +49,12 @@ class Api::V1::ReviewsController < ApplicationController
     end
     render :sort, formats: :json
   end
+  # ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  def index
+    @reviews = Review.page(params[:page]).per(2)
+    @review_length = Review.count
+    render :index,formats: :json
+  end
 
   private 
   def reviews_params

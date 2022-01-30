@@ -13,4 +13,5 @@ class Review < ApplicationRecord
   #   query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'
   #   Arel.sql(query)
   # end
+  has_many :acsess_articles
 end

@@ -108,15 +108,70 @@ class Scra2
     # @article = Article.find(12)
     # puts @article.products
 
-    article = ArticleProduct.where(article_id:12)
-    puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id).pluck(:article_id)
-    puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id).order("count(article_id) desc").pluck(:article_id)
-    # puts Article.where(id:article_ids).ids
-    # puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id).order("count(article_id) desc").article
-    # Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
-    # puts Article.joins(:article_products).group(:article_id).order("count(article_id) desc").ids
-    puts Article.joins(:article_products).where(article_products: { product_id: article.pluck(:product_id) }).group(:article_id).order("count(article_id) desc")
-    # puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id)
+    article = Review.where(article_id:12)
+    # puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id).pluck(:article_id)
+    # puts ArticleProduct.where(product_id:article.pluck(:product_id)).group(:article_id).order("count(article_id) desc").pluck(:article_id)
+    # puts Article.joins(:article_products).where(article_products: { product_id: article.pluck(:product_id) }).group(:article_id).order("count(article_id) desc")
+
+
+    # @score_topten_all = Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
+
+    # order 複数の設定方法
+    # doneyet (leftjoinsでgroup orderできるのか)
+    # puts Review.joins(:like_reviews).group(:review_id).order("Count(goodbad) desc",created_at: :desc).count
+    # puts Review.all.length
+    # Review.includes(:like_reviews).sort_by{|x| x.like_reviews.size}.pluck(:id)
+
+    # puts Review.includes(:like_reviews).group("like_reviews")
+  #  Review.left_outer_joins(:like_reviews).select("like_reviews", "100.0 * COUNT(*) / (SELECT COUNT(*) FROM surveys) as rate").group("reviews.id").order("count(review_id) desc").pluck(:id)
+
+    # puts Review.left_joins(:like_reviews).where(goodbad:1)
+
+
+    # Review.left_outer_joins(:like_reviews).select("like_reviews, COUNT(*) / (SELECT COUNT(*) FROM surveys) as rate").group("reviews.id").order("(count(review_id)/count(review_id)) desc").pluck(:id)
+    
+    # Review.left_outer_joins(:like_reviews).order("goodbad desc")
+
+    # Review.left_outer_joins(:like_reviews).select("reviews,like_reviews.goodbad==1").group("reviews.id").order("like_reviews.goodbad=1 desc")
+    # LikeReview.all.order("goodbad=1 desc")
+
+    # puts Review.left_outer_joins(:like_reviews).group("reviews.id").having("count(goodbad=?)",2).pluck(:id)
+
+    # puts Review.left_outer_joins(:like_reviews).group("reviews.id").having("count(goodbad=?)",2).pluck(:id)
+
+    # puts Review.left_outer_joins(:like_reviews).group("reviews.id").order("count(goodbad=?),2").pluck(:id)
+
+    # sql = 100.0 * CASE WHEN pickup = '1' THEN 1 ELSE 0 END / (*) AS bad
+
+    # puts Product.order('case when pickup = 1 then 0 else 1 end',"desc")
+
+
+    # arel.sqlが必要だった
+    # puts Product.order(Arel.sql("'id' = CASE WHEN id = 3 THEN 0 ELSE 'id' END")).order("id desc").all
+
+    # puts LikeReview.order(Arel.sql("'goodbad' = CASE WHEN goodbad = 1 THEN 1 ELSE 0 END")).order("goodbad desc").ids
+
+    # puts Review.left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("'goodbad' = CASE WHEN like_reviews.goodbad = 1 THEN 1 ELSE 0 END")).order("sum(goodbad) desc")
+
+
+    # puts LikeReview.order(Arel.sql("(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END) desc")).ids
+
+    # puts Review.left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("count(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END) desc")).ids
+
+    # puts Review.left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END) desc")).ids
+
+    # puts Review.left_outer_joins(:like_reviews).order(Arel.sql("(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/(CASE WHEN goodbad = 1 THEN 1 ELSE 1 END) desc")).ids
+
+
+    # これが正解
+    puts Review.left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").ids
+
+
+    # acsess
+    puts  Review.left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).ids
+
+
+
 
 
   end

@@ -51,8 +51,64 @@ class Api::V1::ReviewsController < ApplicationController
   end
   # ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
   def index
-    @reviews = Review.page(params[:page]).per(2)
-    @review_length = Review.count
+    if params[:select_sort].present?
+      case params[:select_sort]
+        when "0" then
+          if params[:range_number].present?
+            # @today =Date
+            to = Time.current 
+            from = to.prev_month
+            from_year = to.prev_year
+            case params[:range_number]
+              when "2" then
+                @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                @review_length = Review.where(updated_at:from..to).count
+              when "3" then
+                @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                @review_length = Review.where(updated_at:from_year..to).count
+            end
+          else
+            @review_length = Review.count
+            @reviews = Review.left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+          end
+        when "1" then
+          if params[:range_number].present?
+            # @today =Date
+            to = Time.current 
+            from = to.prev_month
+            from_year = to.prev_year
+            case params[:range_number]
+              when "2" then
+                @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                @review_length = Review.where(updated_at:from..to).count
+              when "3" then
+                @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                @review_length = Review.where(updated_at:from_year..to).count
+            end
+          else
+          @review_length = Review.count
+          @reviews = Review.left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+        end
+      end
+    else
+      if params[:range_number].present?
+        
+        to = Time.current 
+        from = to.prev_month
+        from_year = to.prev_year
+        case params[:range_number]
+          when "2" then
+            @reviews = Review.where(updated_at:from..to).page(params[:page]).per(2)
+            @review_length = Review.where(updated_at:from..to).count
+          when "3" then
+            @reviews = Review.where(updated_at:from..to_year).page(params[:page]).per(2)
+            @review_length = Review.where(updated_at:from_year..to).count
+        end
+      else
+        @reviews = Review.page(params[:page]).per(2)
+        @review_length = Review.count
+      end
+    end
     render :index,formats: :json
   end
 

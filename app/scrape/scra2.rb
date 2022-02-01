@@ -170,9 +170,18 @@ class Scra2
     # acsess
     puts  Review.left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).ids
 
+    to = Time.current 
+    from = to.prev_month
+    from_year = to.prev_year
 
+    # puts Review.where(updated_at:from..to).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").ids
 
+    # puts Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").ids
 
+    # puts Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").count
+    
+    # puts Review.where(updated_at:a)
 
+    # puts Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to})
   end
 end

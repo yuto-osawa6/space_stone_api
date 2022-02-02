@@ -40,7 +40,7 @@ class Api::V1::TheredsController < ApplicationController
     when "2" then
       @review_comments = @review.comment_threads.order(created_at:"asc")
     else
-      @review_comments = @review.comment_threads.order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
+      @review_comments = @review.comment_threads.order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_review_id) FROM like_comment_threads where like_comment_reviews.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC'))
     end
     render :sort, formats: :json
   end

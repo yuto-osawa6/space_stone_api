@@ -92,6 +92,13 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :thereds,:only => [:index] do
+        collection do
+          # get "associate"
+          # get "article_associate"
+        end
+      end
+
       get "session_user", to:"session_user#login_check"
 
       namespace :comment do

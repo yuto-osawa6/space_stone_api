@@ -85,6 +85,13 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :reviews,:only => [:index] do
+        collection do
+          # get "associate"
+          # get "article_associate"
+        end
+      end
+
       get "session_user", to:"session_user#login_check"
 
       namespace :comment do
@@ -126,12 +133,18 @@ Rails.application.routes.draw do
           end
         end
       end
-
+      # acsess
+      namespace :acsesses do
+        resources :acsess_reviews,only:[:create] do
+        end
+        resources :acsess_threads,only:[:create] do 
+        end
+        resources :acsess_articles,only:[:create] do
+        end
+      end
+    #----v1
     end
-
+    #----ap1
   end
-  # mount_devise_token_auth_for 'User', at: 'auth', controllers: {
-  #   omniauth_callbacks: 'overrides/omniauth_callbacks'
-  # }
 end
 

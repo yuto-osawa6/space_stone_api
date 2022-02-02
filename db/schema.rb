@@ -10,7 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_29_222325) do
+ActiveRecord::Schema.define(version: 2022_01_30_192221) do
+
+  create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.integer "count", default: 0
+    t.datetime "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id"], name: "index_acsess_articles_on_article_id"
+  end
+
+  create_table "acsess_reviews", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "review_id", null: false
+    t.integer "count", default: 0
+    t.datetime "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["review_id"], name: "index_acsess_reviews_on_review_id"
+  end
+
+  create_table "acsess_threads", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "thered_id", null: false
+    t.integer "count", default: 0
+    t.datetime "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["thered_id"], name: "index_acsess_threads_on_thered_id"
+  end
 
   create_table "acsesses", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
@@ -436,6 +463,9 @@ ActiveRecord::Schema.define(version: 2022_01_29_222325) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "acsess_articles", "articles"
+  add_foreign_key "acsess_reviews", "reviews"
+  add_foreign_key "acsess_threads", "thereds"
   add_foreign_key "acsesses", "products"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"

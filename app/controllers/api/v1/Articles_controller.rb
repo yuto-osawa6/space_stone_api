@@ -6,6 +6,7 @@ class Api::V1::ArticlesController < ApplicationController
         if params[:weekormonth].present?
           article = Product.find(params[:product_id])
           @Articles = Article.where(weekormonth:params[:weekormonth]).joins(:article_products).where(article_products: { product_id: article.id }).page(params[:page]).per(2).order(created_at:"desc")
+          #doneyet edit 
           @Article_length = Article.where(weekormonth:params[:weekormonth]).joins(:article_products).where(article_products: { product_id: article.id }).count
         else
           article = Product.find(params[:product_id])

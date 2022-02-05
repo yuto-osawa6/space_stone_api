@@ -12,9 +12,9 @@ class Api::V1::UsersController < ApplicationController
     @user = User.find(params[:user_id])
     # @user.bacgroundImg = params[:backgroundImage]
     if @user.update(background_params2)
-
+      render json:{status:200,message:"背景画像を更新しました。",background:@user.image_url}
     else
-
+      render json:{status:500}
     end
   end
 

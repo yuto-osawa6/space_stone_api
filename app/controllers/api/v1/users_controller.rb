@@ -18,6 +18,15 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def overview
+    @user = User.find(params[:user_id])
+    if @user.update(overview_params)
+      render json:{status:200,message:"概要を更新しました。",overview:@user.overview}
+    else
+      render json:{status:500}
+    end
+  end
+
   # def background
   #   @user = User.find(params[:user_id])
   #   # @user.bacgroundImg = params[:backgroundImage]
@@ -44,5 +53,9 @@ class Api::V1::UsersController < ApplicationController
 
   def background_params2
     params.permit(:bg_img)
+  end
+
+  def overview_params
+    params.require(:user).permit(:overview)
   end
 end

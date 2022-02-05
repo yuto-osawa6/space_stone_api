@@ -64,6 +64,7 @@ Rails.application.routes.draw do
         collection do
           patch "setting"
           patch "background"
+          patch "overview"
         end
       end
 

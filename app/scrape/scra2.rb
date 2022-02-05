@@ -184,4 +184,11 @@ class Scra2
 
     # puts Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to})
   end
+
+  def ota3
+    @user = User.find(4)
+    # puts url_for(@user.bg_img)
+    puts @user.image_url
+    # puts rails_storage_proxy_path(@user.bg_img)
+  end
 end

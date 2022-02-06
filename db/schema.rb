@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_30_192221) do
+ActiveRecord::Schema.define(version: 2022_02_03_215658) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -452,6 +452,7 @@ ActiveRecord::Schema.define(version: 2022_01_30_192221) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "administrator_gold", default: false, null: false
     t.text "overview", size: :long
+    t.text "background_image", size: :long
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true

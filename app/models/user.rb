@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class User < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   # extend Devise::Models 
@@ -45,6 +46,12 @@ class User < ActiveRecord::Base
   # article
   has_many :articles
 
+  # bacground image
+  # doneyet base64方式に変更
+  has_one_attached :bg_img
+
+  
+
 
   devise  :database_authenticatable, 
           :registerable,
@@ -59,6 +66,11 @@ class User < ActiveRecord::Base
 
   # has_many :likes, dependent: :destroy
   # has_many :liked_products, through: :likes, source: :product
+
+  def image_url
+    # 紐づいている画像のURLを取得する
+    self.bg_img.attached? ? url_for(bg_img) : nil
+  end
 
   def self.signin_or_create_from_provider(provider_data)
     puts"vvvvvvvvvvvfffffffffffffffffffffffffffffff"

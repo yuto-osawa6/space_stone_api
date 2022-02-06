@@ -184,4 +184,37 @@ class Scra2
 
     # puts Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to})
   end
+
+  def ota3
+    @user = User.find(4)
+    # puts url_for(@user.bg_img)
+    puts @user.image_url
+    # puts rails_storage_proxy_path(@user.bg_img)
+  end
+
+  def ota4
+    @user = User.find(4)
+    # il= @user.liked_products.joins(:janl_products).group(:janl_id).order("count(janl_id) desc").count.keys
+
+    # # Product.janls
+    # Janl.where(id:il).order([Arel.sql('field(id, ?)'), il]).ids
+
+    # puts @user.scores.group(:value).count
+
+    # @user.liked_products
+
+    # 
+    # @user.scores_products.joins(:scores).order(Arel.sql('products')).count
+    # puts @user.scores_products.joins(:scores).where(scores:{user_id:4}).ids
+
+    # Product.joins(:scores).where(scores:{user_id:4}).order(value: :desc).each do |a|
+    #   print a.scores.where(scores:{user_id:4})[0].value
+    #   # print @user.scores.
+    # end
+    # Score.where(product_id:11,user_id:@user.id)[0].value
+
+    # Product.joins(:scores).where(scores:{user_id:4}).ids
+
+
+  end
 end

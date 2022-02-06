@@ -63,6 +63,13 @@ Rails.application.routes.draw do
       resources :users,only:[:show] do
         collection do
           patch "setting"
+          patch "background"
+          patch "overview"
+          get "likes"
+          get "scores"
+          get "reviews"
+          get "threads"
+          get "likeGenres"
         end
       end
 

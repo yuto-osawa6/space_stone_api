@@ -7,7 +7,7 @@ class Api::V1::TheredsController < ApplicationController
     puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     # puts params[:question_ids]
     puts params[:text]
-    puts Thered.find(8).questions[0].thered_quesitons.ids
+    # puts Thered.find(8).questions[0].thered_quesitons.ids
     @thered.question_ids
     puts "jkh"
 

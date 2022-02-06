@@ -65,6 +65,11 @@ Rails.application.routes.draw do
           patch "setting"
           patch "background"
           patch "overview"
+          get "likes"
+          get "scores"
+          get "reviews"
+          get "threads"
+          get "likeGenres"
         end
       end
 

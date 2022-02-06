@@ -19,4 +19,12 @@ json.set! :user do
     # json.array! @user.thereds_products
     json.array! @user.thereds
   end
+
+  json.likeGenres do
+    # json.array! @user.thereds_products
+    json.array! @genre
+  end
+
+  json.score @score_array
+  
 end

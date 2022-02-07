@@ -161,6 +161,7 @@ Rails.application.routes.draw do
           collection do
             get "new_netflix"
             get "pickup"
+            get "new_message"
           end
         end
       end

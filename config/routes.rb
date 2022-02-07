@@ -156,6 +156,13 @@ Rails.application.routes.draw do
         resources :acsess_articles,only:[:create] do
         end
       end
+      namespace :mainblocks do
+        resources :mains,only:[:show] do
+          collection do
+            get "new_netflix"
+          end
+        end
+      end
     #----v1
     end
     #----ap1

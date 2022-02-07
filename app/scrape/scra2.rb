@@ -215,6 +215,22 @@ class Scra2
 
     # Product.joins(:scores).where(scores:{user_id:4}).ids
 
+    # ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    # puts Product.find(3429).delivery_start?
+    
+    # puts Date.today > Product.find(3429).delivery_start
 
+    # Product.all.includes(:tags).each do |acsess|
+    #     # acsess.tags.limit(3)
+    # end
+
+    pp = Product.where(id:1...20).tags.limit(10)
+
+    pp.each do |a|
+      # a.tags.limit(10).each do |a|
+        
+      #   a
+      # end
+    end
   end
 end

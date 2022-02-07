@@ -160,6 +160,7 @@ Rails.application.routes.draw do
         resources :mains,only:[:show] do
           collection do
             get "new_netflix"
+            get "pickup"
           end
         end
       end

@@ -21,7 +21,7 @@ json.set! :products do
     end
     if product.delivery_start?
       if Date.today < product.delivery_start
-        json.delivery_end product.delivery_start
+        json.delivery_start product.delivery_start
       end
     end
     json.pickup product.pickup

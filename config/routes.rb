@@ -162,6 +162,7 @@ Rails.application.routes.draw do
             get "new_netflix"
             get "pickup"
             get "new_message"
+            get "calendar"
           end
         end
       end

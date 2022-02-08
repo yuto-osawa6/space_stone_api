@@ -26,4 +26,16 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     end
     render :new_message,formats: :json
   end
+
+  def calendar
+    # @delivery_end = Product.where("length(delivery_end) > 0")
+    # @delivery_start = Product.where("length(delivery_start) > 0")
+    # today = Date.today
+    now = Time.current
+    from = now.ago(3.month).beginning_of_month
+    to = now.since(2.month).end_of_month
+    @delivery_end = Product.where(delivery_end:from...to).includes(:styles,:janls,:tags,:scores)
+    @delivery_start = Product.where(delivery_start:from...to).includes(:styles,:janls,:tags,:scores)
+    render :calendar,formats: :json
+  end
 end

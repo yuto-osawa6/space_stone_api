@@ -224,13 +224,11 @@ class Scra2
     #     # acsess.tags.limit(3)
     # end
 
-    pp = Product.where(id:1...20).tags.limit(10)
+    # pp = Product.where(id:1...20).tags.limit(10)
 
-    pp.each do |a|
-      # a.tags.limit(10).each do |a|
-        
-      #   a
-      # end
-    end
+    now = Time.current
+    from = now.ago(3.month).beginning_of_month
+    to = now.since(3.month).end_of_month
+    @delivery_end = Product.where(delivery_end:from...to)
   end
 end

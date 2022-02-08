@@ -163,6 +163,7 @@ Rails.application.routes.draw do
             get "pickup"
             get "new_message"
             get "calendar"
+            get "worldclass"
           end
         end
       end

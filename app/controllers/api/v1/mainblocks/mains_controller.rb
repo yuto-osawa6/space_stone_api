@@ -38,4 +38,10 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @delivery_start = Product.where(delivery_start:from...to).includes(:styles,:janls,:tags,:scores)
     render :calendar,formats: :json
   end
+
+  def worldclass
+    @period = Period.order(created_at:"desc").limit(1)
+    @topten = @period[0].toptens.where.not(product_id:nil).includes(product: :styles).includes(product: :janls).includes(product: :scores)
+    render :worldclass,formats: :json
+  end
 end

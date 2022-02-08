@@ -1,20 +1,16 @@
 class Api::V1::MainsController < ApplicationController
   def index
-    # @q = Product.ransack(params[:q])
-    # @products = @q.result.where(finished:0).limit(30)
-    # render :index,formats: :json
-
-    # doneyet newcontentsとdelivery_startが両方入っている問題
-    range = Date.yesterday.beginning_of_day..Date.yesterday.end_of_day
-    @new_netflix = Product.where("delivery_start <= ?", Date.today).or(Product.where(new_content:true)).order(delivery_start:"desc")
-    # @decision_news = Product.where(decision_news:true)
-    @decision_news = Newmessage.all.order(updated_at:"desc")
-    @pickup = Product.where(pickup:true)
-    # @delivery_end = Product.where("end_day LIKE ?", "%配信終了%")
-    @delivery_end = Product.where("length(delivery_end) > 0")
+    # # doneyet newcontentsとdelivery_startが両方入っている問題
+    # range = Date.yesterday.beginning_of_day..Date.yesterday.end_of_day
+    # @new_netflix = Product.where("delivery_start <= ?", Date.today).or(Product.where(new_content:true)).order(delivery_start:"desc")
+    # # @decision_news = Product.where(decision_news:true)
+    # @decision_news = Newmessage.all.order(updated_at:"desc")
+    # @pickup = Product.where(pickup:true)
+    # # @delivery_end = Product.where("end_day LIKE ?", "%配信終了%")
+    # @delivery_end = Product.where("length(delivery_end) > 0")
     
-    # @delivery_start = Product.where("end_day LIKE?","%配信開始%")
-    @delivery_start = Product.where("length(delivery_start) > 0")
+    # # @delivery_start = Product.where("end_day LIKE?","%配信開始%")
+    # @delivery_start = Product.where("length(delivery_start) > 0")
 
     # 世界的に人気な映画 TV
     @period = Period.order(created_at:"desc").limit(1)
@@ -24,6 +20,7 @@ class Api::V1::MainsController < ApplicationController
     now = Time.current 
     from = now.prev_month
     to = now
+
     # した消さない productテーブルから関連モデルのgroupかした情報を持ってくる方法。
     # @like_topten_month = Product.joins(:likes).where(updated_at:from...to).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10)
     # @like_topten_all = Product.joins(:likes).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10)
@@ -47,18 +44,7 @@ class Api::V1::MainsController < ApplicationController
     @score_topten_all = Score.group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
     @acsess_topten_month = Acsess.where(date: Time.current.prev_month.beginning_of_month...to).group(:product_id).order("sum_count DESC").limit(10).sum(:count)
     @acsess_topten_all = Acsess.group(:product_id).order('sum_count DESC').limit(10).sum(:count)
-    
-    # puts  Like.where(updated_at: from...to).group(:product_id).order("count_all DESC").limit(10).count
-    puts @like_topten_month
-    puts @like_topten_all
-    puts @score_topten_month
-    puts @score_topten_all
-    puts @acsess_topten_month
-    puts @acsess_topten_all
-
-    puts now < Date.today
-    puts now
-    puts Date.today
+   
     
     # tags
     @year = Year.all.order(year:"asc")

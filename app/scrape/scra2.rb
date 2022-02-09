@@ -231,4 +231,33 @@ class Scra2
     to = now.since(3.month).end_of_month
     @delivery_end = Product.where(delivery_end:from...to)
   end
+
+  def ota5
+    now = Time.current 
+    from = now.prev_month
+    to = now
+    # @like_topten_month =  Product.joins(:likes).where(likes:{updated_at: from...to}).pluck(:id)
+    # @like_topten_month =  Product.joins(:likes).where(likes:{updated_at: from...to}).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10).each do |a|
+    #   puts a.likes.count
+    # end
+    # @acsess_topten_month = Product.joins(:acsesses).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("product_id").order(Arel.sql('sum(count) DESC')).limit(10).ids
+    # Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
+    # @like_topten_month = Product.joins(:likes).where(updated_at:from...to).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10)
+
+    # @score_topten_month = Product.joins(:scores).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).limit(10).ids
+    #  -@score_topten_month = Product.left_outer_joins(:scores).includes(:styles,:janls,:scores).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10).each do |a|
+    #   puts a.id
+    # end
+
+    # -@acsess_topten_month = Product.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10).each do |a|
+    #  puts a.id 
+    # end
+    puts "aa"
+
+    # -@acsess_topten = Product.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10).each do |a|
+    #   puts a.acsesses
+    #   # .where(date:Time.current.prev_month.beginning_of_month...to)
+    #  end
+     @review_topten_all = Product.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where.not(reviews:{id:nil}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10).ids
+  end
 end

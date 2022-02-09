@@ -12,14 +12,9 @@ class Api::V1::MainsController < ApplicationController
     # # @delivery_start = Product.where("end_day LIKE?","%配信開始%")
     # @delivery_start = Product.where("length(delivery_start) > 0")
 
-    # 世界的に人気な映画 TV
-    @period = Period.order(created_at:"desc").limit(1)
-    @topten = @period[0].toptens.where.not(product_id:nil)
-    
-    # top10
-    now = Time.current 
-    from = now.prev_month
-    to = now
+    # # 世界的に人気な映画 TV
+    # @period = Period.order(created_at:"desc").limit(1)
+    # @topten = @period[0].toptens.where.not(product_id:nil)
 
     # した消さない productテーブルから関連モデルのgroupかした情報を持ってくる方法。
     # @like_topten_month = Product.joins(:likes).where(updated_at:from...to).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10)
@@ -38,6 +33,12 @@ class Api::V1::MainsController < ApplicationController
     # puts @score_topten_all.ids
     # # puts @acsess_topten_month.ids
     # puts @acsess_topten_all.ids
+
+    
+    # top10
+    now = Time.current 
+    from = now.prev_month
+    to = now
     @like_topten_month =  Like.where(updated_at: from...to).group(:product_id).order("count_all DESC").limit(10).count
     @like_topten_all =  Like.group(:product_id).order("count_all DESC").limit(10).count
     @score_topten_month = Score.where(updated_at: from...to).group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
@@ -48,11 +49,8 @@ class Api::V1::MainsController < ApplicationController
     
     # tags
     @year = Year.all.order(year:"asc")
-    # donecheck
+    # doneyet_3
     @season = Season.where("length(season) = 13").order(season:"asc")
-    # .where("length(year) = 4")
-    # @season = Season.all.order(season:"asc")
-    
     from = Date.today.ago(3.years)
     to = Date.today
     @tags = MonthDuring.where(month:from...to).order(month:"asc")

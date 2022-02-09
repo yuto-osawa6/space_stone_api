@@ -164,6 +164,7 @@ Rails.application.routes.draw do
             get "new_message"
             get "calendar"
             get "worldclass"
+            get "toptens"
           end
         end
       end

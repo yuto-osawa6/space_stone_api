@@ -84,6 +84,14 @@ class Scra2
     end
   end
 
+  def Change_season_to_number_type
+    @season = Season.all
+    @season.each do |e|
+      e.season_number = e.season.gsub(/[^\d]/, "")
+      e.save
+    end
+  end
+
   def ota
     # l = "2時間30分"
     # b = "30分"
@@ -215,6 +223,60 @@ class Scra2
 
     # Product.joins(:scores).where(scores:{user_id:4}).ids
 
+    # ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    # puts Product.find(3429).delivery_start?
+    
+    # puts Date.today > Product.find(3429).delivery_start
+
+    # Product.all.includes(:tags).each do |acsess|
+    #     # acsess.tags.limit(3)
+    # end
+
+    # pp = Product.where(id:1...20).tags.limit(10)
+
+    now = Time.current
+    from = now.ago(3.month).beginning_of_month
+    to = now.since(3.month).end_of_month
+    @delivery_end = Product.where(delivery_end:from...to)
+  end
+
+  def ota5
+    now = Time.current 
+    from = now.prev_month
+    to = now
+    # @like_topten_month =  Product.joins(:likes).where(likes:{updated_at: from...to}).pluck(:id)
+    # @like_topten_month =  Product.joins(:likes).where(likes:{updated_at: from...to}).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10).each do |a|
+    #   puts a.likes.count
+    # end
+    # @acsess_topten_month = Product.joins(:acsesses).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("product_id").order(Arel.sql('sum(count) DESC')).limit(10).ids
+    # Product.joins(:scores).group("product_id").order(Arel.sql('avg(value) DESC')).limit(10)
+    # @like_topten_month = Product.joins(:likes).where(updated_at:from...to).group("product_id").order(Arel.sql('count(product_id) DESC')).limit(10)
+
+    # @score_topten_month = Product.joins(:scores).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).limit(10).ids
+    #  -@score_topten_month = Product.left_outer_joins(:scores).includes(:styles,:janls,:scores).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10).each do |a|
+    #   puts a.id
+    # end
+
+    # -@acsess_topten_month = Product.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10).each do |a|
+    #  puts a.id 
+    # end
+    puts "aa"
+
+    # -@acsess_topten = Product.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10).each do |a|
+    #   puts a.acsesses
+    #   # .where(date:Time.current.prev_month.beginning_of_month...to)
+    #  end
+     @review_topten_all = Product.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where.not(reviews:{id:nil}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10).ids
+  end
+
+  def ota6
+    to = Time.current 
+    from = to.prev_month
+    # @season = Season.where("length(season) = 13").order(season:"asc")
+    @season = Season.order(season:"asc").ids
+    Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).limit(5).ids
 
   end
+
+  
 end

@@ -84,6 +84,14 @@ class Scra2
     end
   end
 
+  def Change_season_to_number_type
+    @season = Season.all
+    @season.each do |e|
+      e.season_number = e.season.gsub(/[^\d]/, "")
+      e.save
+    end
+  end
+
   def ota
     # l = "2時間30分"
     # b = "30分"
@@ -260,4 +268,15 @@ class Scra2
     #  end
      @review_topten_all = Product.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where.not(reviews:{id:nil}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10).ids
   end
+
+  def ota6
+    to = Time.current 
+    from = to.prev_month
+    # @season = Season.where("length(season) = 13").order(season:"asc")
+    @season = Season.order(season:"asc").ids
+    Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).limit(5).ids
+
+  end
+
+  
 end

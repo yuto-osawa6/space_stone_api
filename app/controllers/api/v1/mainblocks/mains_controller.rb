@@ -69,4 +69,14 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
      render :toptens,formats: :json
   end
+
+  def populur_rt
+    # doneyet_3 正確な月間ではない
+    to = Time.current 
+    from = to.prev_month
+
+    @popular_reviews = Review.left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).limit(6)
+    @popular_threads = Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).limit(6)
+    render :populur_rt,formats: :json
+  end
 end

@@ -36,21 +36,22 @@ class Api::V1::MainsController < ApplicationController
 
     
     # top10
-    now = Time.current 
-    from = now.prev_month
-    to = now
-    @like_topten_month =  Like.where(updated_at: from...to).group(:product_id).order("count_all DESC").limit(10).count
-    @like_topten_all =  Like.group(:product_id).order("count_all DESC").limit(10).count
-    @score_topten_month = Score.where(updated_at: from...to).group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
-    @score_topten_all = Score.group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
-    @acsess_topten_month = Acsess.where(date: Time.current.prev_month.beginning_of_month...to).group(:product_id).order("sum_count DESC").limit(10).sum(:count)
-    @acsess_topten_all = Acsess.group(:product_id).order('sum_count DESC').limit(10).sum(:count)
+    # now = Time.current 
+    # from = now.prev_month
+    # to = now
+    # @like_topten_month =  Like.where(updated_at: from...to).group(:product_id).order("count_all DESC").limit(10).count
+    # @like_topten_all =  Like.group(:product_id).order("count_all DESC").limit(10).count
+    # @score_topten_month = Score.where(updated_at: from...to).group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
+    # @score_topten_all = Score.group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
+    # @acsess_topten_month = Acsess.where(date: Time.current.prev_month.beginning_of_month...to).group(:product_id).order("sum_count DESC").limit(10).sum(:count)
+    # @acsess_topten_all = Acsess.group(:product_id).order('sum_count DESC').limit(10).sum(:count)
    
     
     # tags
     @year = Year.all.order(year:"asc")
-    # doneyet_3
-    @season = Season.where("length(season) = 13").order(season:"asc")
+    # doneyet_completion length
+    @season = Season.order(season_number:"asc")
+     # doneyet_2 3年間データーをどうするか
     from = Date.today.ago(3.years)
     to = Date.today
     @tags = MonthDuring.where(month:from...to).order(month:"asc")

@@ -103,391 +103,391 @@
 #   end
 # end
 
-i = 1
-pre = 0
-s = 0
+# i = 1
+# pre = 0
+# s = 0
 
-json.set! :like_topten_month do
-  json.array! @like_topten_month do |k,v|
-
-    
-    product = Product.find(k)
-    json.id product.id
-    json.title product.title
-    json.image_url product.image_url
-    json.duration product.duration
-    json.year product.year
-    json.list product.list
-
-    # json.arasuzi product.description
-    # json.delivery_start product.delivery_start
-    # # json.products_style product.styles.name
-    json.product_styles do
-      json.array! product.styles
-    end
-    json.product_genres do
-      json.array! product.janls
-    end
-
-    json.likeCount v
-    if product.scores.exists?
-    json.averagescore product.scores.average(:value).round(1)
-    json.averagescorecount product.scores.count(:value).round(1)
-    end
-
-    if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
-      if product.delivery_end != nil
-        if product.delivery_end <= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-      if product.delivery_start != nil
-        if product.delivery_start >= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-    else
-      json.endJudge "公開中"
-    end
-
-    if v == pre
-      json.rank s
-    else
-      json.rank i
-      s = i 
-    end
-    pre = v
-    i += 1
-  end
-end
-
-i = 1
-pre = 0
-s = 0
-
-json.set! :like_topten_all do
-  json.array! @like_topten_all do |k,v|
+# json.set! :like_topten_month do
+#   json.array! @like_topten_month do |k,v|
 
     
-    product = Product.find(k)
-    json.id product.id
-    json.title product.title
-    json.image_url product.image_url
-    json.duration product.duration
-    json.year product.year
-    json.list product.list
+#     product = Product.find(k)
+#     json.id product.id
+#     json.title product.title
+#     json.image_url product.image_url
+#     json.duration product.duration
+#     json.year product.year
+#     json.list product.list
 
+#     # json.arasuzi product.description
+#     # json.delivery_start product.delivery_start
+#     # # json.products_style product.styles.name
+#     json.product_styles do
+#       json.array! product.styles
+#     end
+#     json.product_genres do
+#       json.array! product.janls
+#     end
 
-    json.product_styles do
-      json.array! product.styles
-    end
-    json.product_genres do
-      json.array! product.janls
-    end
-    json.likeCount v
-    if product.scores.exists?
-      json.averageScore product.scores.average(:value).round(1)
-      json.averageScoreCount product.scores.count(:value).round(1)
-    end
-    # json.arasuzi product.description
-    # json.delivery_start product.delivery_start
-    # # json.products_style product.styles.name
-    if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
-      if product.delivery_end != nil
-        if product.delivery_end <= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-      if product.delivery_start != nil
-        if product.delivery_start >= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-    else
-      json.endJudge "公開中"
-    end
+#     json.likeCount v
+#     if product.scores.exists?
+#     json.averagescore product.scores.average(:value).round(1)
+#     json.averagescorecount product.scores.count(:value).round(1)
+#     end
 
-    if v == pre
-      json.rank s
-    else
-      json.rank i
-      s = i 
-    end
-    pre = v
-    i += 1
-  end
-end
+#     if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
+#       if product.delivery_end != nil
+#         if product.delivery_end <= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#       if product.delivery_start != nil
+#         if product.delivery_start >= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#     else
+#       json.endJudge "公開中"
+#     end
 
-i = 1
-pre = 0
-s = 0
+#     if v == pre
+#       json.rank s
+#     else
+#       json.rank i
+#       s = i 
+#     end
+#     pre = v
+#     i += 1
+#   end
+# end
 
-json.set! :score_topten_month do
-  json.array! @score_topten_month do |k,v|
+# i = 1
+# pre = 0
+# s = 0
 
-    
-    product = Product.find(k)
-    json.id product.id
-    json.title product.title
-    json.image_url product.image_url
-    json.duration product.duration
-    json.year product.year
-    json.list product.list
-
-    json.product_styles do
-      json.array! product.styles
-    end
-    json.product_genres do
-      json.array! product.janls
-    end
-    # json.averageScore v.round(1)
-
-    if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
-      if product.delivery_end != nil
-        if product.delivery_end <= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-      if product.delivery_start != nil
-        if product.delivery_start >= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-    else
-      json.endJudge "公開中"
-    end
-
-    if product.scores.exists?
-      json.averageScore product.scores.average(:value).round(1)
-      json.averageScoreCount product.scores.count(:value).round(1)
-    end
-
-    if v == pre
-      json.rank s
-    else
-      json.rank i
-      s = i 
-    end
-    pre = v
-    i += 1
-  end
-end
-
-
-i = 1
-pre = 0
-s = 0
-
-json.set! :score_topten_all do
-  json.array! @score_topten_all do |k,v|
+# json.set! :like_topten_all do
+#   json.array! @like_topten_all do |k,v|
 
     
-    product = Product.find(k)
-    json.id product.id
-    json.title product.title
-    json.image_url product.image_url
-    json.duration product.duration
-    json.year product.year
-    json.list product.list
-
-    json.product_styles do
-      json.array! product.styles
-    end
-    json.product_genres do
-      json.array! product.janls
-    end
-    if product.scores.exists?
-      json.averageScore product.scores.average(:value).round(1)
-      json.averageScoreCount product.scores.count(:value).round(1)
-    end
-
-      json.averageScore v.round(1)
-      json.averageScoreCount k
-
-    if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
-      if product.delivery_end != nil
-        if product.delivery_end <= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-      if product.delivery_start != nil
-        if product.delivery_start >= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-    else
-      json.endJudge "公開中"
-    end
-
-    if v == pre
-      json.rank s
-    else
-      json.rank i
-      s = i 
-    end
-    pre = v
-    i += 1
-  end
-end
+#     product = Product.find(k)
+#     json.id product.id
+#     json.title product.title
+#     json.image_url product.image_url
+#     json.duration product.duration
+#     json.year product.year
+#     json.list product.list
 
 
-i = 1
-pre = 0
-s = 0
+#     json.product_styles do
+#       json.array! product.styles
+#     end
+#     json.product_genres do
+#       json.array! product.janls
+#     end
+#     json.likeCount v
+#     if product.scores.exists?
+#       json.averageScore product.scores.average(:value).round(1)
+#       json.averageScoreCount product.scores.count(:value).round(1)
+#     end
+#     # json.arasuzi product.description
+#     # json.delivery_start product.delivery_start
+#     # # json.products_style product.styles.name
+#     if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
+#       if product.delivery_end != nil
+#         if product.delivery_end <= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#       if product.delivery_start != nil
+#         if product.delivery_start >= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#     else
+#       json.endJudge "公開中"
+#     end
 
-json.set! :acsess_topten_month do
-  json.array! @acsess_topten_month do |k,v|
+#     if v == pre
+#       json.rank s
+#     else
+#       json.rank i
+#       s = i 
+#     end
+#     pre = v
+#     i += 1
+#   end
+# end
 
-    
-    product = Product.find(k)
-    json.id product.id
-    json.title product.title
-    json.image_url product.image_url
-    json.duration product.duration
-    json.year product.year
-    json.list product.list
+# i = 1
+# pre = 0
+# s = 0
 
-    json.product_styles do
-      json.array! product.styles
-    end
-    json.product_genres do
-      json.array! product.janls
-    end
-
-    if product.scores.exists?
-      json.averageScore product.scores.average(:value).round(1)
-      json.averageScoreCount product.scores.count(:value).round(1)
-    end
-
-    if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
-      if product.delivery_end != nil
-        if product.delivery_end <= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-      if product.delivery_start != nil
-        if product.delivery_start >= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-    else
-      json.endJudge "公開中"
-    end
-
-
-    if v == pre
-      json.rank s
-    else
-      json.rank i
-      s = i 
-    end
-    pre = v
-    i += 1
-  end
-end
-
-i = 1
-pre = 0
-s = 0
-
-json.set! :acsess_topten_all do
-  json.array! @acsess_topten_all do |k,v|
+# json.set! :score_topten_month do
+#   json.array! @score_topten_month do |k,v|
 
     
-    product = Product.find(k)
-    json.id product.id
-    json.title product.title
-    json.image_url product.image_url
-    json.duration product.duration
-    json.year product.year
-    json.list product.list
+#     product = Product.find(k)
+#     json.id product.id
+#     json.title product.title
+#     json.image_url product.image_url
+#     json.duration product.duration
+#     json.year product.year
+#     json.list product.list
 
-    json.product_styles do
-      json.array! product.styles
-    end
-    json.product_genres do
-      json.array! product.janls
-    end
+#     json.product_styles do
+#       json.array! product.styles
+#     end
+#     json.product_genres do
+#       json.array! product.janls
+#     end
+#     # json.averageScore v.round(1)
 
-    if product.scores.exists?
-      json.averageScore product.scores.average(:value).round(1)
-      json.averageScoreCount product.scores.count(:value).round(1)
-    end
+#     if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
+#       if product.delivery_end != nil
+#         if product.delivery_end <= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#       if product.delivery_start != nil
+#         if product.delivery_start >= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#     else
+#       json.endJudge "公開中"
+#     end
 
-    if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
-      if product.delivery_end != nil
-        if product.delivery_end <= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-      if product.delivery_start != nil
-        if product.delivery_start >= Date.today
-          json.endJudge "非公開"
-        else
-          json.endJudge "公開中"
-        end
-      else
-        json.endJudge "非公開"
-      end
-    else
-      json.endJudge "公開中"
-    end
+#     if product.scores.exists?
+#       json.averageScore product.scores.average(:value).round(1)
+#       json.averageScoreCount product.scores.count(:value).round(1)
+#     end
+
+#     if v == pre
+#       json.rank s
+#     else
+#       json.rank i
+#       s = i 
+#     end
+#     pre = v
+#     i += 1
+#   end
+# end
 
 
-    if v == pre
-      json.rank s
-    else
-      json.rank i
-      s = i 
-    end
-    pre = v
-    i += 1
-  end
-end
+# i = 1
+# pre = 0
+# s = 0
+
+# json.set! :score_topten_all do
+#   json.array! @score_topten_all do |k,v|
+
+    
+#     product = Product.find(k)
+#     json.id product.id
+#     json.title product.title
+#     json.image_url product.image_url
+#     json.duration product.duration
+#     json.year product.year
+#     json.list product.list
+
+#     json.product_styles do
+#       json.array! product.styles
+#     end
+#     json.product_genres do
+#       json.array! product.janls
+#     end
+#     if product.scores.exists?
+#       json.averageScore product.scores.average(:value).round(1)
+#       json.averageScoreCount product.scores.count(:value).round(1)
+#     end
+
+#       json.averageScore v.round(1)
+#       json.averageScoreCount k
+
+#     if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
+#       if product.delivery_end != nil
+#         if product.delivery_end <= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#       if product.delivery_start != nil
+#         if product.delivery_start >= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#     else
+#       json.endJudge "公開中"
+#     end
+
+#     if v == pre
+#       json.rank s
+#     else
+#       json.rank i
+#       s = i 
+#     end
+#     pre = v
+#     i += 1
+#   end
+# end
+
+
+# i = 1
+# pre = 0
+# s = 0
+
+# json.set! :acsess_topten_month do
+#   json.array! @acsess_topten_month do |k,v|
+
+    
+#     product = Product.find(k)
+#     json.id product.id
+#     json.title product.title
+#     json.image_url product.image_url
+#     json.duration product.duration
+#     json.year product.year
+#     json.list product.list
+
+#     json.product_styles do
+#       json.array! product.styles
+#     end
+#     json.product_genres do
+#       json.array! product.janls
+#     end
+
+#     if product.scores.exists?
+#       json.averageScore product.scores.average(:value).round(1)
+#       json.averageScoreCount product.scores.count(:value).round(1)
+#     end
+
+#     if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
+#       if product.delivery_end != nil
+#         if product.delivery_end <= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#       if product.delivery_start != nil
+#         if product.delivery_start >= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#     else
+#       json.endJudge "公開中"
+#     end
+
+
+#     if v == pre
+#       json.rank s
+#     else
+#       json.rank i
+#       s = i 
+#     end
+#     pre = v
+#     i += 1
+#   end
+# end
+
+# i = 1
+# pre = 0
+# s = 0
+
+# json.set! :acsess_topten_all do
+#   json.array! @acsess_topten_all do |k,v|
+
+    
+#     product = Product.find(k)
+#     json.id product.id
+#     json.title product.title
+#     json.image_url product.image_url
+#     json.duration product.duration
+#     json.year product.year
+#     json.list product.list
+
+#     json.product_styles do
+#       json.array! product.styles
+#     end
+#     json.product_genres do
+#       json.array! product.janls
+#     end
+
+#     if product.scores.exists?
+#       json.averageScore product.scores.average(:value).round(1)
+#       json.averageScoreCount product.scores.count(:value).round(1)
+#     end
+
+#     if product.finished == true && product.delivery_end != nil || product.delivery_start != nil
+#       if product.delivery_end != nil
+#         if product.delivery_end <= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#       if product.delivery_start != nil
+#         if product.delivery_start >= Date.today
+#           json.endJudge "非公開"
+#         else
+#           json.endJudge "公開中"
+#         end
+#       else
+#         json.endJudge "非公開"
+#       end
+#     else
+#       json.endJudge "公開中"
+#     end
+
+
+#     if v == pre
+#       json.rank s
+#     else
+#       json.rank i
+#       s = i 
+#     end
+#     pre = v
+#     i += 1
+#   end
+# end
 
 json.set! :tags do
   json.array! @year do |year|
@@ -497,6 +497,7 @@ json.set! :tags do
   json.array! @season do |season|
     json.season_id season.id
     json.season season.season
+    json.season_number season.season_number
   end
 
 end

@@ -165,6 +165,7 @@ Rails.application.routes.draw do
             get "calendar"
             get "worldclass"
             get "toptens"
+            get "populur_rt"
           end
         end
       end

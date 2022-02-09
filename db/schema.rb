@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_03_215658) do
+ActiveRecord::Schema.define(version: 2022_02_09_090059) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -362,6 +362,7 @@ ActiveRecord::Schema.define(version: 2022_02_03_215658) do
     t.string "season"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "season_number"
   end
 
   create_table "style_products", charset: "utf8mb4", force: :cascade do |t|

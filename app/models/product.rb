@@ -51,4 +51,14 @@ class Product < ApplicationRecord
     Arel.sql(query)
   end
 
+  ransacker :review_count do
+    query = '(SELECT  COUNT(reviews.product_id) FROM reviews where reviews.product_id = products.id GROUP BY reviews.product_id)'
+    Arel.sql(query)
+  end
+
+  ransacker :thread_count do
+    query = '(SELECT  COUNT(thereds.product_id) FROM thereds where thereds.product_id = products.id GROUP BY thereds.product_id)'
+    Arel.sql(query)
+  end
+
 end

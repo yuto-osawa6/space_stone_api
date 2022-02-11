@@ -12,24 +12,13 @@ class Api::V1::ReviewsController < ApplicationController
   def show
     puts params[:product_id]
     puts params[:id]
-    @review = Review.find(params[:id])
+    @review = Review.includes(:like_reviews).find(params[:id])
     @product = @review.product
-    @review_comments = @review.comment_reviews.order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
 
-    # puts @review_comments
-    # .order((Arel.sql("SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id")) "desc")
-    # .find(LikeCommentReview.group(:comment_review_id).order("count(comment_review_id) desc").plunk(:comment_review_id))
-    # .find([2,3,4])
-    # .find(LikeCommentReview.group(:comment_review_id).order("count(comment_review_id) desc").plunk(:comment_review_id))
-    # .order(Arel.sql("SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id"))
-    # .joins(:like_comment_reviews).group("comment_review_id").order(Arel.sql('count(comment_review_id) DESC'))
+    @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
+
+
     
-    # order("SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id")
-
-    # likecheck
-      # @user = User.find(params[:user_id])
-      # @like_review = LikeReview.find_by(user_id:params[:user_id])
-
 
     render :show,formats: :json
   end
@@ -39,13 +28,13 @@ class Api::V1::ReviewsController < ApplicationController
     puts params[:value]
     case params[:value]
     when "0" then
-      @review_comments = @review.comment_reviews.order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
+      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
     when "1" then
-      @review_comments = @review.comment_reviews.order(created_at:"desc")
+      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews).order(created_at:"desc")
     when "2" then
-      @review_comments = @review.comment_reviews.order(created_at:"asc")
+      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews).order(created_at:"asc")
     else
-      @review_comments = @review.comment_reviews.order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
+      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
     end
     render :sort, formats: :json
   end

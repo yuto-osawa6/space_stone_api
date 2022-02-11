@@ -1,8 +1,5 @@
 class Api::V1::LikeReviewsController < ApplicationController
   def create
-    # @user = User.find(params[:like_review][:user_id])
-    # @like = @user.like_reviews.new(like_params)
-    # @like = LikeReview.new(like_params)
     @like = LikeReview.where(user_id:params[:user_id],review_id:params[:review_id]).first_or_initialize
     @like.goodbad = params[:goodbad]
     puts params[:goodbad]
@@ -10,10 +7,11 @@ class Api::V1::LikeReviewsController < ApplicationController
     if @like.save
         @review_length = LikeReview.where(review_id:params[:review_id]).length
         @review_good = LikeReview.where(review_id:params[:review_id],goodbad:1).length
-        @score = @review_good / @review_length * 100
+        @score = @review_good / @review_length.to_f * 100
+        # puts  @review_length, @review_good
+        # puts @review_good / @review_length * 100
+        # puts (2/2) * 100
         puts @score
-      # @like = Product.find(params[:like][:product_id]).likes.count
-      # render json: { status: 200, like: @like,score:@score} 
       render json: { status: 200, like: @like,score:@score,review_length:@review_length,review_good:@review_good} 
 
     else
@@ -34,7 +32,7 @@ class Api::V1::LikeReviewsController < ApplicationController
     @score = 0
     puts "aaaaaaaaaaaaaaa"
     else
-    @score = @review_good / @review_length * 100
+    @score = @review_good / @review_length.to_f * 100
     end
     puts @score
     render json: { status: 200, message: "削除されました"  ,score:@score,review_length:@review_length,review_good:@review_good } 

@@ -7,7 +7,7 @@ class Api::V1::Comment::LikeReturnCommentReviewsController < ApplicationControll
 
       @review_length = LikeReturnCommentReview.where(return_comment_review_id:params[:like_return_comment_review][:return_comment_review_id]).length
       @review_good = LikeReturnCommentReview.where(return_comment_review_id:params[:like_return_comment_review][:return_comment_review_id],goodbad:1).length
-      @score = @review_good / @review_length * 100
+      @score = @review_good / @review_length.to_f * 100
 
       render json: {status:200, like: @LikeReturnCommentReview,score:@score,review_length:@review_length,review_good:@review_good}
     else
@@ -27,7 +27,7 @@ class Api::V1::Comment::LikeReturnCommentReviewsController < ApplicationControll
     if  @review_length==0 && @review_good==0
       @score = 0
     else
-      @score = @review_good / @review_length * 100
+      @score = @review_good / @review_length.to_f * 100
     end
 
     

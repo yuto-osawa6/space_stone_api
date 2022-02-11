@@ -1,9 +1,7 @@
 class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
   def index
     params[:comment_review_id]
-    @returncomment = ReturnCommentReview.where(comment_review_id:params[:comment_review_id])
-    # @returnUser= @returncomment.return_returns.ids
-    # render json: {status:200 ,returncomment: @returncomment}
+    @returncomment = ReturnCommentReview.includes(:like_return_comment_reviews).where(comment_review_id:params[:comment_review_id])
     render :index,formats: :json
   end
 

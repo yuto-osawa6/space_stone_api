@@ -24,6 +24,9 @@ class User < ActiveRecord::Base
   has_many :comment_reviews, dependent: :destroy
   has_many :comment_reviews_reviews, through: :comment_reviews, source: :reviews
 
+  has_many :return_comment_reviews, dependent: :destroy
+  has_many :return_comment_reviews_users, through: :return_comment_reviews, source: :comment_reviews
+
   has_many :like_comment_reviews,dependent: :destroy
   has_many :like_comment_reviews_comment_reviews,through: :like_comment_reviews,source: :comment_review
 

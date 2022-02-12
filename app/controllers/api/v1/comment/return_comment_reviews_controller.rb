@@ -1,6 +1,7 @@
 class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
   def index
     params[:comment_review_id]
+    @review = CommentReview.find(params[:comment_review_id])
     @returncomment = ReturnCommentReview.includes(:like_return_comment_reviews).where(comment_review_id:params[:comment_review_id])
     render :index,formats: :json
   end

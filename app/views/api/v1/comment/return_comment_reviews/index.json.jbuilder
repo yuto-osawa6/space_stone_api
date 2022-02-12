@@ -1,5 +1,16 @@
 json.set! :status, 200
 
+json.set!  :comment_review do
+  json.id @review.id
+  json.title @review.title
+  json.comment @review.comment
+  json.user_id @review.user_id
+  # json.like_reviews @review.like_reviews
+  json.user @review.user
+  json.updated_at @review.updated_at.strftime("%Y/%-m/%-d")
+
+end
+
 json.set! :returncomment do
   json.array! @returncomment do |returncomment|
     json.id returncomment.id

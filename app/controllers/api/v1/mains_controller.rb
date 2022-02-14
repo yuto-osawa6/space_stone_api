@@ -51,10 +51,10 @@ class Api::V1::MainsController < ApplicationController
     @year = Year.all.order(year:"asc")
     # doneyet_completion length
     @season = Season.order(season_number:"asc")
-     # doneyet_2 3年間データーをどうするか
-    from = Date.today.ago(3.years)
-    to = Date.today
-    @tags = MonthDuring.where(month:from...to).order(month:"asc")
+    #  # doneyet_2 3年間データーをどうするか、一年間に設定
+    # from = Date.today.ago(3.years)
+    # to = Date.today
+    @tags = MonthDuring.all.order(month:"asc").limit(12)
 
     render :index,formats: :json
 

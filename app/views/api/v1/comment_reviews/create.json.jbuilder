@@ -9,6 +9,7 @@
     
 #   end
 # end
+json.set! :status,200
 
 
 json.set! :review_comments do

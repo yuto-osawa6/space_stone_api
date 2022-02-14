@@ -280,7 +280,8 @@ class Scra2
 
   def ota7
     # ReviewComment.where(review_id:3).like_comment_reviews 
-    puts 2/12.to_f*100
+    # puts 2/12.to_f*100
+    puts "aaa".encode("UTF-8").bytesize
 
   end
 

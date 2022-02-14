@@ -3,6 +3,8 @@ class Api::V1::CommentReviewsController < ApplicationController
     @commentReview = CommentReview.new(commentReview_params)
 
     puts params[:select_sort]
+    puts params[:comment_review][:comment].encode("UTF-8").bytesize
+    # puts params[:comment].encode("UTF-8").bytesize
 
     # doneyet-over order switching system (over(check,select=>number))
     @review = Review.find(params[:review_id])
@@ -19,12 +21,20 @@ class Api::V1::CommentReviewsController < ApplicationController
       @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(1).per(5)
     end
 
+    begin
     if  @commentReview.save
       render :create,formats: :json
     else
       render json: {status:500}
 
     end
+    rescue => e
+      puts e
+      puts "aaaaaaaaaaaa"
+      puts e
+      render json: {status:500}
+    end
+    puts params[:comment_review][:comment].bytesize
   end
   private
   def commentReview_params

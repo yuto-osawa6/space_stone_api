@@ -1,9 +1,9 @@
 class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
   def index
     params[:comment_review_id]
-    @returncomment = ReturnCommentReview.where(comment_review_id:params[:comment_review_id])
-    # @returnUser= @returncomment.return_returns.ids
-    # render json: {status:200 ,returncomment: @returncomment}
+    # userは対１関係なため、includesに含めない。
+    # @review = CommentReview.includes(:like_comment_reviews).find(params[:comment_review_id])
+    @returncomment = ReturnCommentReview.includes(:like_return_comment_reviews,:user,return_returns: :user).where(comment_review_id:params[:comment_review_id]).page(params[:page]).per(3)
     render :index,formats: :json
   end
 

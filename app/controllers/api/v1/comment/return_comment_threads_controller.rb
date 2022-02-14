@@ -1,7 +1,7 @@
 class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
   def index
     params[:comment_thread_id]
-    @returncomment = ReturnCommentThread.where(comment_thread_id:params[:comment_thread_id])
+    @returncomment = ReturnCommentThread.includes(:like_return_comment_threads,:user,return_returns: :user).where(comment_thread_id:params[:comment_thread_id]).page(params[:page]).per(3)
     # @returnUser= @returncomment.return_returns.ids
     # render json: {status:200 ,returncomment: @returncomment}
     render :index,formats: :json
@@ -11,8 +11,8 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
     @commentReview = ReturnCommentThread.new(create_params)
    
     if  @commentReview.save
-      # render json: {status:200,commentReview:@commentReview}
-      render :create, formats: :json
+      render json: {status:200,commentReview:@commentReview}
+      # render :create, formats: :json
       # render :returnreturn, formats: :json
     else
       render json: {status:500}
@@ -29,7 +29,7 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
 
     
 
-    if  @commentReview.save!
+    if  @commentReview.save
       # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
       # : {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>12}}
       # {"return_comment_review"=>{"comment_review_id"=>13, "user_id"=>4, "comment"=>"<p>u</p><p><br></p>"}, "return_return_comment_review"=>{"return_return_id"=>30}}

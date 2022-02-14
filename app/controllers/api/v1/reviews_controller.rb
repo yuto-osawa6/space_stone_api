@@ -12,24 +12,13 @@ class Api::V1::ReviewsController < ApplicationController
   def show
     puts params[:product_id]
     puts params[:id]
-    @review = Review.find(params[:id])
+    @review = Review.includes(:like_reviews).find(params[:id])
     @product = @review.product
-    @review_comments = @review.comment_reviews.order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
 
-    # puts @review_comments
-    # .order((Arel.sql("SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id")) "desc")
-    # .find(LikeCommentReview.group(:comment_review_id).order("count(comment_review_id) desc").plunk(:comment_review_id))
-    # .find([2,3,4])
-    # .find(LikeCommentReview.group(:comment_review_id).order("count(comment_review_id) desc").plunk(:comment_review_id))
-    # .order(Arel.sql("SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id"))
-    # .joins(:like_comment_reviews).group("comment_review_id").order(Arel.sql('count(comment_review_id) DESC'))
+    @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
+
+
     
-    # order("SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id")
-
-    # likecheck
-      # @user = User.find(params[:user_id])
-      # @like_review = LikeReview.find_by(user_id:params[:user_id])
-
 
     render :show,formats: :json
   end
@@ -39,13 +28,13 @@ class Api::V1::ReviewsController < ApplicationController
     puts params[:value]
     case params[:value]
     when "0" then
-      @review_comments = @review.comment_reviews.order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
+      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
     when "1" then
-      @review_comments = @review.comment_reviews.order(created_at:"desc")
+      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"desc").page(params[:page]).per(5)
     when "2" then
-      @review_comments = @review.comment_reviews.order(created_at:"asc")
+      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"asc").page(params[:page]).per(5)
     else
-      @review_comments = @review.comment_reviews.order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC'))
+      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
     end
     render :sort, formats: :json
   end
@@ -65,33 +54,33 @@ class Api::V1::ReviewsController < ApplicationController
                 when "2" then
                   case params[:range_likes_number]
                     when "1" then
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
-                      @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").length
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @review_length = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").length
                     when "2" then
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
-                      @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").length
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @review_length = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").length
                     when "3" then
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
-                      @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").length
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @review_length = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").length
 
                     else
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).group("reviews.id").length
                     end
                 when "3" then
                   case params[:range_likes_number]
                     when "1" then
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").length
                     when "2" then
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").length
                     when "3" then
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").length
 
                     else
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).group("reviews.id").length
                     end
               end
@@ -102,18 +91,18 @@ class Api::V1::ReviewsController < ApplicationController
               from_week = to.prev_week
               case params[:range_likes_number]
                 when "1" then
-                  @reviews = Review.where(product_id:params[:product_id]).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                  @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                   @review_length = Review.where(product_id:params[:product_id]).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").length
                 when "2" then
-                  @reviews = Review.where(product_id:params[:product_id]).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                  @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                   @review_length = Review.where(product_id:params[:product_id]).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").length
                 when "3" then
-                  @reviews = Review.where(product_id:params[:product_id]).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                  @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                   @review_length = Review.where(product_id:params[:product_id]).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").length
 
                 else
-                  @review_length = Review.where(product_id:params[:product_id]).count
-                  @reviews = Review.where(product_id:params[:product_id]).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                  @review_length = Review.where(product_id:params[:product_id]).length
+                  @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
               end
             end
           when "1" then
@@ -128,26 +117,26 @@ class Api::V1::ReviewsController < ApplicationController
                 when "2" then
                   case params[:range_populer_number]
                     when "2" then
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                       @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").length
                     when "3" then
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                       @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").length
                     else
-                      @reviews = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
-                      @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).count
+                      @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                      @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_reviews).length
                     end
                 when "3" then
                   case params[:range_populer_number]
                   when "2" then
-                    @reviews = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                    @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                     @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").length
                   when "3" then
-                    @reviews = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                    @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                     @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").length
                   else
-                    @reviews = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
-                    @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).count
+                    @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                    @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).length
                   end
               end
             else
@@ -158,14 +147,14 @@ class Api::V1::ReviewsController < ApplicationController
               from_year_accsess = to.beginning_of_year
               case params[:range_populer_number]
                 when "2" then
-                  @reviews = Review.where(product_id:params[:product_id]).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                  @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                   @review_length = Review.where(product_id:params[:product_id]).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").length
                 when "3" then
-                  @reviews = Review.where(product_id:params[:product_id]).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                  @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                   @review_length = Review.where(product_id:params[:product_id]).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").length
                 else
-                  @review_length = Review.where(product_id:params[:product_id]).count
-                  @reviews = Review.where(product_id:params[:product_id]).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                  @review_length = Review.where(product_id:params[:product_id]).length
+                  @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                 end
           end
         end
@@ -177,15 +166,15 @@ class Api::V1::ReviewsController < ApplicationController
           from_year = to.prev_year
           case params[:range_number]
             when "2" then
-              @reviews = Review.where(product_id:params[:product_id]).where(updated_at:from..to).page(params[:page]).per(2)
-              @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).count
+              @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from..to).page(params[:page]).per(2)
+              @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from..to).length
             when "3" then
-              @reviews = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).page(params[:page]).per(2)
-              @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).count
+              @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).where(updated_at:from_year..to).page(params[:page]).per(2)
+              @review_length = Review.where(product_id:params[:product_id]).where(updated_at:from_year..to).length
           end
         else
-          @reviews = Review.where(product_id:params[:product_id]).page(params[:page]).per(2)
-          @review_length = Review.where(product_id:params[:product_id]).count
+          @reviews = Review.includes(:product,:user).where(product_id:params[:product_id]).page(params[:page]).per(2)
+          @review_length = Review.where(product_id:params[:product_id]).length
         end
       end
       
@@ -203,33 +192,33 @@ class Api::V1::ReviewsController < ApplicationController
                 when "2" then
                   case params[:range_likes_number]
                     when "1" then
-                      @reviews = Review.where(updated_at: from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at: from..to).left_outer_joins(:like_reviews).includes(:product,:user).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").length
                     when "2" then
-                      @reviews = Review.where(updated_at: from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at: from..to).left_outer_joins(:like_reviews).includes(:product,:user).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").length
                     when "3" then
-                      @reviews = Review.where(updated_at: from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at: from..to).left_outer_joins(:like_reviews).includes(:product,:user).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").length
 
                     else
-                      @reviews = Review.where(updated_at: from..to).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at: from..to).left_outer_joins(:like_reviews).includes(:product,:user).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from..to).group("reviews.id").length
                     end
                 when "3" then
                   case params[:range_likes_number]
                     when "1" then
-                      @reviews = Review.where(updated_at: from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at: from_year..to).left_outer_joins(:like_reviews).includes(:product,:user).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").length
                     when "2" then
-                      @reviews = Review.where(updated_at: from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at: from_year..to).left_outer_joins(:like_reviews).includes(:product,:user).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").length
                     when "3" then
-                      @reviews = Review.where(updated_at: from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at: from_year..to).left_outer_joins(:like_reviews).includes(:product,:user).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from_year..to).left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").length
 
                     else
-                      @reviews = Review.where(updated_at:from_year..to).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at:from_year..to).left_outer_joins(:like_reviews).includes(:product,:user).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from_year..to).group("reviews.id").length
                     end
               end
@@ -240,18 +229,18 @@ class Api::V1::ReviewsController < ApplicationController
               from_week = to.prev_week
               case params[:range_likes_number]
                 when "1" then
-                  @reviews = Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                  @reviews = Review.left_outer_joins(:like_reviews).includes(:product,:user).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                   @review_length = Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_week..to}).group("reviews.id").length
                 when "2" then
-                  @reviews = Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                  @reviews = Review.left_outer_joins(:like_reviews).includes(:product,:user).where(like_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                   @review_length = Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from..to}).group("reviews.id").length
                 when "3" then
-                  @reviews = Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                  @reviews = Review.left_outer_joins(:like_reviews).includes(:product,:user).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
                   @review_length = Review.left_outer_joins(:like_reviews).where(like_reviews:{updated_at:from_year..to}).group("reviews.id").length
 
                 else
                   @review_length = Review.count
-                  @reviews = Review.left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+                  @reviews = Review.left_outer_joins(:like_reviews).includes(:product,:user).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
               end
             end
           when "1" then
@@ -266,25 +255,25 @@ class Api::V1::ReviewsController < ApplicationController
                 when "2" then
                   case params[:range_populer_number]
                     when "2" then
-                      @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).includes(:product,:user).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").length
                     when "3" then
-                      @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                      @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).includes(:product,:user).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                       @review_length = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").length
                     else
-                      @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
-                      @review_length = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).count
+                      @reviews = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).includes(:product,:user).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                      @review_length = Review.where(updated_at:from..to).left_outer_joins(:acsess_reviews).length
                     end
                 when "3" then
                   case params[:range_populer_number]
                   when "2" then
-                    @reviews = Review.where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                    @reviews = Review.where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).includes(:product,:user).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                     @review_length = Review.where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").length
                   when "3" then
-                    @reviews = Review.where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                    @reviews = Review.where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).includes(:product,:user).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                     @review_length = Review.where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").length
                   else
-                    @reviews = Review.where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                    @reviews = Review.where(updated_at:from_year..to).left_outer_joins(:acsess_reviews).includes(:product,:user).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                     @review_length = Review.where(updated_at:from_year..to).count
                   end
               end
@@ -296,14 +285,14 @@ class Api::V1::ReviewsController < ApplicationController
               from_year_accsess = to.beginning_of_year
               case params[:range_populer_number]
                 when "2" then
-                  @reviews = Review.left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                  @reviews = Review.left_outer_joins(:acsess_reviews).includes(:product,:user).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                   @review_length = Review.left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_acsess..to}).group("reviews.id").length
                 when "3" then
-                  @reviews = Review.left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                  @reviews = Review.left_outer_joins(:acsess_reviews).includes(:product,:user).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                   @review_length = Review.left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from_year_accsess..to}).group("reviews.id").length
                 else
                   @review_length = Review.count
-                  @reviews = Review.left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+                  @reviews = Review.left_outer_joins(:acsess_reviews).includes(:product,:user).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
                 end
           end
         end
@@ -315,14 +304,14 @@ class Api::V1::ReviewsController < ApplicationController
           from_year = to.prev_year
           case params[:range_number]
             when "2" then
-              @reviews = Review.where(updated_at:from..to).page(params[:page]).per(2)
-              @review_length = Review.where(updated_at:from..to).count
+              @reviews = Review.includes(:product,:user).where(updated_at:from..to).page(params[:page]).per(2)
+              @review_length = Review.where(updated_at:from..to).length
             when "3" then
-              @reviews = Review.where(updated_at:from_year..to).page(params[:page]).per(2)
-              @review_length = Review.where(updated_at:from_year..to).count
+              @reviews = Review.includes(:product,:user).where(updated_at:from_year..to).page(params[:page]).per(2)
+              @review_length = Review.where(updated_at:from_year..to).length
           end
         else
-          @reviews = Review.page(params[:page]).per(2)
+          @reviews = Review.includes(:product,:user).page(params[:page]).per(2)
           @review_length = Review.count
         end
       end

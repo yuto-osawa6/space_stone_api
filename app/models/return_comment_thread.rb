@@ -2,6 +2,9 @@ class ReturnCommentThread < ApplicationRecord
   belongs_to :comment_thread
   belongs_to :user
 
+  has_many :like_return_comment_threads,dependent: :destroy
+  has_many :like_return_comment_threads_users,through: :like_return_comment_threads,source: :user
+
   # has_many :return_return_comment_threads,dependent: :destroy
   has_many :return_return_comment_threads,dependent: :destroy
   has_many :return_returns,through: :return_return_comment_threads,source: :return_return_thread,dependent: :destroy

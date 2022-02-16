@@ -506,5 +506,6 @@ json.set! :top100 do
   json.array! @tags do |tag|
     json.tag_id tag.id
     json.tag tag.month.strftime("%Y年%-m月")
+    json.month tag.month
   end
 end

@@ -82,6 +82,8 @@ Rails.application.routes.draw do
           get "castssearch"
           get "findcast"
           get "productSearch"
+          get "monthduring"
+          get "top100"
         end
       end
 

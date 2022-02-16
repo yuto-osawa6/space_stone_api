@@ -51,10 +51,10 @@ class Api::V1::MainsController < ApplicationController
     @year = Year.all.order(year:"asc")
     # doneyet_completion length
     @season = Season.order(season_number:"asc")
-     # doneyet_2 3年間データーをどうするか
-    from = Date.today.ago(3.years)
-    to = Date.today
-    @tags = MonthDuring.where(month:from...to).order(month:"asc")
+    #  # doneyet_2 3年間データーをどうするか、一年間に設定
+    # from = Date.today.ago(3.years)
+    # to = Date.today
+    @tags = MonthDuring.all.order(month:"asc").limit(12)
 
     render :index,formats: :json
 
@@ -182,15 +182,86 @@ class Api::V1::MainsController < ApplicationController
 
   end
 
-  # def setgrid
-  #   if session[:grid_id]
-  #     @grid = session[:grid_id]
-  #     puts "aaa"
-  #   else 
-  #     session[:grid_id] = "01"
-  #     @grid = session[:grid_id]
-  #     render :grid, formats: :json
-  #     puts "bbb"
-  #   end
-  # end
+  def monthduring
+    @month = MonthDuring.all.order(created_at: :desc).limit(12)
+    render json:{month: @month}
+  end
+
+
+
+  def top100
+    # @month = 
+    case params[:genre]
+    when "1" then
+      if params[:month].present?
+        from = params[:month].to_date
+        to = from.end_of_month
+        @product =  Product.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(100)
+      else
+        to = Time.current
+        from = to.ago(5.years)
+        @product =  Product.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(100)
+      end
+      
+    when "2" then
+      if params[:month].present?
+        from = params[:month].to_date
+        to = from.end_of_month
+        @product =  Product.left_outer_joins(:scores).includes(:styles,:janls,:scores,:likes).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).limit(100)
+      else
+        to = Time.current
+        from = to.ago(5.years)
+        @product =  Product.left_outer_joins(:scores).includes(:styles,:janls,:scores,:likes).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).limit(100)
+      end
+
+    when "3" then
+      if params[:month].present?
+        from = params[:month].to_date
+        to = from.end_of_month
+        @product = Product.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where(acsesses:{date:from...to}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(100)
+
+      else
+        to = Time.current
+        from = to.ago(5.years)
+        # @productids = Product.joins(:acsesses).group("products.id").order(Arel.sql('sum(count) DESC')).limit(100).ids
+        @product = Product.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where(acsesses:{date:from...to}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(100)
+        
+      end
+    when "4" then
+      if params[:month].present?
+        from = params[:month].to_date
+        to = from.end_of_month
+        @product = Product.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where(reviews:{updated_at:from...to}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(100)
+      else
+        to = Time.current
+        from = to.ago(5.years)
+        @product = Product.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where(reviews:{updated_at:from...to}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(100)
+      end
+    when "5" then
+      if params[:month].present?
+        from = params[:month].to_date
+        to = from.end_of_month
+        @product = Product.left_outer_joins(:thereds).includes(:styles,:janls,:scores,:thereds).where(thereds:{updated_at:from...to}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(100)
+      else
+        to = Time.current
+        from = to.ago(5.years)
+        @product = Product.left_outer_joins(:thereds).includes(:styles,:janls,:scores,:thereds).where(thereds:{updated_at:from...to}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(100)
+      end
+
+    else
+
+      if params[:month].present?
+        from = params[:month].to_date
+        to = from.end_of_month
+        @product =  Product.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(100)
+      else
+        to = Time.current
+        from = to.ago(5.years)
+        @product =  Product.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(100)
+      end
+
+    end
+    render :top100, formats: :json
+  end
+
 end

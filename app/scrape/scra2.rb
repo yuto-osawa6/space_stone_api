@@ -281,7 +281,11 @@ class Scra2
   def ota7
     # ReviewComment.where(review_id:3).like_comment_reviews 
     # puts 2/12.to_f*100
-    puts "aaa".encode("UTF-8").bytesize
+    # puts "aaa".encode("UTF-8").bytesize
+    to = Time.current 
+    from = to.prev_month
+    from_year = to.prev_year
+    @product = Product.all.left_outer_joins(:likes).where(likes:{updated_at:from...to}).group("likes.id").order(Arel.sql("count(product_id)")).ids
 
   end
 

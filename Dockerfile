@@ -5,12 +5,19 @@ RUN apt-get update -qq && apt-get install -y nodejs postgresql-client yarn
 
 
 
-RUN mkdir /goldfolten
-WORKDIR /goldfolten
-COPY Gemfile /goldfolten/Gemfile
-COPY Gemfile.lock /goldfolten/Gemfile.lock
+# RUN mkdir /goldfolten
+# WORKDIR /goldfolten
+# COPY Gemfile /goldfolten/Gemfile
+# COPY Gemfile.lock /goldfolten/Gemfile.lock
+# RUN bundle install
+# COPY . /goldfolten
+
+RUN mkdir /goldfield
+WORKDIR /goldfield
+COPY Gemfile /goldfield/Gemfile
+COPY Gemfile.lock /goldfield/Gemfile.lock
 RUN bundle install
-COPY . /goldfolten
+COPY . /goldfield
 
 # Add a script to be executed every time the container starts.
 COPY entrypoint.sh /usr/bin/

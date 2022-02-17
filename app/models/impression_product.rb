@@ -1,0 +1,2 @@
+class ImpressionProduct < ApplicationRecord
+end

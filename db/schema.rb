@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_18_113621) do
+ActiveRecord::Schema.define(version: 2022_02_18_153358) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -151,10 +151,11 @@ ActiveRecord::Schema.define(version: 2022_02_18_113621) do
     t.integer "episord"
     t.integer "season"
     t.string "season_title"
-    t.string "time"
+    t.time "time"
     t.text "image"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "release_date"
     t.index ["product_id"], name: "index_episords_on_product_id"
   end
 

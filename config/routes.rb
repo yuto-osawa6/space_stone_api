@@ -112,6 +112,8 @@ Rails.application.routes.draw do
       end
       resources :styles,:only =>[:index,:create] do
       end
+      resources :casts,:only =>[:index,:create] do
+      end
       # 
       get "session_user", to:"session_user#login_check"
 

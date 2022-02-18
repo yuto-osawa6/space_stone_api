@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_16_172925) do
+ActiveRecord::Schema.define(version: 2022_02_18_113621) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -96,28 +96,10 @@ ActiveRecord::Schema.define(version: 2022_02_16_172925) do
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
-  create_table "cast_products", charset: "utf8mb4", force: :cascade do |t|
-    t.bigint "cast_id"
-    t.bigint "product_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["cast_id"], name: "index_cast_products_on_cast_id"
-    t.index ["product_id"], name: "index_cast_products_on_product_id"
-  end
-
   create_table "casts", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "character_products", charset: "utf8mb4", force: :cascade do |t|
-    t.bigint "products_id"
-    t.bigint "characters_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["characters_id"], name: "index_character_products_on_characters_id"
-    t.index ["products_id"], name: "index_character_products_on_products_id"
   end
 
   create_table "characters", charset: "utf8mb4", force: :cascade do |t|
@@ -410,17 +392,6 @@ ActiveRecord::Schema.define(version: 2022_02_16_172925) do
     t.integer "season_number"
   end
 
-  create_table "staff_products", charset: "utf8mb4", force: :cascade do |t|
-    t.bigint "products_id"
-    t.bigint "staffs_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.bigint "occupations_id"
-    t.index ["occupations_id"], name: "index_staff_products_on_occupations_id"
-    t.index ["products_id"], name: "index_staff_products_on_products_id"
-    t.index ["staffs_id"], name: "index_staff_products_on_staffs_id"
-  end
-
   create_table "staffs", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.text "image"
@@ -552,8 +523,6 @@ ActiveRecord::Schema.define(version: 2022_02_16_172925) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "articles", "users"
-  add_foreign_key "cast_products", "casts"
-  add_foreign_key "cast_products", "products"
   add_foreign_key "comment_reviews", "reviews"
   add_foreign_key "comment_reviews", "users"
   add_foreign_key "comment_threads", "thereds"

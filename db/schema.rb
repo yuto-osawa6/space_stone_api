@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_09_090059) do
+ActiveRecord::Schema.define(version: 2022_02_20_200004) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -96,19 +96,21 @@ ActiveRecord::Schema.define(version: 2022_02_09_090059) do
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
-  create_table "cast_products", charset: "utf8mb4", force: :cascade do |t|
-    t.bigint "cast_id"
-    t.bigint "product_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["cast_id"], name: "index_cast_products_on_cast_id"
-    t.index ["product_id"], name: "index_cast_products_on_product_id"
-  end
-
   create_table "casts", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "characters", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.text "image"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "product_id"
+    t.bigint "cast_id"
+    t.index ["cast_id"], name: "index_characters_on_cast_id"
+    t.index ["product_id"], name: "index_characters_on_product_id"
   end
 
   create_table "comment_reviews", charset: "utf8mb4", force: :cascade do |t|
@@ -149,15 +151,30 @@ ActiveRecord::Schema.define(version: 2022_02_09_090059) do
     t.integer "episord"
     t.integer "season"
     t.string "season_title"
-    t.string "time"
+    t.time "time"
     t.text "image"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "release_date"
     t.index ["product_id"], name: "index_episords_on_product_id"
   end
 
   create_table "images", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "impression_products", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "products_id", null: false
+    t.bigint "impressions_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["impressions_id"], name: "index_impression_products_on_impressions_id"
+    t.index ["products_id"], name: "index_impression_products_on_products_id"
+  end
+
+  create_table "impressions", charset: "utf8mb4", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -174,6 +191,21 @@ ActiveRecord::Schema.define(version: 2022_02_09_090059) do
   create_table "janls", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.text "link"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "kisetsu_products", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "kisetsu_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["kisetsu_id"], name: "index_kisetsu_products_on_kisetsu_id"
+    t.index ["product_id"], name: "index_kisetsu_products_on_product_id"
+  end
+
+  create_table "kisetsus", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -261,6 +293,16 @@ ActiveRecord::Schema.define(version: 2022_02_09_090059) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "occupations", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "product_id"
+    t.bigint "staff_id"
+    t.index ["product_id"], name: "index_occupations_on_product_id"
+    t.index ["staff_id"], name: "index_occupations_on_staff_id"
+  end
+
   create_table "periods", charset: "utf8mb4", force: :cascade do |t|
     t.string "period"
     t.datetime "created_at", precision: 6, null: false
@@ -288,6 +330,12 @@ ActiveRecord::Schema.define(version: 2022_02_09_090059) do
     t.integer "season"
     t.time "time"
     t.date "year2"
+    t.string "kisetsu"
+    t.text "image_url2"
+    t.text "image_url3"
+    t.text "horizontal_image_url"
+    t.text "horizontal_image_url2"
+    t.text "horizontal_image_url3"
   end
 
   create_table "questions", charset: "utf8mb4", force: :cascade do |t|
@@ -363,6 +411,30 @@ ActiveRecord::Schema.define(version: 2022_02_09_090059) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "season_number"
+  end
+
+  create_table "staffs", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.text "image"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "studio_products", charset: "utf8mb4", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "product_id", null: false
+    t.bigint "studio_id", null: false
+    t.index ["product_id"], name: "index_studio_products_on_product_id"
+    t.index ["studio_id"], name: "index_studio_products_on_studio_id"
+  end
+
+  create_table "studios", charset: "utf8mb4", force: :cascade do |t|
+    t.string "company", null: false
+    t.string "overview"
+    t.text "image"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "style_products", charset: "utf8mb4", force: :cascade do |t|
@@ -472,8 +544,6 @@ ActiveRecord::Schema.define(version: 2022_02_09_090059) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "articles", "users"
-  add_foreign_key "cast_products", "casts"
-  add_foreign_key "cast_products", "products"
   add_foreign_key "comment_reviews", "reviews"
   add_foreign_key "comment_reviews", "users"
   add_foreign_key "comment_threads", "thereds"

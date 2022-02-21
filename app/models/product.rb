@@ -1,11 +1,12 @@
 class Product < ApplicationRecord
+  # doneyet-1 下
   has_many :cast_products
   has_many :casts, through: :cast_products
 
-  has_many :janl_products
+  has_many :janl_products,dependent: :destroy
   has_many :janls, through: :janl_products
 
-  has_many :style_products
+  has_many :style_products,dependent: :destroy
   has_many :styles, through: :style_products
 
   has_many :likes, dependent: :destroy
@@ -30,11 +31,23 @@ class Product < ApplicationRecord
   has_many :tags, dependent: :destroy
   has_many :tags_month_durings, through: :thereds, source: :month_during
 
-  has_many :comprehensives,dependent: :destroy
+  # has_many :comprehensives,dependent: :destroy
 
   # 
   has_many :article_products, dependent: :destroy
   has_many :articles, through: :article_products, source: :article
+
+  has_many :kisetsu_products,dependent: :destroy
+  has_many :kisetsus, through: :kisetsu_products
+
+  has_many :studio_products, dependent: :destroy
+  has_many :studios, through: :studio_products
+
+  has_many :characters, dependent: :destroy
+  has_many :casts, through: :characters
+
+  has_many :occupations, dependent: :destroy
+  has_many :staffs, through: :occupations
 
   ransacker :likes_count do
     query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'

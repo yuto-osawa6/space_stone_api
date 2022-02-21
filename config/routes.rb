@@ -159,6 +159,8 @@ Rails.application.routes.draw do
             get "productlist"
           end
         end
+        resources :news,only:[:create,:destroy] do
+        end
       end
       # acsess
       namespace :acsesses do

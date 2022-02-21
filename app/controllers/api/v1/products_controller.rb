@@ -222,7 +222,13 @@ class Api::V1::ProductsController < ApplicationController
       @product.studio_ids = params[:studios_array]
       @product.style_ids = params[:formats_array]
 
-      @product.save
+    # if 
+    # if 
+    @product.save 
+    #   @news = Newmessage.create(title:@product.title,description:"#{params[:product][:delivery_start].strftime("%Y/%m/%d %H:%M:%S")}に放送開始",judge:1)
+    # else
+
+    # end
 
     params[:episord].each do |i|
       # episord

@@ -1,11 +1,62 @@
 class Api::V1::Mainblocks::MainsController < ApplicationController
   def new_netflix
-    @new_netflix = Product.where("delivery_start <= ?", Date.today).or(Product.where(new_content:true)).includes(:styles,:janls,:tags,:scores).order(delivery_start:"desc")
+    # @new_netflix = Product.where("delivery_start <= ?", Date.today).or(Product.where(new_content:true)).includes(:styles,:janls,:tags,:scores).order(delivery_start:"desc")
+    # v2.0
+    # @new_netflix = Product.
+    current = Time.current
+    puts current.month
+
+    case current.month
+      when 1,2,3 then
+        @kisetsu = 5
+      when 4,5,6 then
+        @kisetsu = 2
+      when 7,8,9 then
+        @kisetsu = 3
+      when 10,11,12 then
+        @kisetsu = 4
+    end
+
+    @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
+    @new_netflix = Product.left_outer_joins(:acsesses,:kisetsus).includes(:styles,:janls,:tags,:scores).where(year:current.year).where(kisetsus:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    # Product.joins(:kisetsus).where(year:current.year).where(kisetsus:{id:@kisetsu}).order(Arel.sql('sum(count) DESC'))
     render :new_netflix,formats: :json
   end
 
   def pickup
-    @pickup = Product.where(pickup:true).includes(:styles,:janls,:tags,:scores)
+    # @pickup = Product.where(pickup:true).includes(:styles,:janls,:tags,:scores)
+    current = Time.current.ago(3.month)
+    current2 = Time.current.since(3.month)
+    puts current.month
+
+    case current.month
+      when 1,2,3 then
+        @kisetsu = 5
+      when 4,5,6 then
+        @kisetsu = 2
+      when 7,8,9 then
+        @kisetsu = 3
+      when 10,11,12 then
+        @kisetsu = 4
+    end
+
+    case current2.month
+    when 1,2,3 then
+      @kisetsu2 = 5
+    when 4,5,6 then
+      @kisetsu2 = 2
+    when 7,8,9 then
+      @kisetsu2 = 3
+    when 10,11,12 then
+      @kisetsu2 = 4
+  end
+
+    @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
+    @pickup = Product.left_outer_joins(:acsesses,:kisetsus).includes(:styles,:janls,:tags,:scores).where(year:current.year).where(kisetsus:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+
+    @current_season2 = "#{current2.year} #{Kisetsu.find(@kisetsu2).name}"
+    @pickup2 = Product.left_outer_joins(:acsesses,:kisetsus).includes(:styles,:janls,:tags,:scores).where(year:current2.year).where(kisetsus:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
+
     render :pickup,formats: :json
   end
 
@@ -40,8 +91,12 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   end
 
   def worldclass
-    @period = Period.order(created_at:"desc").limit(1)
-    @topten = @period[0].toptens.where.not(product_id:nil).includes(product: :styles).includes(product: :janls).includes(product: :scores)
+    # @period = Period.order(created_at:"desc").limit(1)
+    # @topten = @period[0].toptens.where.not(product_id:nil).includes(product: :styles).includes(product: :janls).includes(product: :scores)
+    now = Time.current 
+    from = now.prev_year
+    to = now.next_year
+    @worldclass = Product.left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls,:scores)
     render :worldclass,formats: :json
   end
 

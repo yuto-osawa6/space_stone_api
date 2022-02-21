@@ -41,3 +41,5 @@ json.set! :products do
   end
 
 end
+
+json.set! :current_season, @current_season

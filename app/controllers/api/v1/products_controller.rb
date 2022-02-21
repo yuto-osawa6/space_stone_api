@@ -198,13 +198,68 @@ class Api::V1::ProductsController < ApplicationController
     render :show,formats: :json
   end 
 
-  # def main
 
-  # end
+  def create
+    puts params
+#     {"product"=>{"title"=>"無職転生", "image_url"=>"https://mushokutensei.jp/wp-content/themes/mushoku_re/img/index/img_hero06.jpg", "description"=>"<p>現代日本に暮らす20年近く引きこもる34歳無職の主人公は、親が死去したのに伴い兄弟に見限られて家を追い出されてしまう。家を出た後、トラックに轢かれかけた高校生3人を助けようとして事故死してしまう。</p><p>ところが目が覚めた時、彼は赤ん坊になっていた。そして剣や魔法を目の当たりにし、異世界に転生したことに気づく。<strong>ルーデウス・グレイラット</strong>に転生した主人公は前世での後悔を振り返り、魔法を覚え、家族を大事にし、懸命に生きて、前世のトラウマを乗り越えて成長していく。</p>", "list"=>"https://mushokutensei.jp/", "year"=>2021, "kisetsu"=>["5"], "delivery_start"=>"2022-02-10T07:17:57.000Z", "delivery_end"=>"2022-02-17T07:20:52.000Z"}, "genres_array"=>[2], "formats_array"=>[1, 1, 1], "character_middle_data"=>[{"cast_id"=>6, "character_name"=>"ルーデウスグレイラット", "character_image"=>"https://s4.anilist.co/file/anilistcdn/character/large/b88348-bIe5XnXdRpmX.png"}], "studios_array"=>[1], "staff_middle"=>[{"cast_id"=>1, "character_name"=>"監督"}, {"cast_id"=>3, "character_name"=>"絵コンテンツ"}], "episord"=>[{"episord_number"=>1, "episord_tittle"=>"無職転", "episord_arasuzi"=>"<p><strong style=\"color: rgb(0, 0, 0);\">34歳・童貞・無職の引きこもりだった男は車に撥ねられ、その一生を終える……はずだった。しかし、男が次に目を覚ましたとき、そこは剣と魔法の異世界であった。少年・ルーデウスとして転生した男は考える、この世界ならば、自分も本気で生きていくことができるかもしれない……と。</strong></p>", "episord_image_url"=>"https://mushokutensei.jp/wp-content/uploads/2021/01/%E3%83%A1%E3%82%A4%E3%83%B3.jpg", "episord_time"=>"2022-02-19T15:17:20.000Z", "episord_release_date"=>"2022-02-09T18:31:00.000Z"}]}
+# web_1  | {"product"=>{"title"=>"無職転生", "image_url"=>"https://mushokutensei.jp/wp-content/themes/mushoku_re/img/index/img_hero06.jpg", "description"=>"<p>現代日本に暮らす20年近く引きこもる34歳無職の主人公は、親が死去したのに伴い兄弟に見限られて家を追い出されてしまう。家を出た後、トラックに轢かれかけた高校生3人を助けようとして事故死してしまう。</p><p>ところが目が覚めた時、彼は赤ん坊になっていた。そして剣や魔法を目の当たりにし、異世界に転生したことに気づく。<strong>ルーデウス・グレイラット</strong>に転生した主人公は前世での後悔を振り返り、魔法を覚え、家族を大事にし、懸命に生きて、前世のトラウマを乗り越えて成長していく。</p>", "list"=>"https://mushokutensei.jp/", "year"=>2021, "kisetsu"=>["5"], "delivery_start"=>"2022-02-10T07:17:57.000Z", "delivery_end"=>"2022-02-17T07:20:52.000Z"}, "genres_array"=>[2], "formats_array"=>[1, 1, 1], "character_middle_data"=>[{"cast_id"=>6, "character_name"=>"ルーデウスグレイラット", "character_image"=>"https://s4.anilist.co/file/anilistcdn/character/large/b88348-bIe5XnXdRpmX.png"}], "studios_array"=>[1], "staff_middle"=>[{"cast_id"=>1, "character_name"=>"監督"}, {"cast_id"=>3, "character_name"=>"絵コンテンツ"}], "episord"=>[{"episord_number"=>1, "episord_tittle"=>"無職転", "episord_arasuzi"=>"<p><strong style=\"color: rgb(0, 0, 0);\">34歳・童貞・無職の引きこもりだった男は車に撥ねられ、その一生を終える……はずだった。しかし、男が次に目を覚ましたとき、そこは剣と魔法の異世界であった。少年・ルーデウスとして転生した男は考える、この世界ならば、自分も本気で生きていくことができるかもしれない……と。</strong></p>", "episord_image_url"=>"https://mushokutensei.jp/wp-content/uploads/2021/01/%E3%83%A1%E3%82%A4%E3%83%B3.jpg", "episord_time"=>"2022-02-19T15:17:20.000Z", "episord_release_date"=>"2022-02-09T18:31:00.000Z"}], "controller"=>"api/v1/products", "action"=>"create"}
+    @product = Product.where(title:params[:product][:title]).first_or_initialize
+      @product.image_url = params[:product][:image_url]
+      @product.description = params[:product][:description]
+      @product.list = params[:product][:list]
+      @product.year = params[:product][:year]
+      @product.delivery_start = params[:product][:delivery_start]
+      @product.delivery_end = params[:product][:delivery_end]
+      @product.image_url2 = params[:product][:image_url2] 
+      @product.image_url3 = params[:product][:image_url3] 
+      @product.horizontal_image_url = params[:product][:image_urlh1] 
+      @product.horizontal_image_url2 = params[:product][:image_urlh2] 
+      @product.horizontal_image_url3 = params[:product][:image_urlh3] 
+
+
+      @product.janl_ids = params[:genres_array]
+      @product.kisetsu_ids = params[:product][:kisetsu]
+      @product.studio_ids = params[:studios_array]
+      @product.style_ids = params[:formats_array]
+
+      @product.save
+
+    params[:episord].each do |i|
+      # episord
+      @episord = Episord.where(episord:i[:episord_number],product_id:@product.id).first_or_initialize
+        @episord.title = i[:episode_title]
+        @episord.arasuzi = i[:episord_arasuzi]
+        @episord.image = i[:episord_image_url]
+        @episord.time = i[:episord_time]
+        @episord.release_date =i[:episord_release_date]
+        @episord.save
+    end
+
+    params[:staff_middle].each do |s|
+      @staff = Occupation.where(staff_id:s[:cast_id],product_id:@product.id).first_or_initialize
+      @staff.name = s[:character_name]
+      @staff.save
+    end
+    
+
+    params[:character_middle_data].each do |c|
+      # Character.create(name:e.character_name)
+      @character = Character.where(cast_id:c[:cast_id],product_id:@product.id,name:c[:character_name]).first_or_initialize
+      # @character.name = c[:character_name]
+      @character.image = c[:character_image]
+      # puts e
+      @character.save
+    end
+
+  end
 
   private
     def user_params
       params.require(:review).permit(:content).merge(product_id:11,user_id:3,title:"aaa")
+    end
+
+    def create_params
+      # params.require(:products).permit(:title,:image_url,:description,:list,)
     end
 
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_18_153358) do
+ActiveRecord::Schema.define(version: 2022_02_20_200004) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -107,10 +107,10 @@ ActiveRecord::Schema.define(version: 2022_02_18_153358) do
     t.text "image"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "products_id"
-    t.bigint "casts_id"
-    t.index ["casts_id"], name: "index_characters_on_casts_id"
-    t.index ["products_id"], name: "index_characters_on_products_id"
+    t.bigint "product_id"
+    t.bigint "cast_id"
+    t.index ["cast_id"], name: "index_characters_on_cast_id"
+    t.index ["product_id"], name: "index_characters_on_product_id"
   end
 
   create_table "comment_reviews", charset: "utf8mb4", force: :cascade do |t|
@@ -191,6 +191,21 @@ ActiveRecord::Schema.define(version: 2022_02_18_153358) do
   create_table "janls", charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.text "link"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "kisetsu_products", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "kisetsu_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["kisetsu_id"], name: "index_kisetsu_products_on_kisetsu_id"
+    t.index ["product_id"], name: "index_kisetsu_products_on_product_id"
+  end
+
+  create_table "kisetsus", charset: "utf8mb4", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -282,10 +297,10 @@ ActiveRecord::Schema.define(version: 2022_02_18_153358) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "products_id"
-    t.bigint "staffs_id", null: false
-    t.index ["products_id"], name: "index_occupations_on_products_id"
-    t.index ["staffs_id"], name: "index_occupations_on_staffs_id"
+    t.bigint "product_id"
+    t.bigint "staff_id"
+    t.index ["product_id"], name: "index_occupations_on_product_id"
+    t.index ["staff_id"], name: "index_occupations_on_staff_id"
   end
 
   create_table "periods", charset: "utf8mb4", force: :cascade do |t|
@@ -316,6 +331,11 @@ ActiveRecord::Schema.define(version: 2022_02_18_153358) do
     t.time "time"
     t.date "year2"
     t.string "kisetsu"
+    t.text "image_url2"
+    t.text "image_url3"
+    t.text "horizontal_image_url"
+    t.text "horizontal_image_url2"
+    t.text "horizontal_image_url3"
   end
 
   create_table "questions", charset: "utf8mb4", force: :cascade do |t|
@@ -401,12 +421,12 @@ ActiveRecord::Schema.define(version: 2022_02_18_153358) do
   end
 
   create_table "studio_products", charset: "utf8mb4", force: :cascade do |t|
-    t.bigint "products_id"
-    t.bigint "studios_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["products_id"], name: "index_studio_products_on_products_id"
-    t.index ["studios_id"], name: "index_studio_products_on_studios_id"
+    t.bigint "product_id", null: false
+    t.bigint "studio_id", null: false
+    t.index ["product_id"], name: "index_studio_products_on_product_id"
+    t.index ["studio_id"], name: "index_studio_products_on_studio_id"
   end
 
   create_table "studios", charset: "utf8mb4", force: :cascade do |t|

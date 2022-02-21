@@ -289,5 +289,10 @@ class Scra2
 
   end
 
+  def ota7
+    @product= Product.find(4)
+    @product.destroy
+  end
+
   
 end

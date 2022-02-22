@@ -66,6 +66,7 @@ class Api::V1::MainsController < ApplicationController
    
     @categories = params[:q][:janls_id_in].drop(1)
     @casts = params[:q][:casts_id_in].drop(1)
+    @studios = params[:q][:studios_id_in].drop(1)
 
     # @genres = Janl.where(id:@categories)
 
@@ -83,6 +84,13 @@ class Api::V1::MainsController < ApplicationController
       # puts @matchAllCasts
       castsIds = @matchAllCasts.map(&:product_id)
       pushIdArrays.push(castsIds)
+    end
+
+    unless  @studios.length < 2
+      @matchAllStudios = StudioProduct.where(studio_id: @studios).select(:product_id).group(:product_id).having('count(product_id) = ?', @studios.length)
+      # puts @matchAllCasts
+      studiosIds = @matchAllStudios.map(&:product_id)
+      pushIdArrays.push(studiosIds)
     end
 
 
@@ -130,6 +138,12 @@ class Api::V1::MainsController < ApplicationController
     genres_title = params[:data]
     @casts = Cast.where("name LIKE ?", "%#{genres_title}%")
     render json:{casts:@casts}
+  end
+
+  def studiossearch
+    genres_title = params[:data]
+    @studios = Studio.where("company LIKE ?", "%#{genres_title}%")
+    render json:{studios:@studios}
   end
 
 

@@ -208,6 +208,7 @@ class Api::V1::ProductsController < ApplicationController
       @product.description = params[:product][:description]
       @product.list = params[:product][:list]
       @product.year = params[:product][:year]
+      @product.year2 = "#{params[:product][:year]}-01-01"
       @product.delivery_start = params[:product][:delivery_start]
       @product.delivery_end = params[:product][:delivery_end]
       @product.image_url2 = params[:product][:image_url2] 

@@ -194,6 +194,12 @@ class Api::V1::ProductsController < ApplicationController
     # @quesionids = @product.thereds.thered_question_questions
     @quesion = Question.all
 
+    # froma = 
+    to2 =  d.since(7.days)
+    # 2.0
+    @episord = @product.episords.where(release_date:d...to2).order(release_date: :asc).limit(1)
+    @character = Character.where(product_id:@product.id).includes(:cast)
+    @staff = @product.occupations.includes(:staff)
 
     render :show,formats: :json
   end 
@@ -234,7 +240,7 @@ class Api::V1::ProductsController < ApplicationController
     params[:episord].each do |i|
       # episord
       @episord = Episord.where(episord:i[:episord_number],product_id:@product.id).first_or_initialize
-        @episord.title = i[:episode_title]
+        @episord.title = i[:episord_title]
         @episord.arasuzi = i[:episord_arasuzi]
         @episord.image = i[:episord_image_url]
         @episord.time = i[:episord_time]

@@ -1,7 +1,7 @@
 class Product < ApplicationRecord
   # doneyet-1 下
-  has_many :cast_products
-  has_many :casts, through: :cast_products
+  # has_many :cast_products
+  # has_many :casts, through: :cast_products
 
   has_many :janl_products,dependent: :destroy
   has_many :janls, through: :janl_products

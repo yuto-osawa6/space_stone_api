@@ -84,6 +84,7 @@ Rails.application.routes.draw do
           get "productSearch"
           get "monthduring"
           get "top100"
+          get "studiossearch"
         end
       end
 
@@ -158,6 +159,8 @@ Rails.application.routes.draw do
             post "uploadfile"
             get "productlist"
           end
+        end
+        resources :news,only:[:create,:destroy] do
         end
       end
       # acsess

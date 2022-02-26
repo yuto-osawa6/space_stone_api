@@ -359,5 +359,25 @@ class Scra2
 
   end
 
+  def ota11
+    current = Time.current
+    puts current.month
+
+    case current.month
+      when 1,2,3 then
+        @kisetsu = 5
+      when 4,5,6 then
+        @kisetsu = 2
+      when 7,8,9 then
+        @kisetsu = 3
+      when 10,11,12 then
+        @kisetsu = 4
+    end
+
+    @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
+    puts @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+
+  end
+
   
 end

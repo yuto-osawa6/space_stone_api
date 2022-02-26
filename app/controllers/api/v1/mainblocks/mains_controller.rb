@@ -18,7 +18,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @new_netflix = Product.left_outer_joins(:acsesses,:kisetsus,:years).includes(:styles,:janls,:tags,:scores).where(years:{year:"#{current.year}-01-01"}).where(kisetsus:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
     # Product.joins(:kisetsus).where(year:current.year).where(kisetsus:{id:@kisetsu}).order(Arel.sql('sum(count) DESC'))
     render :new_netflix,formats: :json
   end
@@ -52,10 +52,10 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @pickup = Product.left_outer_joins(:acsesses,:kisetsus).includes(:styles,:janls,:tags,:scores).where(year:current.year).where(kisetsus:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @pickup = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
 
     @current_season2 = "#{current2.year} #{Kisetsu.find(@kisetsu2).name}"
-    @pickup2 = Product.left_outer_joins(:acsesses,:kisetsus).includes(:styles,:janls,:tags,:scores).where(year:current2.year).where(kisetsus:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @pickup2 = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current2}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
 
     render :pickup,formats: :json
   end

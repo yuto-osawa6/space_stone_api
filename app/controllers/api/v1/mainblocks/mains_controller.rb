@@ -18,7 +18,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @new_netflix = Product.left_outer_joins(:acsesses,:kisetsus).includes(:styles,:janls,:tags,:scores).where(year:current.year).where(kisetsus:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @new_netflix = Product.left_outer_joins(:acsesses,:kisetsus,:years).includes(:styles,:janls,:tags,:scores).where(years:{year:"#{current.year}-01-01"}).where(kisetsus:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
     # Product.joins(:kisetsus).where(year:current.year).where(kisetsus:{id:@kisetsu}).order(Arel.sql('sum(count) DESC'))
     render :new_netflix,formats: :json
   end

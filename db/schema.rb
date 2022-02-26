@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_20_200004) do
+ActiveRecord::Schema.define(version: 2022_02_26_021451) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -531,8 +531,28 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  create_table "year_products", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "year_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_year_products_on_product_id"
+    t.index ["year_id"], name: "index_year_products_on_year_id"
+  end
+
+  create_table "year_season_products", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "year_id"
+    t.bigint "season_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_year_season_products_on_product_id"
+    t.index ["season_id"], name: "index_year_season_products_on_season_id"
+    t.index ["year_id"], name: "index_year_season_products_on_year_id"
+  end
+
   create_table "years", charset: "utf8mb4", force: :cascade do |t|
-    t.string "year"
+    t.date "year"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

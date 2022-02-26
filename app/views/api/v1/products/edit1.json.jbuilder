@@ -88,5 +88,8 @@ json.set! :product do
   json.product_kisetsu do
     json.array! @product.kisetsus
   end
+  json.product_year do
+    json.array! @product.years
+  end
 
 end

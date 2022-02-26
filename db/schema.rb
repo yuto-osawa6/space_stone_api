@@ -543,11 +543,11 @@ ActiveRecord::Schema.define(version: 2022_02_26_021451) do
   create_table "year_season_products", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id"
     t.bigint "year_id"
-    t.bigint "season_id"
+    t.bigint "kisetsu_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["kisetsu_id"], name: "index_year_season_products_on_kisetsu_id"
     t.index ["product_id"], name: "index_year_season_products_on_product_id"
-    t.index ["season_id"], name: "index_year_season_products_on_season_id"
     t.index ["year_id"], name: "index_year_season_products_on_year_id"
   end
 

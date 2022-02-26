@@ -269,6 +269,8 @@ class Api::V1::ProductsController < ApplicationController
   def edit1
     # puts params
     @product = Product.find(params[:id])
+    # @yearSeason = YearSeasonProduct.where(product_id:@product.id).includes(:year_season_years)
+    @year = Year.left_outer_joins(:year_season_products).includes(:year_season_seasons).where(year_season_products:{product_id:@product.id}).distinct
     # render json:{
     #   # products:@product
     # }
@@ -334,18 +336,33 @@ class Api::V1::ProductsController < ApplicationController
       if c[:id].nil?
         @character = Character.where(cast_id:c[:cast_id],product_id:@product.id,name:c[:character_name]).first_or_initialize
         @character.image = c[:character_image]
-        @character.save
+        # @character.save
       else
         @character = Character.where(id:c[:id],cast_id:c[:cast_id],product_id:@product.id).first_or_initialize
         @character.name = c[:character_name]
         @character.image = c[:character_image]
-        @character.save
+        # @character.save
       end
       character << @character
 
     end
     @product.characters = character
-  
+
+    yearSeason = []  
+    params[:product][:year_season].each do |y|
+      puts y
+      year_id = Year.where(year:"#{y[:year]}-01-01")[0].id
+     
+      y[:season].each do |s|
+        puts year_id,s,@product_id
+        @yearSeason = YearSeasonProduct.where(product_id:@product.id,kisetsu_id:s,year_id:year_id).first_or_initialize
+        puts @yearSeason.inspect
+        yearSeason << @yearSeason
+      end
+    end
+    puts yearSeason
+
+    @product.year_season_products = yearSeason
     @product.save
 end 
 

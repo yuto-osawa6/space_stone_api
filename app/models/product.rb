@@ -55,7 +55,7 @@ class Product < ApplicationRecord
   # 3tables
   has_many :year_season_products, dependent: :destroy
   has_many :year_season_years, through: :year_season_products, source: :year
-  has_many :year_season_seasons,through: :year_season_products, source: :season
+  has_many :year_season_seasons,through: :year_season_products, source: :kisetsu
 
   ransacker :likes_count do
     query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'

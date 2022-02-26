@@ -71,6 +71,20 @@ json.set! :product do
     end
   end
 
+  # json.form_year_season do
+  #   json.array! @product.year_season_years do |ys|
+  #     json.year = ys.id
+  #     json.season = ys.year_season_seasons.ids
+  #   end
+  # end
+  # @yearSeason
+  json.form_year_season do
+    json.array!  @year do |ys|
+      json.year = ys.year.year
+      json.season = ys.year_season_seasons.ids
+    end
+  end
+
 
 
   json.product_genres do

@@ -18,8 +18,8 @@ Rails.application.routes.draw do
         collection do
           # get "red"
           post "red"
-
           get "left"
+          get "edit1"
         end
         resources :likes, only: [:create, :destroy] do
           collection do

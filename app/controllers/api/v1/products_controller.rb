@@ -240,7 +240,7 @@ class Api::V1::ProductsController < ApplicationController
     params[:episord].each do |i|
       # episord
       @episord = Episord.where(episord:i[:episord_number],product_id:@product.id).first_or_initialize
-        @episord.title = i[:episord_title]
+        @episord.title = i[:episord_tittle]
         @episord.arasuzi = i[:episord_arasuzi]
         @episord.image = i[:episord_image_url]
         @episord.time = i[:episord_time]
@@ -265,6 +265,98 @@ class Api::V1::ProductsController < ApplicationController
     end
 
   end
+
+  def edit1
+    # puts params
+    @product = Product.find(params[:id])
+    # render json:{
+    #   # products:@product
+    # }
+    render :edit1,formats: :json
+  end
+
+  def update
+    puts params
+    # aaaaaa
+    @product = Product.where(id:params[:id]).first_or_initialize
+    @product.title = params[:product][:title]
+    @product.image_url = params[:product][:image_url]
+    @product.description = params[:product][:description]
+    @product.list = params[:product][:list]
+    @product.year = params[:product][:year]
+    @product.year2 = "#{params[:product][:year]}-01-01"
+    @product.delivery_start = params[:product][:delivery_start]
+    @product.delivery_end = params[:product][:delivery_end]
+    @product.image_url2 = params[:product][:image_url2] 
+    @product.image_url3 = params[:product][:image_url3] 
+    @product.horizontal_image_url = params[:product][:image_urlh1] 
+    @product.horizontal_image_url2 = params[:product][:image_urlh2] 
+    @product.horizontal_image_url3 = params[:product][:image_urlh3] 
+
+    @product.janl_ids = params[:genres_array]
+    @product.kisetsu_ids = params[:product][:kisetsu]
+    @product.studio_ids = params[:studios_array]
+    @product.style_ids = params[:formats_array]
+    
+  # @product.save 
+  
+  
+  # puts params[:episord]
+  # @product.episords =  params[:episord].each_with_index do |i,index|
+  #   @product.episords[index] = Episord.where(episord:i[:episord_number],product_id:@product.id).first_or_initialize
+  #   @product.episords[index].title = i[:episord_tittle]
+  #   @product.episords[index].arasuzi = i[:episord_arasuzi]
+  #   @product.episords[index].image = i[:episord_image_url]
+  #   @product.episords[index].time = i[:episord_time]
+  #   @product.episords[index].release_date =i[:episord_release_date]
+  #   # @episord.save
+  # end
+  episord = []
+  params[:episord].each do |i|
+    @episord = Episord.where(episord:i[:episord_number],product_id:@product.id).first_or_initialize
+    @episord.title = i[:episord_tittle]
+    @episord.arasuzi = i[:episord_arasuzi]
+    @episord.image = i[:episord_image_url]
+    @episord.time = i[:episord_time]
+    @episord.release_date =i[:episord_release_date]
+    # @episord.save
+    episord<<@episord
+  end
+
+  # puts episord22[0].id
+  @product.episords = episord
+  # @product.save
+
+  staff = []
+  params[:staff_middle].each do |s|
+    @staff = Occupation.where(staff_id:s[:cast_id],product_id:@product.id).first_or_initialize
+    @staff.name = s[:character_name]
+    # @staff.save
+    staff << @staff
+  end
+  @product.occupations = staff
+
+  # puts staff
+  
+  character = []
+  params[:character_middle_data].each do |c| 
+    if c[:id].nil?
+      @character = Character.where(cast_id:c[:cast_id],product_id:@product.id,name:c[:character_name]).first_or_initialize
+      @character.image = c[:character_image]
+      @character.save
+    else
+      @character = Character.where(id:c[:id],cast_id:c[:cast_id],product_id:@product.id).first_or_initialize
+      @character.name = c[:character_name]
+      @character.image = c[:character_image]
+      @character.save
+    end
+    character << @character
+
+  end
+  @product.characters = character
+  
+  @product.save
+end 
 
   private
     def user_params

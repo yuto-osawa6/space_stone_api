@@ -315,6 +315,14 @@ class Scra2
 
 
   end
+  def ota9
+    @product = Product.find(3)
+    puts @product.style_ids
+    puts @product.styles
+    puts @product.episords[0].id
+    # puts @product.episords.to_h
+    puts @product.episords[0].attributes
+  end
 
   
 end

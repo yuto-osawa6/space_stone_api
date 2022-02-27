@@ -227,16 +227,10 @@ class Api::V1::ProductsController < ApplicationController
       @product.studio_ids = params[:studios_array]
       @product.style_ids = params[:formats_array]
 
-    # if 
-    # if 
-    @product.save 
-    #   @news = Newmessage.create(title:@product.title,description:"#{params[:product][:delivery_start].strftime("%Y/%m/%d %H:%M:%S")}に放送開始",judge:1)
-    # else
+   
 
-    # end
-
+    # doneyet-1 (下@product.saveと同時に)
     params[:episord].each do |i|
-      # episord
       @episord = Episord.where(episord:i[:episord_number],product_id:@product.id).first_or_initialize
         @episord.title = i[:episord_tittle]
         @episord.arasuzi = i[:episord_arasuzi]
@@ -254,14 +248,21 @@ class Api::V1::ProductsController < ApplicationController
     
 
     params[:character_middle_data].each do |c|
-      # Character.create(name:e.character_name)
       @character = Character.where(cast_id:c[:cast_id],product_id:@product.id,name:c[:character_name]).first_or_initialize
-      # @character.name = c[:character_name]
       @character.image = c[:character_image]
-      # puts e
       @character.save
     end
 
+    yearSeason = []  
+    params[:product][:year_season].each do |y|
+      year_id = Year.where(year:"#{y[:year]}-01-01")[0].id
+      y[:season].each do |s|
+        @yearSeason = YearSeasonProduct.where(product_id:@product.id,kisetsu_id:s,year_id:year_id).first_or_initialize
+        yearSeason << @yearSeason
+      end
+    end
+    @product.year_season_products = yearSeason
+    @product.save 
   end
 
   def edit1

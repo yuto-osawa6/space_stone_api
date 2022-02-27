@@ -187,19 +187,17 @@ class Api::V1::ProductsController < ApplicationController
     end
     @like_count = @product.likes.count
 
-    # 追加 reviews
-    # @reviews = @product.reviews.limit(1)
-
-    # 追加
-    # @quesionids = @product.thereds.thered_question_questions
+  
     @quesion = Question.all
 
-    # froma = 
-    to2 =  d.since(7.days)
+    d2 = Time.current
+    to3 =  d.since(7.days)
     # 2.0
-    @episord = @product.episords.where(release_date:d...to2).order(release_date: :asc).limit(1)
+    
+    @episord = @product.episords.where(release_date:d2...to3).order(release_date: :asc).limit(1)
     @character = Character.where(product_id:@product.id).includes(:cast)
     @staff = @product.occupations.includes(:staff)
+    @yearSeason = Year.left_outer_joins(:year_season_products).includes(:year_season_products,:year_season_seasons).where(year_season_products:{product_id:@product.id}).order(year: :asc).distinct
 
     render :show,formats: :json
   end 
@@ -270,7 +268,7 @@ class Api::V1::ProductsController < ApplicationController
     # puts params
     @product = Product.find(params[:id])
     # @yearSeason = YearSeasonProduct.where(product_id:@product.id).includes(:year_season_years)
-    @year = Year.left_outer_joins(:year_season_products).includes(:year_season_seasons).where(year_season_products:{product_id:@product.id}).distinct
+    @year = Year.left_outer_joins(:year_season_products).includes(:year_season_seasons).where(year_season_products:{product_id:@product.id}).order(year: :asc).distinct
     # render json:{
     #   # products:@product
     # }
@@ -318,7 +316,7 @@ class Api::V1::ProductsController < ApplicationController
       @episord.image = i[:episord_image_url]
       @episord.time = i[:episord_time]
       @episord.release_date =i[:episord_release_date]
-      # @episord.save
+      @episord.save
       episord<<@episord
     end
     @product.episords = episord
@@ -327,6 +325,7 @@ class Api::V1::ProductsController < ApplicationController
     params[:staff_middle].each do |s|
       @staff = Occupation.where(staff_id:s[:cast_id],product_id:@product.id).first_or_initialize
       @staff.name = s[:character_name]
+      @staff.save
       staff << @staff
     end
     @product.occupations = staff
@@ -336,12 +335,12 @@ class Api::V1::ProductsController < ApplicationController
       if c[:id].nil?
         @character = Character.where(cast_id:c[:cast_id],product_id:@product.id,name:c[:character_name]).first_or_initialize
         @character.image = c[:character_image]
-        # @character.save
+        @character.save
       else
         @character = Character.where(id:c[:id],cast_id:c[:cast_id],product_id:@product.id).first_or_initialize
         @character.name = c[:character_name]
         @character.image = c[:character_image]
-        # @character.save
+        @character.save
       end
       character << @character
 

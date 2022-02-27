@@ -55,6 +55,14 @@ json.set! :products do
       json.staff_name c.staff
     end
   end
+
+  json.product_yearSeason do
+    json.array! @yearSeason do |ys|
+      json.year ys.year
+      json.season ys.year_season_seasons
+    end
+  end
+
 end
 
 

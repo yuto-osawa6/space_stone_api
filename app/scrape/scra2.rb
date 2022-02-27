@@ -379,5 +379,13 @@ class Scra2
 
   end
 
+  def ota12
+    d = Time.current
+    to2 =  d.since(7.days)
+    puts d,to2
+    @product = Product.find(1)
+    @episord = @product.episords.where(release_date:d...to2).order(release_date: :asc).limit(1)
+  end
+
   
 end

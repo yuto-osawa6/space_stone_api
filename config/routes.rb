@@ -85,6 +85,7 @@ Rails.application.routes.draw do
           get "monthduring"
           get "top100"
           get "studiossearch"
+          get "emotion"
         end
       end
 

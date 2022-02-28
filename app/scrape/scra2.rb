@@ -419,5 +419,12 @@ class Scra2
     # puts Product.find(3).left_outer_joins(:review_emotions).where(:review_emotions:{emotion_id:9})
     Product.find(3).emotions.group(:emotion_id).order("count(emotion_id) desc").length
   end
+
+  def ota16
+    #emotion sort
+    puts Product.all.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = 1 THEN 1 ELSE 0 END)/count(emotion_id) desc")).ids
+    # .group("emotions.id")
+    # .order("sum(CASE WHEN id = 1 THEN 1 ELSE 0 END)/count(id) desc")
+  end
   
 end

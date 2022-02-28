@@ -74,6 +74,15 @@ json.set! :products do
     end
   end
 
+  json.emotionList do
+    json.array! @emotionList do |el|
+      json.id el.id
+      json.emotion el.emotion
+      json.length el.review_emotions.length
+    end
+    # json.length @emotionLength
+  end
+
 end
 
 

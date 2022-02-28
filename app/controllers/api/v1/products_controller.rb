@@ -198,6 +198,9 @@ class Api::V1::ProductsController < ApplicationController
       @userEpisord = current_user.reviews.where(product_id:@product.id,user_id:current_user.id)
     end
     @emotions = Emotion.all
+    #emotionList
+    @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
+    # @emotionLength = @product.emotions.length
 
     render :show,formats: :json
   end 

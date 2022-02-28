@@ -414,5 +414,10 @@ class Scra2
 
   end
 
+  def ota15
+    # puts Product.find(3).emotions.length
+    # puts Product.find(3).left_outer_joins(:review_emotions).where(:review_emotions:{emotion_id:9})
+    Product.find(3).emotions.group(:emotion_id).order("count(emotion_id) desc").length
+  end
   
 end

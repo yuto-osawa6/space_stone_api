@@ -55,7 +55,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @pickup = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
 
     @current_season2 = "#{current2.year} #{Kisetsu.find(@kisetsu2).name}"
-    @pickup2 = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current2}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @pickup2 = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current2.year}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
 
     render :pickup,formats: :json
   end

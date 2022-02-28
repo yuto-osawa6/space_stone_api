@@ -57,6 +57,14 @@ class Product < ApplicationRecord
   has_many :year_season_years, through: :year_season_products, source: :year
   has_many :year_season_seasons,through: :year_season_products, source: :kisetsu
 
+  # 5table
+  has_many :review_emotions,dependent: :destroy
+  has_many :emotions,through: :review_emotions, source: :emotion
+  # has_many :products,through: :review_emotions, source: :product
+  has_many :emotion_episords,through: :review_emotions, source: :episord
+  has_many :emotion_users,through: :review_emotions , source: :user
+  has_many :emotion_reviews,through: :review_emotions , source: :review
+
   ransacker :likes_count do
     query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'
     Arel.sql(query)

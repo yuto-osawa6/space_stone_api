@@ -17,7 +17,13 @@ class Review < ApplicationRecord
   belongs_to :episord,optional:true
 
   has_many :review_emotions,dependent: :destroy
-  has_many :emotions,through: :review_emotions
+  has_many :emotions,through: :review_emotions, source: :emotion
+  has_many :emotion_products,through: :review_emotions, source: :product
+  has_many :emotion_episords,through: :review_emotions, source: :episord
+  has_many :emotion_users,through: :review_emotions , source: :user
+  # has_many :reviews,through: :review_emotions , source: :review
+
+
 
   # validation
   validates :episord_id, uniqueness: { scope: [:product_id, :user_id] },allow_nil: true

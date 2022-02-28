@@ -398,5 +398,21 @@ class Scra2
 
   end
 
+  def ota14
+    # puts Review.find(24).review_emotions
+  #  Review.find(25).destroy
+    # puts Product.all.styles
+
+  #   emotions,through: :review_emotions, source: :emotion
+  # has_many :emotion_products,through: :review_emotions, source: :product
+  # has_many :emotion_episords,through: :review_emotions, source: :episord
+  # has_many :emotion_users,through: :review_emotions , so
+  puts Review.find(6).emotion_products.ids
+  puts Review.find(6).emotion_episords.ids
+  puts Review.find(6).emotion_users.ids
+  puts Review.find(6).review_emotions.ids
+
+  end
+
   
 end

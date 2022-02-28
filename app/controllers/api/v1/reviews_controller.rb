@@ -3,13 +3,22 @@ class Api::V1::ReviewsController < ApplicationController
     content = params[:content]
     if params[:review][:episord_id]=="null"
       params[:review][:episord_id]=nil
-      puts "aaaaaaaaaaaaaaa"
     end
 
     review  = Review.new(reviews_params)
-    puts review.inspect
-    begin
-   
+
+    # emotion
+    # begin
+    emotionArray = []
+    params[:review][:emotion_ids].each do |i|
+      emotion = ReviewEmotion.new(review_id:review.id,product_id:params[:review][:product_id],review_id:params[:review][:review_id],episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id])
+      # emotion.save!
+      emotionArray << emotion
+    end
+    review.review_emotions = emotionArray
+
+
+   begin
     if review.save!
       userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
       render json: {review:review,userReview:userReview}
@@ -334,6 +343,8 @@ class Api::V1::ReviewsController < ApplicationController
 
   private 
   def reviews_params
-    params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id,emotion_ids:[])
+    params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id)
+    # params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id,:review_emotions)
+
   end
 end

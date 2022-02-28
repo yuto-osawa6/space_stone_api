@@ -389,12 +389,18 @@ ActiveRecord::Schema.define(version: 2022_02_27_063412) do
   end
 
   create_table "review_emotions", charset: "utf8mb4", force: :cascade do |t|
-    t.bigint "review_id"
-    t.bigint "emotion_id"
+    t.bigint "review_id", null: false
+    t.bigint "emotion_id", null: false
+    t.bigint "product_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "episord_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["emotion_id"], name: "index_review_emotions_on_emotion_id"
+    t.index ["episord_id"], name: "index_review_emotions_on_episord_id"
+    t.index ["product_id"], name: "index_review_emotions_on_product_id"
     t.index ["review_id"], name: "index_review_emotions_on_review_id"
+    t.index ["user_id"], name: "index_review_emotions_on_user_id"
   end
 
   create_table "reviews", charset: "utf8mb4", force: :cascade do |t|
@@ -609,6 +615,11 @@ ActiveRecord::Schema.define(version: 2022_02_27_063412) do
   add_foreign_key "return_return_comment_reviews", "return_comment_reviews", column: "return_return_id"
   add_foreign_key "return_return_comment_threads", "return_comment_threads"
   add_foreign_key "return_return_comment_threads", "return_comment_threads", column: "return_return_thread_id"
+  add_foreign_key "review_emotions", "emotions"
+  add_foreign_key "review_emotions", "episords"
+  add_foreign_key "review_emotions", "products"
+  add_foreign_key "review_emotions", "reviews"
+  add_foreign_key "review_emotions", "users"
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"
   add_foreign_key "scores", "products"

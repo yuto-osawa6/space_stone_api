@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_26_021451) do
+ActiveRecord::Schema.define(version: 2022_02_27_063412) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -142,6 +142,12 @@ ActiveRecord::Schema.define(version: 2022_02_26_021451) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["product_id"], name: "index_comprehensives_on_product_id"
+  end
+
+  create_table "emotions", charset: "utf8mb4", force: :cascade do |t|
+    t.string "emotion"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "episords", charset: "utf8mb4", force: :cascade do |t|
@@ -380,6 +386,15 @@ ActiveRecord::Schema.define(version: 2022_02_26_021451) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["return_comment_thread_id"], name: "index_return_return_comment_threads_on_return_comment_thread_id"
     t.index ["return_return_thread_id"], name: "index_return_return_comment_threads_on_return_return_thread_id"
+  end
+
+  create_table "review_emotions", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "review_id"
+    t.bigint "emotion_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["emotion_id"], name: "index_review_emotions_on_emotion_id"
+    t.index ["review_id"], name: "index_review_emotions_on_review_id"
   end
 
   create_table "reviews", charset: "utf8mb4", force: :cascade do |t|

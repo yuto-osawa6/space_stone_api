@@ -150,13 +150,11 @@ class Api::V1::ProductsController < ApplicationController
       @scored = false
     end
     @product = Product.find(params[:id])
-    # .includes(:genres,:styles)
     @stats = @product.scores.group(:value).count
     @stats.map{|key,value|@pss["#{key}"]=value}
     @stats_array = []
     @pss.map{|key,value|@stats_array.push(@pss[key])}
 
-    # acsesses_array
     to = Time.current.at_beginning_of_day
     to2 = Time.current.end_of_day
     d = Date.today
@@ -181,8 +179,6 @@ class Api::V1::ProductsController < ApplicationController
 
     # 追加
     if @product.scores.exists?
-      # puts @product.scores.exists?
-      # puts "aaaaaaaa"
       @average_score = @product.scores.average(:value).round(1)
     end
     @like_count = @product.likes.count
@@ -193,11 +189,15 @@ class Api::V1::ProductsController < ApplicationController
     d2 = Time.current
     to3 =  d.since(7.days)
     # 2.0
-    
     @episord = @product.episords.where(release_date:d2...to3).order(release_date: :asc).limit(1)
     @character = Character.where(product_id:@product.id).includes(:cast)
     @staff = @product.occupations.includes(:staff)
     @yearSeason = Year.left_outer_joins(:year_season_products).includes(:year_season_products,:year_season_seasons).where(year_season_products:{product_id:@product.id}).order(year: :asc).distinct
+
+    if current_user
+      @userEpisord = current_user.reviews.where(product_id:@product.id,user_id:current_user.id)
+    end
+    @emotions = Emotion.all
 
     render :show,formats: :json
   end 
@@ -344,6 +344,7 @@ class Api::V1::ProductsController < ApplicationController
         @character.save
       end
       character << @character
+      puts character.inspect
 
     end
     @product.characters = character

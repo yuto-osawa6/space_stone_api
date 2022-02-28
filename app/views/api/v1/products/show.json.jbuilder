@@ -63,6 +63,17 @@ json.set! :products do
     end
   end
 
+  json.userReviews do
+    json.array! @userEpisord
+  end
+
+  json.emotions do
+    json.array! @emotions do |e|
+      json.id e.id
+      json.emotion e.emotion
+    end
+  end
+
 end
 
 

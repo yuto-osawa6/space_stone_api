@@ -30,11 +30,11 @@ class Api::V1::LikesController < ApplicationController
     @user = User.find(params[:user_id])
     @liked = @user.already_liked?(params[:product_id])
     if @liked
-      puts params[:product_id]
-      # puts @like
       @like = Like.find_by(product_id: params[:product_id], user_id: @user.id)
-      puts @like.id
     end
+    # 2.0 score and review
+    @score = @user.scores.where(user_id:@user.id,product_id:params[:product_id])
+    @review = @user.reviews.where(user_id:@user.id,product_id:params[:product_id]) 
     render :check,formats: :json
   end
 

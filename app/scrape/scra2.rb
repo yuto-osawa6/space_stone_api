@@ -387,5 +387,16 @@ class Scra2
     @episord = @product.episords.where(release_date:d...to2).order(release_date: :asc).limit(1)
   end
 
+  def ota13
+    @review = Review.find(1)
+    @review.destroy
+    @review = Review.find(4)
+    @review.destroy
+    # @review = Review.find(5)
+    # @review.destroy
+    # @userEpisord = Review.where(product_id:3,user_id:1).pluck(:episord_id)
+
+  end
+
   
 end

@@ -1,11 +1,24 @@
 class Api::V1::ReviewsController < ApplicationController
   def create 
     content = params[:content]
+    if params[:review][:episord_id]=="null"
+      params[:review][:episord_id]=nil
+      puts "aaaaaaaaaaaaaaa"
+    end
+
     review  = Review.new(reviews_params)
-    if review.save
-      render json: {review:review}
+    puts review.inspect
+    begin
+   
+    if review.save!
+      userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
+      render json: {review:review,userReview:userReview}
     else
       render json: {status:500,review:review}
+    end
+
+    rescue => e
+      puts e
     end
   end
 
@@ -321,6 +334,6 @@ class Api::V1::ReviewsController < ApplicationController
 
   private 
   def reviews_params
-    params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id)
+    params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id,emotion_ids:[])
   end
 end

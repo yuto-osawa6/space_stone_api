@@ -20,8 +20,10 @@ class Api::V1::ReviewsController < ApplicationController
 
    begin
     if review.save!
-      userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
-      render json: {review:review,userReview:userReview}
+      @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
+      # render json: {review:review,userReview:userReview}
+      render :create, formats: :json
+
     else
       render json: {status:500,review:review}
     end
@@ -29,6 +31,43 @@ class Api::V1::ReviewsController < ApplicationController
     rescue => e
       puts e
     end
+  end
+
+  def update
+
+    content = params[:content]
+    if params[:review][:episord_id]=="null"
+      params[:review][:episord_id]=nil
+    end
+
+    # review  = Review.new(reviews_params)
+    review = Review.find(params[:id])
+
+    # emotion
+    begin
+    emotionArray = []
+    params[:review][:emotion_ids].each do |i|
+      emotion = ReviewEmotion.where(product_id:params[:review][:product_id],review_id:review.id,episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id]).first_or_initialize
+      puts emotion.inspect
+      emotion.save!
+      emotionArray << emotion
+    end
+    review.review_emotions = emotionArray
+
+
+  #  begin
+    if review.update(reviews_params)
+      @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
+      # render json: {review:review,userReview:userReview}
+      render :update, formats: :json
+    else
+      render json: {status:500,review:review}
+    end
+
+    rescue => e
+      puts e
+    end
+
   end
 
   def show

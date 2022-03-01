@@ -200,7 +200,8 @@ class Api::V1::ProductsController < ApplicationController
     @emotions = Emotion.all
     #emotionList
     @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
-    # @emotionLength = @product.emotions.length
+    @emotionList.count
+
 
     render :show,formats: :json
   end 

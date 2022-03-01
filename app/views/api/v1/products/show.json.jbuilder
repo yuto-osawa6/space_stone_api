@@ -75,10 +75,11 @@ json.set! :products do
   end
 
   json.emotionList do
-    json.array! @emotionList do |el|
+    json.array! @emotionList.zip(@emotionList.count) do |el,k|
       json.id el.id
       json.emotion el.emotion
-      json.length el.review_emotions.length
+      # json.length el.review_emotions
+      json.length k[1]
     end
     # json.length @emotionLength
   end

@@ -422,9 +422,33 @@ class Scra2
 
   def ota16
     #emotion sort
-    puts Product.all.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = 1 THEN 1 ELSE 0 END)/count(emotion_id) desc")).ids
+    # puts Product.all.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = 1 THEN 1 ELSE 0 END)/count(emotion_id) desc")).ids
     # .group("emotions.id")
     # .order("sum(CASE WHEN id = 1 THEN 1 ELSE 0 END)/count(id) desc")
+
+    @product = Product.find(5)
+    # motionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc").count
+    # motionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc").count
+    # puts @product.review_emotions.
+    # motionList = @product.review_emotions.group(:emotion_id).order("count(emotion_id) desc").count
+    # @emotionList = @product.review_emotions.group(:emotion_id).order("count(emotion_id) desc").each do |a|
+    #   puts a
+    # end
+    # @emotionList = @product.review_emotions.group(:emotion_id).ids
+
+    # @emotionList = @product.emotions.group(:emotion_id).each do |a|
+    #   a.length
+    # end
+
+    # @emotionList = @product.emotions.joins(:review_emotions).group(:emotion_id).order(Arel.sql("count(emotion_id)")).count.each do |a,count|
+    # puts a
+    # end
+
+    # Emotion.joins(:review_emotions).where(review_emotions:{product_id:5}).group("emotions.id").order(Arel.sql("count(emotions.id)")).each do |a|
+    #   a.count.map()
+    # end
+
+
   end
   
 end

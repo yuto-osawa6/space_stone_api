@@ -21,7 +21,9 @@ class Api::V1::ReviewsController < ApplicationController
    begin
     if review.save!
       @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
-      # render json: {review:review,userReview:userReview}
+      @product = Product.find(params[:review][:product_id])
+      @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
+      @emotionList.count
       render :create, formats: :json
 
     else
@@ -58,7 +60,10 @@ class Api::V1::ReviewsController < ApplicationController
   #  begin
     if review.update(reviews_params)
       @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
-      # render json: {review:review,userReview:userReview}
+      @product = Product.find(params[:review][:product_id])
+      @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
+      @emotionList.count
+
       render :update, formats: :json
     else
       render json: {status:500,review:review}

@@ -25,12 +25,12 @@ json.set! :products do
   json.product_genres do
     json.array! @product.janls
   end
-  json.product_reviews do
-    json.array! @product.reviews
-  end
-  json.product_thereds do
-    json.array! @product.thereds
-  end
+  # json.product_reviews do
+  #   json.array! @product.reviews
+  # end
+  # json.product_thereds do
+  #   json.array! @product.thereds
+  # end
   json.questions do 
     json.array! @quesion
   end
@@ -79,17 +79,31 @@ json.set! :products do
     end
   end
 
-  json.emotionList do
-    json.array! @emotionList.zip(@emotionList.count) do |el,k|
-      json.id el.id
-      json.emotion el.emotion
-      # json.length el.review_emotions
-      json.length k[1]
-    end
-    # json.length @emotionLength
-  end
+  # json.emotionList do
+  #   json.array! @emotionList.zip(@emotionList.count) do |el,k|
+  #     json.id el.id
+  #     json.emotion el.emotion
+  #     json.length k[1]
+  #   end
+  # end
 
 end
+
+json.set! :productReviews do
+  json.array! @product.reviews
+end
+json.set! :productThreads do
+  json.array! @product.thereds
+end
+
+json.set! :EmotionLists do
+  json.array! @emotionList.zip(@emotionList.count) do |el,k|
+    json.id el.id
+    json.emotion el.emotion
+    json.length k[1]
+  end
+end
+
 
 
 

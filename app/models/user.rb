@@ -61,6 +61,10 @@ class User < ActiveRecord::Base
   # has_many :users,through: :review_emotions , source: :user
   has_many :emotion_reviews,through: :review_emotions , source: :review
 
+  # chats
+  has_many :chats
+  has_many :products,through: :chats, source: :product
+
 
   devise  :database_authenticatable, 
           :registerable,

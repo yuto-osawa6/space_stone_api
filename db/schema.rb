@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_27_063412) do
+ActiveRecord::Schema.define(version: 2022_03_02_004353) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -111,6 +111,16 @@ ActiveRecord::Schema.define(version: 2022_02_27_063412) do
     t.bigint "cast_id"
     t.index ["cast_id"], name: "index_characters_on_cast_id"
     t.index ["product_id"], name: "index_characters_on_product_id"
+  end
+
+  create_table "chats", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "user_id", null: false
+    t.text "message", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_chats_on_product_id"
+    t.index ["user_id"], name: "index_chats_on_user_id"
   end
 
   create_table "comment_reviews", charset: "utf8mb4", force: :cascade do |t|
@@ -585,6 +595,8 @@ ActiveRecord::Schema.define(version: 2022_02_27_063412) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "articles", "users"
+  add_foreign_key "chats", "products"
+  add_foreign_key "chats", "users"
   add_foreign_key "comment_reviews", "reviews"
   add_foreign_key "comment_reviews", "users"
   add_foreign_key "comment_threads", "thereds"

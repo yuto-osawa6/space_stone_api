@@ -65,6 +65,10 @@ class Product < ApplicationRecord
   has_many :emotion_users,through: :review_emotions , source: :user
   has_many :emotion_reviews,through: :review_emotions , source: :review
 
+  # chats
+  has_many :chats
+  has_many :users,through: :chats, source: :user
+
   ransacker :likes_count do
     query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'
     Arel.sql(query)

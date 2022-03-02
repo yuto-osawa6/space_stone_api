@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  mount ActionCable.server => '/cable'
+
+
   mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks]
   post 'social_auth/callback', to: 'social_auth#authenticate_social_auth_user' # this is th
   # mount_devise_token_auth_for 'User', at: 'auth'
@@ -7,6 +10,7 @@ Rails.application.routes.draw do
   # }
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   # devise_for :users
+
   namespace :api do
     namespace :v1 do
       # mount_devise_token_auth_for 'User', at: 'auth', controllers: {
@@ -21,6 +25,8 @@ Rails.application.routes.draw do
           get "left"
           get "edit1"
         end
+        resources :chats, only:[:create]
+
         resources :likes, only: [:create, :destroy] do
           collection do
             get "check"

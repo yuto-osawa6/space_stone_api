@@ -2,7 +2,7 @@ class ProductsChannel < ApplicationCable::Channel
   def subscribed
     @product = Product.find(params[:id])
     stream_for @product
-    @chatList = Chat.all.last(5)
+    @chatList = Chat.all.last(20)
     ProductsChannel.broadcast_to(@product, chatList:@chatList)
   end
 
@@ -19,7 +19,7 @@ class ProductsChannel < ApplicationCable::Channel
     # puts data[:product_id]
     chat =Chat.new(product_id:data["product_id"],user_id:data["user_id"],message:data["message"])
     chat.save!
-    @chatList = Chat.all.last(5)
+    @chatList = Chat.all.last(20)
    
     ProductsChannel.broadcast_to(@product, chatList:@chatList)
     rescue => e

@@ -195,7 +195,7 @@ class Api::V1::ProductsController < ApplicationController
     @yearSeason = Year.left_outer_joins(:year_season_products).includes(:year_season_products,:year_season_seasons).where(year_season_products:{product_id:@product.id}).order(year: :asc).distinct
 
     if current_user
-      @userEpisord = current_user.reviews.where(product_id:@product.id,user_id:current_user.id)
+      @userEpisord = current_user.reviews.includes(:emotions).where(product_id:@product.id,user_id:current_user.id)
     end
     @emotions = Emotion.all
     #emotionList

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_02_004353) do
+ActiveRecord::Schema.define(version: 2022_03_02_122843) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -433,6 +433,11 @@ ActiveRecord::Schema.define(version: 2022_03_02_004353) do
     t.integer "value", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "music"
+    t.integer "character"
+    t.integer "animation"
+    t.integer "story"
+    t.integer "performance"
     t.index ["product_id"], name: "index_scores_on_product_id"
     t.index ["user_id"], name: "index_scores_on_user_id"
   end

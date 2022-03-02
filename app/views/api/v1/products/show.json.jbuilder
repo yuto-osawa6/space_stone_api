@@ -79,8 +79,6 @@ json.set! :products do
     end
   end
 
-  # json.
-
 end
 
 json.set! :productReviews do
@@ -96,6 +94,10 @@ json.set! :EmotionLists do
     json.emotion el.emotion
     json.length k[1]
   end
+end
+
+json.set! :productScores do
+  json.array! @product.scores
 end
 
 

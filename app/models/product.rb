@@ -94,4 +94,30 @@ class Product < ApplicationRecord
     Arel.sql(query)
   end
 
+  # 2.0
+  ransacker :average_all_score do
+    query = '(SELECT avg(scores.all) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_music_score do
+    query = '(SELECT avg(scores.music) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_character_score do
+    query = '(SELECT avg(scores.character) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_performance_score do
+    query = '(SELECT avg(scores.performance) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_animation_score do
+    query = '(SELECT avg(scores.animation) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_story_score do
+    query = '(SELECT avg(scores.story) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+
 end

@@ -438,6 +438,7 @@ ActiveRecord::Schema.define(version: 2022_03_02_122843) do
     t.integer "animation"
     t.integer "story"
     t.integer "performance"
+    t.integer "all"
     t.index ["product_id"], name: "index_scores_on_product_id"
     t.index ["user_id"], name: "index_scores_on_user_id"
   end

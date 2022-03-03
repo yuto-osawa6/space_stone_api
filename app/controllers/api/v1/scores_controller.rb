@@ -49,7 +49,8 @@ class Api::V1::ScoresController < ApplicationController
 
     @user = User.find(params[:score][:user_id])
     @product = Product.find(params[:score][:product_id])
-    
+    # @value = params[:score][:all] + params[:score][:music] + params[:score][:aninmation] + params[:score][:story] + params[:score][:performance] + params[:score][:character]
+    puts @value
     @score = Score.find(params[:id])
     puts params
     begin
@@ -75,6 +76,6 @@ class Api::V1::ScoresController < ApplicationController
   end
   private
   def score_params
-    params.require(:score).permit(:product_id,:user_id,:value,:music,:performance,:story,:animation,:character)
+    params.require(:score).permit(:product_id,:user_id,:value,:music,:performance,:story,:animation,:character,:all)
   end
 end

@@ -11,6 +11,7 @@ json.set! :product do
   json.image_urlh3 @product.horizontal_image_url3
   json.year @product.year
   json.delivery_start @product.delivery_start
+  json.overview @product.overview
   
   json.form_style do
     json.array! @product.styles do |a|

@@ -309,6 +309,7 @@ class Api::V1::ProductsController < ApplicationController
     @product.horizontal_image_url = params[:product][:image_urlh1] 
     @product.horizontal_image_url2 = params[:product][:image_urlh2] 
     @product.horizontal_image_url3 = params[:product][:image_urlh3] 
+    @product.overview = params[:product][:overview]
 
     @product.janl_ids = params[:genres_array]
     @product.kisetsu_ids = params[:product][:kisetsu]

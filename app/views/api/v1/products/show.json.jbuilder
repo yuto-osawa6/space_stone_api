@@ -8,6 +8,7 @@ json.set! :products do
   json.image_url @product.image_url
   json.arasuzi @product.description
   json.list @product.list
+  json.overview @product.overview
   if @episord.present?
     json.product_episord do
       json.arasuzi @episord[0].arasuzi

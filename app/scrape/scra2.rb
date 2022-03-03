@@ -426,7 +426,7 @@ class Scra2
     # .group("emotions.id")
     # .order("sum(CASE WHEN id = 1 THEN 1 ELSE 0 END)/count(id) desc")
 
-    @product = Product.find(5)
+    @product = Product.find(2)
     # motionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc").count
     # motionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc").count
     # puts @product.review_emotions.
@@ -448,6 +448,9 @@ class Scra2
     #   a.count.map()
     # end
 
+    
+    # @product = Product.find(params[:id])
+    @stats = @product.scores.group(:value).count
 
   end
   

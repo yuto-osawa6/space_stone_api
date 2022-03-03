@@ -151,9 +151,12 @@ class Api::V1::ProductsController < ApplicationController
     end
     @product = Product.find(params[:id])
     @stats = @product.scores.group(:value).count
-    @stats.map{|key,value|@pss["#{key}"]=value}
+    @stats.map{|key,value|@pss["#{((key/10).floor+1)*10}"]=value}
     @stats_array = []
     @pss.map{|key,value|@stats_array.push(@pss[key])}
+    puts "aaaaaaaa"
+    puts @stats_array
+    puts @stats
 
     to = Time.current.at_beginning_of_day
     to2 = Time.current.end_of_day

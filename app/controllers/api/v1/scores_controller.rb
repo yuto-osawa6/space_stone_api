@@ -21,7 +21,7 @@ class Api::V1::ScoresController < ApplicationController
     if @score.save
       @score_average = @product.scores.average(:value).round(1)
       @stats = @product.scores.group(:value).count
-      @stats.map{|key,value|@pss["#{key}"]=value}
+      @stats.map{|key,value|@pss["#{((key/10).floor+1)*10}"]=value}
       @stats_array = []
       @pss.map{|key,value|@stats_array.push(@pss[key])}
 
@@ -60,7 +60,7 @@ class Api::V1::ScoresController < ApplicationController
 
 
       @stats = @product.scores.group(:value).count
-      @stats.map{|key,value|@pss["#{key}"]=value}
+      @stats.map{|key,value|@pss["#{((key/10).floor+1)*10}"]=value}
       @stats_array = []
       @pss.map{|key,value|@stats_array.push(@pss[key])}
       @productScore = @product.scores

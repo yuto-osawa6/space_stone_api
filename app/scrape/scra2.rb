@@ -448,10 +448,32 @@ class Scra2
     #   a.count.map()
     # end
 
-    
+
     # @product = Product.find(params[:id])
     @stats = @product.scores.group(:value).count
 
+  end
+
+  def ota17
+    # current_time = Time.current 
+    # to = current_time.prev_week(:monday).since(6.hours)   
+    # from = to.next_week.since(6.hours)
+    # puts from,to
+    # current_time = Time.current 
+    # from = current_time.prev_week(:monday).since(6.hours)   
+    # to = from.next_week.since(6.hours)
+    # @product = Product.left_outer_joins(:episords,:acsesses).where(episords:{release_date:from..to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+    # @products.
+
+    # puts  current_time = Time.current.since(6.hours).prev_week(:monday)
+    # dt =DateTime.parse("2022/03/7 0:23:55")
+    # puts dt.ago(6.hours).prev_week(:monday)
+
+    current_time = Time.current 
+    @from = current_time.prev_week(:monday).since(6.hours)   
+    @to = @from.next_week.since(6.hours)
+    @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+    Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
   end
   
 end

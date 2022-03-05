@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_03_065411) do
+ActiveRecord::Schema.define(version: 2022_03_05_080239) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -567,6 +567,23 @@ ActiveRecord::Schema.define(version: 2022_03_03_065411) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
+  end
+
+  create_table "weeklyrankings", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id"
+    t.datetime "weekly"
+    t.integer "count"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "week_id"
+    t.index ["product_id"], name: "index_weeklyrankings_on_product_id"
+    t.index ["week_id"], name: "index_weeklyrankings_on_week_id"
+  end
+
+  create_table "weeks", charset: "utf8mb4", force: :cascade do |t|
+    t.datetime "week"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "year_products", charset: "utf8mb4", force: :cascade do |t|

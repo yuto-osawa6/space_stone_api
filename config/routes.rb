@@ -189,6 +189,8 @@ Rails.application.routes.draw do
             get "worldclass"
             get "toptens"
             get "populur_rt"
+            get "ranking"
+            post "vote"
           end
         end
       end

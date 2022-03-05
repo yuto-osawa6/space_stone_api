@@ -132,4 +132,49 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @popular_threads = Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).limit(6)
     render :populur_rt,formats: :json
   end
+
+  def ranking 
+    current_time = Time.current 
+    @from = current_time.prev_week(:monday).since(6.hours)   
+    @to = @from.next_week.since(6.hours)
+    @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+    @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
+    if session[:weekly_vote]
+      if @to - session[:weekly_vote].since(6.hours) > 0
+        @weekly_vote = false
+        session[:weekly_vote] = nil
+        # @weekly_vote = true
+      else
+        session[:weekly_vote] = nil
+        @weekly_vote = false
+      end
+    else
+      @weekly_vote = false
+    end
+
+    # render json:{products:@products,from:from,to:to,weekly_vote:@weekly_vote }
+    render :ranking, formats: :json
+  end
+
+  def vote
+    puts session[:ranking]
+    # doneyet-1(設定 6時間)
+    current_time = Time.current.ago(6.hours).prev_week(:monday)
+    @vote = Weeklyranking.where(product_id:params[:product_id],weekly:current_time).first_or_initialize
+    puts @vote.inspect
+    @vote.count = @vote.count.nil?? 1 : @vote.count + 1
+
+    if @vote.save
+      session[:weekly_vote] = @vote.weekly
+      @weekly_vote = true
+      @from = current_time.since(6.hours)   
+      @to = @from.next_week.since(6.hours)
+      @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+      @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
+      render :vote, formats: :json
+    else
+      render json:{ }
+    end
+   
+  end
 end

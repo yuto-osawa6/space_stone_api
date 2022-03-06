@@ -161,6 +161,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     # doneyet-1(設定 6時間)
     current_time = Time.current.ago(6.hours).prev_week(:monday)
     @week = Week.where(week:current_time).first_or_initialize
+    @week.episord_ids = params[:episord_ids]
     @week.save
 
     @vote = Weeklyranking.where(product_id:params[:product_id],weekly:current_time,week_id: @week.id).first_or_initialize

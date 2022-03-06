@@ -10,7 +10,7 @@ json.set! :products do
     # json.scores do
     #   json.array! product.scores
     # end
-    json.product_episord do
+    json.episords do
       json.array! product.episords
     end
     json.product_weekly do

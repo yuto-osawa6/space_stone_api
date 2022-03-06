@@ -8,7 +8,7 @@ json.set! :weekly do
         json.id product.id
         json.title product.title
 
-        json.product_episord do
+        json.episords do
           json.array! product.episords
         end
 

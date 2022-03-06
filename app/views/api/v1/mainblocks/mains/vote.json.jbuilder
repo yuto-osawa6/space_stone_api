@@ -28,6 +28,9 @@ json.set! :products do
     json.product_episord do
       json.array! product.episords
     end
+    json.episords do
+      json.array! product.episords
+    end
     json.product_weekly do
       json.array! product.weeklyrankings do |w|
         json.id w.id

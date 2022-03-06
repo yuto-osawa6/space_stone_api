@@ -9,4 +9,7 @@ class Episord < ApplicationRecord
   # has_many :episords,through: :review_emotions, source: :episord
   has_many :emotion_users,through: :review_emotions , source: :user
   has_many :emotion_reviews,through: :review_emotions , source: :review
+
+  has_many :week_episords,dependent: :destroy
+  has_many :weeks,through: :week_episords,source: :week
 end

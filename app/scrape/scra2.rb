@@ -475,5 +475,29 @@ class Scra2
     @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
     Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
   end
+
+  def ota18
+    # current = Time.current
+
+    # case current.month
+    # when 1,4,7,10 then
+    #   @ago = 0
+    # when 2,5,8,11 then
+    #   @ago = 1
+    # when 3,6,9,12 then
+    #   @ago = 2
+    # end
+    # puts @from = current.ago(@ago.month).beginning_of_month.wday
+
+    current_time = Time.current.ago(6.hours).prev_week(:monday)
+    current = Time.current
+    # @from = current_time.since(6.hours)   
+    # @to = @from.next_week.since(6.hours)
+
+    puts current_time = Time.current.ago(6.hours).prev_week(:monday).prev_week(:monday).since(1.hours)
+    puts three_month_ago = current_time.ago(3.month)
+    @week_all= Week.where(week:three_month_ago.ago(1.hours)...current_time)
+    puts @week_all.ids
+  end
   
 end

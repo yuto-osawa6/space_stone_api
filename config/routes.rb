@@ -92,6 +92,7 @@ Rails.application.routes.draw do
           get "top100"
           get "studiossearch"
           get "emotion"
+          get "weekliy_main"
         end
       end
 

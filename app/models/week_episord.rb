@@ -1,0 +1,2 @@
+class WeekEpisord < ApplicationRecord
+end

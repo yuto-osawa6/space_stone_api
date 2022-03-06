@@ -295,4 +295,12 @@ class Api::V1::MainsController < ApplicationController
     render json:{emotionList:emotion}
   end
 
+  def weekliy_main
+    current_time = Time.current.ago(6.hours).prev_week(:monday).prev_week(:monday).since(1.hours)
+    three_month_ago = current_time.ago(3.month).ago(1.hours)
+    @week_all = Week.where(week:three_month_ago...current_time).includes(products: :episords).includes(products: :weeklyrankings)
+
+    render :weekliy_main, formats: :json
+  end
+
 end

@@ -160,7 +160,10 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     puts session[:ranking]
     # doneyet-1(設定 6時間)
     current_time = Time.current.ago(6.hours).prev_week(:monday)
-    @vote = Weeklyranking.where(product_id:params[:product_id],weekly:current_time).first_or_initialize
+    @week = Week.where(week:current_time).first_or_initialize
+    @week.save
+
+    @vote = Weeklyranking.where(product_id:params[:product_id],weekly:current_time,week_id: @week.id).first_or_initialize
     puts @vote.inspect
     @vote.count = @vote.count.nil?? 1 : @vote.count + 1
 

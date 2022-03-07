@@ -115,9 +115,11 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def red
-    content = params[:content]
-    review  = Review.create({title:params[:text],discribe:params[:discribe],content:content,user_id:3,product_id:11})
-    render json: {review:review}
+    # content = params[:content]
+    # review  = Review.create({title:params[:text],discribe:params[:discribe],content:content,user_id:3,product_id:11})
+    # @YearSeason = YearSeasonProduct.group(:product_id)
+    # @week = WeekEpisord.joins(:week).group(:week_id)
+    # render json: {year_season: @week}
 
   end
 

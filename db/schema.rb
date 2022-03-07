@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_06_014000) do
+ActiveRecord::Schema.define(version: 2022_03_06_071502) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -524,6 +524,27 @@ ActiveRecord::Schema.define(version: 2022_03_06_014000) do
     t.index ["episord_id"], name: "index_thereds_on_episord_id"
     t.index ["product_id"], name: "index_thereds_on_product_id"
     t.index ["user_id"], name: "index_thereds_on_user_id"
+  end
+
+  create_table "tier_groups", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "year_id"
+    t.bigint "kisetsu_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["kisetsu_id"], name: "index_tier_groups_on_kisetsu_id"
+    t.index ["year_id"], name: "index_tier_groups_on_year_id"
+  end
+
+  create_table "tiers", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "tier"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "tier_group_id", null: false
+    t.index ["product_id"], name: "index_tiers_on_product_id"
+    t.index ["tier_group_id"], name: "index_tiers_on_tier_group_id"
+    t.index ["user_id"], name: "index_tiers_on_user_id"
   end
 
   create_table "toptens", charset: "utf8mb4", force: :cascade do |t|

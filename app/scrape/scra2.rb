@@ -499,5 +499,14 @@ class Scra2
     @week_all= Week.where(week:three_month_ago.ago(1.hours)...current_time)
     puts @week_all.ids
   end
+
+  def ota19
+    @YearSeason = YearSeasonProduct.includes(:year).group("year.id")
+    @product = Product.group(:year)
+    @product.each do |a|
+      puts a
+    end
+    # puts @yearseason.inspect
+  end
   
 end

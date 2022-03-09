@@ -72,6 +72,13 @@ class Product < ApplicationRecord
   has_many :weeklyrankings,dependent: :destroy
   has_many :weeks,through: :weeklyrankings,source: :week
 
+  # tier
+  
+  has_many :tiers,dependent: :destroy
+  has_many :users,through: :tiers,source: :user
+  has_many :tier_groups,through: :tiers,source: :tier_group
+
+
   ransacker :likes_count do
     query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'
     Arel.sql(query)

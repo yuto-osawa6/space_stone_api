@@ -193,6 +193,7 @@ Rails.application.routes.draw do
             get "ranking"
             post "vote"
             post "create_tier"
+            get "user_this_season_tier"
           end
         end
       end

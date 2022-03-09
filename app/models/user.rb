@@ -65,6 +65,11 @@ class User < ActiveRecord::Base
   has_many :chats
   has_many :products,through: :chats, source: :product
 
+  # tier
+  has_many :tiers,dependent: :destroy
+  has_many :products,through: :tiers,source: :product
+  has_many :tier_groups,through: :tiers,source: :tier_group
+
 
   devise  :database_authenticatable, 
           :registerable,

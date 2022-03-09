@@ -9,17 +9,29 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     case current.month
       when 1,2,3 then
         @kisetsu = 5
+        @kisetsu_name = "冬"
       when 4,5,6 then
         @kisetsu = 2
+        @kisetsu_name = "春"
       when 7,8,9 then
         @kisetsu = 3
+        @kisetsu_name = "夏"
       when 10,11,12 then
         @kisetsu = 4
+        @kisetsu_name = "秋"
     end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
     @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
-    # Product.joins(:kisetsus).where(year:current.year).where(kisetsus:{id:@kisetsu}).order(Arel.sql('sum(count) DESC'))
+
+    # tier
+    year = Year.find_by(year:"#{current.year}-01-01")
+    season = Kisetsu.find_by(name:@kisetsu_name)
+
+    tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
+    # doneyet-3 (orderがfrontに送られたときにid順になる問題)
+    @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+    @tier_p = tierGroup.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
     render :new_netflix,formats: :json
   end
 
@@ -194,27 +206,37 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
     params[:group_product].each do |e|
       e[:product].each do |product|
-        @tier_group = Tier.where(product_id:product,user_id:params[:user_id],tier_group_id: @tier_group.id).first_or_initialize
+        @tier = Tier.where(product_id:product,user_id:params[:user_id],tier_group_id: @tier_group.id).first_or_initialize
         case e[:group]
         when 0 then
-          @tier_group.tier = 100
+          @tier.tier = 100
         when 1 then
-          @tier_group.tier = 80
+          @tier.tier = 80
         when 2 then
-          @tier_group.tier = 60
+          @tier.tier = 60
         when 3 then
-          @tier_group.tier = 40
+          @tier.tier = 40
         when 4 then
-          @tier_group.tier = 20
+          @tier.tier = 20
         when 5 then
-          @tier_group.tier = 0
+          @tier.tier = 0
         else
         end
-        @tier_group.save
+        @tier.save
       end
     end
 
 
+  end
+
+  def user_this_season_tier
+    year = params[:season][0..3]
+    kisetsu = params[:season].last
+    
+    @year = Year.find_by(year:"#{year}-01-01")
+    @kisetsu = Kisetsu.find_by(name:kisetsu)
+    @tier_group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id).tiers.where(user_id:params[:user_id])
+    render json:{user_tier: @tier_group}
   end
 
 end

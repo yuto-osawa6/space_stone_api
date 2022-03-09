@@ -508,5 +508,15 @@ class Scra2
     end
     # puts @yearseason.inspect
   end
+
+  def ota20
+    puts @tier = TierGroup.find_by(year_id:5,kisetsu_id:5).tiers.includes(:product).group("product_id").order(Arel.sql("avg(tier) asc")).average(:tier)
+    puts @tier_p = TierGroup.find_by(year_id:5,kisetsu_id:5).products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+
+    # @tier_p.inspect
+    # a = @tier.filter{|k,v|k==1 }
+    # puts a
+
+  end
   
 end

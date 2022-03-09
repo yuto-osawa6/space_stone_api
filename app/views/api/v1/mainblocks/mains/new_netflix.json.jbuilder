@@ -43,3 +43,21 @@ json.set! :products do
 end
 
 json.set! :current_season, @current_season
+
+# tier
+# json.set! :tier do
+#   json.array! @tier do |tier|
+#     json.id tier.id
+#     json.tier tier.tier
+#     json.user_id tier.user_id
+#     json.product tier.product
+#   end
+# end
+
+json.set! :tier do
+  json.array! @tier_p
+end
+
+json.set! :tier_average do
+  json.tierAvg @tier
+end

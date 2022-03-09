@@ -192,6 +192,7 @@ Rails.application.routes.draw do
             get "populur_rt"
             get "ranking"
             post "vote"
+            post "create_tier"
           end
         end
       end

@@ -303,4 +303,5 @@ class Api::V1::MainsController < ApplicationController
     render :weekliy_main, formats: :json
   end
 
+  
 end

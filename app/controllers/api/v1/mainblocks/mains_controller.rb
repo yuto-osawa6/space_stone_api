@@ -181,4 +181,40 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     end
    
   end
+
+  def create_tier
+    year = params[:season][0..3]
+    kisetsu = params[:season].last
+    
+    @year = Year.find_by(year:"#{year}-01-01")
+    @kisetsu = Kisetsu.find_by(name:kisetsu)
+
+    @tier_group = TierGroup.where(year_id:@year.id,kisetsu_id:@kisetsu.id).first_or_initialize
+    @tier_group.save
+
+    params[:group_product].each do |e|
+      e[:product].each do |product|
+        @tier_group = Tier.where(product_id:product,user_id:params[:user_id],tier_group_id: @tier_group.id).first_or_initialize
+        case e[:group]
+        when 0 then
+          @tier_group.tier = 100
+        when 1 then
+          @tier_group.tier = 80
+        when 2 then
+          @tier_group.tier = 60
+        when 3 then
+          @tier_group.tier = 40
+        when 4 then
+          @tier_group.tier = 20
+        when 5 then
+          @tier_group.tier = 0
+        else
+        end
+        @tier_group.save
+      end
+    end
+
+
+  end
+
 end

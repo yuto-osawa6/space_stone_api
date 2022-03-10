@@ -387,13 +387,19 @@ class Api::V1::ProductsController < ApplicationController
 
   end
 
-  # def product_review
+  def product_review
+    @product = Product.find(params[:product_id])
+    @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(2)
+    @length = @product.reviews.size
+    render :product_review ,formats: :json
+  end
 
-  # end
-
-  # def product_thread
-
-  # end
+  def product_thread
+    @product = Product.find(params[:product_id])
+    @reviews = @product.thereds.order(updated_at: :desc).page(params[:page]).per(2)
+    @length = @product.thereds.size
+    render :product_thread ,formats: :json
+  end
 
   # def product_statistics
 

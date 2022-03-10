@@ -229,14 +229,70 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
   end
 
-  def user_this_season_tier
-    year = params[:season][0..3]
-    kisetsu = params[:season].last
+  # def update_tier
+  #   year = params[:season][0..3]
+  #   kisetsu = params[:season].last
     
-    @year = Year.find_by(year:"#{year}-01-01")
-    @kisetsu = Kisetsu.find_by(name:kisetsu)
-    @tier_group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id).tiers.where(user_id:params[:user_id])
-    render json:{user_tier: @tier_group}
+  #   @year = Year.find_by(year:"#{year}-01-01")
+  #   @kisetsu = Kisetsu.find_by(name:kisetsu)
+
+  #   @tier_group = TierGroup.where(year_id:@year.id,kisetsu_id:@kisetsu.id).first_or_initialize
+  #   # @tier_group.save
+
+  #   @user = User.find(params[:user_id])
+  #   @tier_group.tiers.where(user_id:@user.id)
+
+  #   @array = []
+  #   params[:group_product].each do |e|
+  #     e[:product].each do |product|
+  #       @tier = Tier.where(product_id:product,user_id:params[:user_id],tier_group_id: @tier_group.id).first_or_initialize
+  #       case e[:group]
+  #       when 0 then
+  #         @tier.tier = 100
+  #       when 1 then
+  #         @tier.tier = 80
+  #       when 2 then
+  #         @tier.tier = 60
+  #       when 3 then
+  #         @tier.tier = 40
+  #       when 4 then
+  #         @tier.tier = 20
+  #       when 5 then
+  #         @tier.tier = 0
+  #       else
+  #       end
+  #       @tier.save
+  #       @array << @tier
+  #     end
+  #   end
+  #     # @tier_group.tiers.where(user_id:@user.id) = 
+
+  # end
+
+  def user_this_season_tier
+    # year = params[:season][0..3]
+    # kisetsu = params[:season].last
+    time = Time.current
+    case time.month
+    when 1,2,3 then
+      # @kisetsu = 5
+      @kisetsu_name = "冬"
+    when 4,5,6 then
+      # @kisetsu = 2
+      @kisetsu_name = "春"
+    when 7,8,9 then
+      # @kisetsu = 3
+      @kisetsu_name = "夏"
+    when 10,11,12 then
+      # @kisetsu = 4
+      @kisetsu_name = "秋"
+    end
+    
+    @year = Year.find_by(year:"#{time.year}-01-01")
+    @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
+    @tier_group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id).tiers.includes(:product).where(user_id:params[:user_id])
+    # render json:{user_tier: @tier_group}
+    render :user_this_season_tier, formats: :json
   end
 
 end

@@ -8,3 +8,5 @@ json.set! :tier_main do
     json.products a.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
   end
 end
+
+json.set! :tierGroupLength, @tierGroupLength

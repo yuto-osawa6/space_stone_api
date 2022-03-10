@@ -305,8 +305,8 @@ class Api::V1::MainsController < ApplicationController
 
   def tier_main
     kisetsu_ids = [5,2,3,4]
-    @tierGroup = TierGroup.all.includes(:year,:kisetsu).includes(tiers: :product).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).page(params[:page_year]).per(4)
-
+    @tierGroup = TierGroup.all.includes(:year,:kisetsu).includes(tiers: :product).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).page(params[:page_year]).per(1)
+    @tierGroupLength = TierGroup.all.size
     # if tierGroup.present?
       # @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
       # @tier_p = tierGroup.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
@@ -314,7 +314,7 @@ class Api::V1::MainsController < ApplicationController
       # @tier = tier.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
       # @tier_p = tier.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
     # end
-    
+
     # @tierGroup.each do |a|
       
     # end

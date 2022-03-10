@@ -375,7 +375,29 @@ class Api::V1::ProductsController < ApplicationController
 
     @product.year_season_products = yearSeason
     @product.save
-end 
+
+
+  end 
+
+  def product_episords
+    @product = Product.find(params[:product_id])
+    @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings)
+    # @product = Product.find(params[:product_id])
+    render :product_episords,formats: :json
+
+  end
+
+  # def product_review
+
+  # end
+
+  # def product_thread
+
+  # end
+
+  # def product_statistics
+
+  # end
 
   private
     def user_params

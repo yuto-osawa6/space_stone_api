@@ -24,6 +24,7 @@ Rails.application.routes.draw do
           # post "red"
           get "left"
           get "edit1"
+          get "product_episords"
         end
         resources :chats, only:[:create]
 

@@ -527,5 +527,13 @@ class Scra2
     kisetsu_ids = [5,2,3,4]
     puts tierGroup = TierGroup.all.includes(:year).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).ids
   end
+
+  def ota22
+    @product = Product.find(3)
+    @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings)
+    @episords.each do |a|
+      puts a.weeks
+    end
+  end
   
 end

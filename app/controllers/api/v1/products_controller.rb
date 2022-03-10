@@ -382,16 +382,24 @@ class Api::V1::ProductsController < ApplicationController
   def product_episords
     @product = Product.find(params[:product_id])
     @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings)
-    # @product = Product.find(params[:product_id])
     render :product_episords,formats: :json
-
   end
 
   def product_review
     @product = Product.find(params[:product_id])
-    @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(2)
-    @length = @product.reviews.size
-    render :product_review ,formats: :json
+    if params[:episords].present?
+      if params[:episords].length>0
+        @reviews = @product.reviews.where(episord_id:params[:episords]).order(updated_at: :desc).page(params[:page]).per(2)
+        @length = @product.reviews.where(episord_id:params[:episords]).size
+      else
+        @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(2)
+        @length = @product.reviews.size
+      end
+    else
+      @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(2)
+      @length = @product.reviews.size
+    end
+      render :product_review ,formats: :json
   end
 
   def product_thread

@@ -530,9 +530,13 @@ class Scra2
 
   def ota22
     @product = Product.find(3)
-    @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings)
-    @episords.each do |a|
-      puts a.weeks
+    # @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings)
+    # @episords.each do |a|
+    #   puts a.weeks
+    # end
+    # ["4"]
+    @reviews = @product.reviews.where(episord_id:["4","9"]).each do |a|
+      puts a
     end
   end
   

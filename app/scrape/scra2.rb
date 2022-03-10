@@ -513,10 +513,19 @@ class Scra2
     puts @tier = TierGroup.find_by(year_id:5,kisetsu_id:5).tiers.includes(:product).group("product_id").order(Arel.sql("avg(tier) asc")).average(:tier)
     puts @tier_p = TierGroup.find_by(year_id:5,kisetsu_id:5).products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
 
+    tierGroup = TierGroup.find_by(year_id:5,kisetsu_id:5)
+    puts tierGroup.present?
     # @tier_p.inspect
     # a = @tier.filter{|k,v|k==1 }
     # puts a
 
+  end
+
+  def ota21
+
+    # tiermain
+    kisetsu_ids = [5,2,3,4]
+    puts tierGroup = TierGroup.all.includes(:year).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).ids
   end
   
 end

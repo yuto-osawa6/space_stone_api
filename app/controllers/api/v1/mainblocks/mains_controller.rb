@@ -30,8 +30,13 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
     tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
     # doneyet-3 (orderがfrontに送られたときにid順になる問題)
-    @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
-    @tier_p = tierGroup.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+    if tierGroup.present?
+      @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+      @tier_p = tierGroup.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+    else
+     
+    end
+   
     render :new_netflix,formats: :json
   end
 
@@ -39,18 +44,22 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     # @pickup = Product.where(pickup:true).includes(:styles,:janls,:tags,:scores)
     current = Time.current.ago(3.month)
     current2 = Time.current.since(3.month)
-    puts current.month
+    # puts current.month
 
     case current.month
-      when 1,2,3 then
-        @kisetsu = 5
-      when 4,5,6 then
-        @kisetsu = 2
-      when 7,8,9 then
-        @kisetsu = 3
-      when 10,11,12 then
-        @kisetsu = 4
-    end
+    when 1,2,3 then
+      @kisetsu = 5
+      @kisetsu_name = "冬"
+    when 4,5,6 then
+      @kisetsu = 2
+      @kisetsu_name = "春"
+    when 7,8,9 then
+      @kisetsu = 3
+      @kisetsu_name = "夏"
+    when 10,11,12 then
+      @kisetsu = 4
+      @kisetsu_name = "秋"
+  end
 
     case current2.month
     when 1,2,3 then
@@ -68,6 +77,21 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
     @current_season2 = "#{current2.year} #{Kisetsu.find(@kisetsu2).name}"
     @pickup2 = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current2.year}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
+
+    # 
+    # tier
+    year = Year.find_by(year:"#{current.year}-01-01")
+    season = Kisetsu.find_by(name:@kisetsu_name)
+
+    tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
+    if tierGroup.present?
+      @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+      @tier_p = tierGroup.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+    else
+     
+    end
+    
+    
 
     render :pickup,formats: :json
   end
@@ -272,8 +296,13 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   def user_this_season_tier
     # year = params[:season][0..3]
     # kisetsu = params[:season].last
-    time = Time.current
-    case time.month
+    if params[:current_number] == "1"
+      @time = Time.current
+    elsif params[:current_number] == "2"
+      @time = Time.current.ago(3.month)
+    end
+
+    case @time.month
     when 1,2,3 then
       # @kisetsu = 5
       @kisetsu_name = "冬"
@@ -288,10 +317,14 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
       @kisetsu_name = "秋"
     end
     
-    @year = Year.find_by(year:"#{time.year}-01-01")
+    @year = Year.find_by(year:"#{@time.year}-01-01")
     @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
-    @tier_group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id).tiers.includes(:product).where(user_id:params[:user_id])
-    # render json:{user_tier: @tier_group}
+    group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
+    if group.present?
+      @tier_group =  group.tiers.includes(:product).where(user_id:params[:user_id])
+    else
+
+    end
     render :user_this_season_tier, formats: :json
   end
 

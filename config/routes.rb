@@ -93,6 +93,7 @@ Rails.application.routes.draw do
           get "studiossearch"
           get "emotion"
           get "weekliy_main"
+          get "tier_main"
         end
       end
 

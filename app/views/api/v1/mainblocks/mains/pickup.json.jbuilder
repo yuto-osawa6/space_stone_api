@@ -86,3 +86,12 @@ end
 
 json.set! :current_season, @current_season
 json.set! :current_season2, @current_season2
+
+
+json.set! :tier do
+  json.array! @tier_p
+end
+
+json.set! :tier_average do
+  json.tierAvg @tier
+end

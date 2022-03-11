@@ -565,8 +565,10 @@ class Scra2
     # @user.group("scores").having('count(scores.value) > ?', 0).scores_products
     # 
     puts @score_emotions_ids = @user.scores_products.group("scores.id").having('sum(scores.value) > ?', 80).ids
-    puts @user.emotions.where(review_emotions:{product_id:[@score_emotions_ids]}).group("emotions.id").order(Arel.sql("count(emotion_id) desc"))
+    puts @user.emotions.where(review_emotions:{product_id:[@score_emotions_ids]}).group("emotions.id").order(Arel.sql("count(emotion_id) asc"))
   end
 
-  
+  def ota24
+    puts Review.all.order(episord_id: :asc).ids
+  end
 end

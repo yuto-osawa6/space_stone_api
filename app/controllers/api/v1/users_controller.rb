@@ -153,15 +153,101 @@ class Api::V1::UsersController < ApplicationController
 
   def reviews
     @user = User.find(params[:user_id])
-    @reviews = @user.reviews.order(created_at: :desc).page(params[:page]).per(2)
-    @review_length = @user.reviews.count
+    if params[:product_id].present?
+      if params[:emotion].present?
+        if params[:select_sort].present?
+          case params[:select_sort]
+          when "0" then
+            @reviews = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).where(product_id:params[:product_id]).includes(:product).left_outer_joins(:like_reviews,:review_emotions).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+            @review_length = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).where(product_id:params[:product_id]).size
+          when "1" then
+            @reviews = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).where(product_id:params[:product_id]).includes(:product).left_outer_joins(:acsess_reviews,:review_emotions).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+            @review_length = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).where(product_id:params[:product_id]).size
+          end
+        else
+        @reviews = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).where(product_id:params[:product_id]).includes(:product).left_outer_joins(:review_emotions).order(episord_id: :asc).page(params[:page]).per(2)
+        @review_length = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).where(product_id:params[:product_id]).size
+        end
+      else
+        if params[:select_sort].present?
+          case params[:select_sort]
+          when "0" then
+            @reviews = @user.reviews.where(product_id:params[:product_id]).includes(:product).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+            @review_length = @user.reviews.where(product_id:params[:product_id]).size
+          when "1" then
+            @reviews = @user.reviews.where(product_id:params[:product_id]).includes(:product).left_outer_joins(:acsess_reviews).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+            @review_length = @user.reviews.where(product_id:params[:product_id]).size
+          end
+        else
+        @reviews = @user.reviews.where(product_id:params[:product_id]).includes(:product).order(episord_id: :asc).page(params[:page]).per(2)
+        @review_length = @user.reviews.where(product_id:params[:product_id]).size
+        end
+      end
+    else
+      if params[:emotion].present?
+        if params[:select_sort].present?
+          case params[:select_sort]
+          when "0" then
+            @reviews = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).left_outer_joins(:like_reviews,:review_emotions).includes(:product).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+            @review_length = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).size
+          when "1" then
+            @reviews = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).left_outer_joins(:acsess_reviews,:review_emotions).includes(:product).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+            @review_length = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).size
+          end
+        else
+        @reviews = @user.reviews.includes(:review_emotions).left_outer_joins(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).order(created_at: :desc).includes(:product).page(params[:page]).per(2)
+        @review_length = @user.reviews.includes(:review_emotions).where(review_emotions:{emotion_id:params[:emotion]}).size
+        end
+      else
+        if params[:select_sort].present?
+          case params[:select_sort]
+          when "0" then
+            @reviews = @user.reviews.left_outer_joins(:like_reviews).includes(:product).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+            @review_length = @user.reviews.size
+          when "1" then
+            @reviews = @user.reviews.left_outer_joins(:acsess_reviews).includes(:product).group("reviews.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+            @review_length = @user.reviews.size
+          end
+        else
+        @reviews = @user.reviews.order(created_at: :desc).includes(:product).page(params[:page]).per(2)
+        @review_length = @user.reviews.size
+        end
+      end
+    end
     render :reviews,formats: :json
   end
 
   def threads
     @user = User.find(params[:user_id])
-    @reviews = @user.thereds.order(created_at: :desc).page(params[:page]).per(2)
-    @review_length = @user.thereds.count
+    if params[:product_id].present?
+        if params[:select_sort].present?
+          case params[:select_sort]
+          when "0" then
+            @reviews = @user.thereds.where(product_id:params[:product_id]).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+            @review_length = @user.thereds.where(product_id:params[:product_id]).size
+          when "1" then
+            @reviews = @user.thereds.where(product_id:params[:product_id]).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+            @review_length = @user.thereds.where(product_id:params[:product_id]).size
+          end
+        else
+        @reviews = @user.thereds.where(product_id:params[:product_id]).order(created_at: :desc).includes(:product).page(params[:page]).per(2)
+        @review_length = @user.thereds.where(product_id:params[:product_id]).count
+        end
+      else
+        if params[:select_sort].present?
+          case params[:select_sort]
+          when "0" then
+            @reviews = @user.thereds.left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(2)
+            @review_length = @user.thereds.size
+          when "1" then
+            @reviews = @user.thereds.left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(2)
+            @review_length = @user.thereds.size
+          end
+        else
+        @reviews = @user.thereds.order(created_at: :desc).includes(:product).page(params[:page]).per(2)
+        @review_length = @user.thereds.count
+        end
+    end
     # render :
     render :reviews,formats: :json
   end

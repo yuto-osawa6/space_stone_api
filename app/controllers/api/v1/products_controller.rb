@@ -153,7 +153,7 @@ class Api::V1::ProductsController < ApplicationController
     end
     @product = Product.find(params[:id])
     @stats = @product.scores.group(:value).count
-    @stats.map{|key,value|@pss["#{((key/10).floor+1)*10}"]=value}
+    @stats.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
     @stats_array = []
     @pss.map{|key,value|@stats_array.push(@pss[key])}
     puts "aaaaaaaa"

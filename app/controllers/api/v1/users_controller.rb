@@ -59,7 +59,7 @@ class Api::V1::UsersController < ApplicationController
 
     # score statics
     @score = @user.scores.group(:value).count
-    @score.map{|key,value|@pss["#{key}"]=value}
+    @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
     @score_array = []
     @pss.map{|key,value|@score_array.push(@pss[key])}
 
@@ -84,7 +84,7 @@ class Api::V1::UsersController < ApplicationController
 
   def scores
     @user = User.find(params[:user_id])
-    @products = Product.joins(:scores).where(scores:{user_id:4}).order(value: :desc).page(params[:page]).per(2)
+    @products = Product.joins(:scores).where(scores:{user_id:@user.id}).order(value: :desc).page(params[:page]).per(2)
     @length = @user.scores_products.count
     # render json:{product: @product,length: @length}
     render :scores, formats: :json

@@ -555,29 +555,18 @@ class Scra2
     } 
     # reduce 
     @user = User.find(1)
-    @score = @user.scores.group(:value).count
-    # @oota= @score.map{
-    #   |key,value|
-    #   case @pss["#{((key/10).floor+1)*10}"]
-    #   when "10" then
-    #   when "20" then
-    #   when "30" then
-    #   when "40" then
-    #   when "50" then
-    #   when "60" then
-    #   when "70" then
-    #   when "80" then
-    #   when "90" then
-    #   when "100" then
-    # }
-    @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
-    puts @pss
-    # @score.inject(Hash.new(0)) { |hash, key| hash[key] += 1; hash}
-    # @scores.inject(0) {|sum, k| sum + k[((k/10).floor+1)*10]}
-    # @score.inject (0){ |sum,num|
-    #   p sum+=num
-    
-    # }
+    # @score = @user.scores.group(:value).count
+    # @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    # puts @pss
+    puts @user.emotions.group("emotions.id").order(Arel.sql("count(emotion_id) desc")).ids
+    # puts @emotion = @user.emotions.group("emotions.id").order(Arel.sql("count(emotion_id) desc")).size
+    # puts @user.emotions.size
+
+    # @user.group("scores").having('count(scores.value) > ?', 0).scores_products
+    # 
+    puts @score_emotions_ids = @user.scores_products.group("scores.id").having('sum(scores.value) > ?', 80).ids
+    puts @user.emotions.where(review_emotions:{product_id:[@score_emotions_ids]}).group("emotions.id").order(Arel.sql("count(emotion_id) desc"))
   end
+
   
 end

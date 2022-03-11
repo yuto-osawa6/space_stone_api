@@ -79,6 +79,7 @@ Rails.application.routes.draw do
           get "reviews"
           get "threads"
           get "likeGenres"
+          get "mytiers"
         end
       end
 

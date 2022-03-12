@@ -199,6 +199,7 @@ Rails.application.routes.draw do
             post "vote"
             post "create_tier"
             get "user_this_season_tier"
+            get "get_user_tier_2"
           end
         end
       end

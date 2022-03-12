@@ -95,6 +95,8 @@ class Api::V1::UsersController < ApplicationController
       @kisetsu_name = "秋"
     end
     
+   
+
     @year = Year.find_by(year:"#{@time.year}-01-01")
     @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
     group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
@@ -103,6 +105,9 @@ class Api::V1::UsersController < ApplicationController
     else
 
     end
+    # add
+    # @current_season = "#{@time.year} #{@kisetsu.name}"
+    # @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{@time.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
   end
 
   def likes

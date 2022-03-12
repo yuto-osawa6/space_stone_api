@@ -325,7 +325,25 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     else
 
     end
+    @current_season = "#{@time.year} #{@kisetsu.name}"
+    @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{@time.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
     render :user_this_season_tier, formats: :json
+  end
+
+
+  def get_user_tier_2
+    
+    @year = Year.find(params[:year])
+    @kisetsu = Kisetsu.find(params[:kisetsu])
+    group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
+    if group.present?
+      @tier_group =  group.tiers.includes(:product).where(user_id:params[:user_id])
+    else
+
+    end
+    @current_season = "#{@year.year} #{@kisetsu.name}"
+    @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:@year.year}).where(year_season_seasons:{id:@kisetsu.id}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    render :get_user_tier_2 , formats: :json
   end
 
 end

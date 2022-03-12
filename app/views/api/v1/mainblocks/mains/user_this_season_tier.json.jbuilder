@@ -7,3 +7,9 @@ json.set! :user_tier do
    json.user_id a.user_id
  end
 end
+
+json.set! :current_season, @current_season
+
+json.set! :products do
+  json.array! @new_netflix
+end

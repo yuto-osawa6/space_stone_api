@@ -80,6 +80,7 @@ Rails.application.routes.draw do
           get "threads"
           get "likeGenres"
           get "mytiers"
+          get "change_score_arrayies"
         end
       end
 
@@ -98,6 +99,7 @@ Rails.application.routes.draw do
           get "emotion"
           get "weekliy_main"
           get "tier_main"
+          get "user_search"
         end
       end
 

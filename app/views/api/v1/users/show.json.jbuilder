@@ -47,5 +47,10 @@ json.set! :user do
       json.user_id a.user_id
     end
   end
+  
 
 end
+
+# json.set! :yearSeason do
+#   json.yearSeason @yearSeason
+# end

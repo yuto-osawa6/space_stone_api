@@ -8,7 +8,14 @@ json.set! :liked do
 
 json.set! :resouce do
   json.userReview do
-  json.array! @review 
+    json.array! @review do |a|
+      json.id a.id
+      json.content a.content
+      json.episord_id a.episord_id
+      json.set! :emotions do
+        json.array! a.emotions
+      end
+    end
   end
   json.userScore do
   json.array! @score

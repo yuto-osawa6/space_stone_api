@@ -569,6 +569,26 @@ class Scra2
   end
 
   def ota24
-    puts Review.all.order(episord_id: :asc).ids
+    @pss = {
+      "10"=> 0,
+      "20"=> 0,
+      "30"=> 0,
+      "40"=> 0,
+      "50"=> 0,
+      "60"=> 0,
+      "70"=> 0,
+      "80"=> 0,
+      "90"=> 0,
+      "100"=> 0,
+    } 
+    # puts Review.all.order(episord_id: :asc).ids
+    @user = User.find(1)
+    @score = @user.scores.group(:character).count
+    @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    @score_array = []
+    @pss.map{|key,value|@score_array.push(@pss[key])}
+    puts @pss.map{|key,value|value}
+    puts "aa"
+    puts @score_array
   end
 end

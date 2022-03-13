@@ -34,7 +34,7 @@ class Api::V1::LikesController < ApplicationController
     end
     # 2.0 score and review
     @score = @user.scores.where(user_id:@user.id,product_id:params[:product_id])
-    @review = @user.reviews.where(user_id:@user.id,product_id:params[:product_id]) 
+    @review = @user.reviews.where(user_id:@user.id,product_id:params[:product_id]).includes(:emotions)
     render :check,formats: :json
   end
 

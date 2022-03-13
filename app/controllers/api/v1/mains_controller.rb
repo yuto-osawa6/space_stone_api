@@ -310,4 +310,10 @@ class Api::V1::MainsController < ApplicationController
     render :tier_main,formats: :json
   end
 
+  def user_search
+    puts "00000000"
+    @user = User.where("nickname LIKE ?", "%#{params[:text]}%").page(params[:page]).per(1)
+    render :user_search,formats: :json
+  end
+
 end

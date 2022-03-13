@@ -96,6 +96,7 @@ class Api::V1::UsersController < ApplicationController
     end
     
    
+    # @yearSeason = "#{@time.year} #{@kisetsu_name}"
 
     @year = Year.find_by(year:"#{@time.year}-01-01")
     @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
@@ -263,6 +264,49 @@ class Api::V1::UsersController < ApplicationController
     @tierGroup = TierGroup.all.includes(:year,:kisetsu).includes(tiers: :product).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).page(params[:page]).per(1)
     @tierGroupLength = TierGroup.all.size
     render :mytiers,formats: :json
+  end
+
+  def change_score_arrayies
+    @user = User.find(params[:user_id])
+    @pss = {
+      "10"=> 0,
+      "20"=> 0,
+      "30"=> 0,
+      "40"=> 0,
+      "50"=> 0,
+      "60"=> 0,
+      "70"=> 0,
+      "80"=> 0,
+      "90"=> 0,
+      "100"=> 0,
+    } 
+
+    case params[:index_number]
+    when "0" then
+      @score = @user.scores.group(:value).count
+      @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    when "1" then
+      @score = @user.scores.group(:all).count
+      @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    when "2" then
+      @score = @user.scores.group(:story).count
+      @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    when "3" then
+      @score = @user.scores.group(:animation).count
+      @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    when "4" then
+      @score = @user.scores.group(:performance).count
+      @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    when "5" then
+      @score = @user.scores.group(:music).count
+      @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    when "6" then
+      @score = @user.scores.group(:character).count
+      @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    end
+    puts @pss
+    puts @pss.map{|key,value|value}
+    render json:{score_arrayies:@pss.map{|key,value|value}}
   end
 
   private

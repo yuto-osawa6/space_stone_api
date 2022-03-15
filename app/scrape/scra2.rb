@@ -315,6 +315,280 @@ class Scra2
 
 
   end
+  def ota9
+    @product = Product.find(3)
+    puts @product.style_ids
+    puts @product.styles
+    puts @product.episords[0].id
+    # puts @product.episords.to_h
+    puts @product.episords[0].attributes
+  end
 
-  
+  def ota10
+    # current = Time.current
+    # puts current.month
+
+    # case current.month
+    #   when 1,2,3 then
+    #     @kisetsu = 5
+    #   when 4,5,6 then
+    #     @kisetsu = 2
+    #   when 7,8,9 then
+    #     @kisetsu = 3
+    #   when 10,11,12 then
+    #     @kisetsu = 4
+    # end
+
+    # @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
+    # # @new_netflix = Product.left_outer_joins(:acsesses,:kisetsus,:years).includes(:styles,:janls,:tags,:scores).where(years:{year:current.year}).where(kisetsus:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    # product = Product.left_outer_joins(:years).where(years:{year:"#{current.year}-01-01"})
+    # product = Product.left_outer_joins(:years).where(years:{year:current})
+
+    # puts product.ids
+    @product = Product.find(3)
+    puts @product.year_season_years.ids
+    @year = Year.left_outer_joins(:year_season_products).includes(:year_season_seasons).where(year_season_products:{product_id:@product.id}).distinct.ids
+
+    puts @year
+
+    # @u = YearSeasonProduct.left_outer_joins(:product).group(:product_id).productt
+
+
+    # @product.group(".id").ids
+
+
+  end
+
+  def ota11
+    current = Time.current
+    puts current.month
+
+    case current.month
+      when 1,2,3 then
+        @kisetsu = 5
+      when 4,5,6 then
+        @kisetsu = 2
+      when 7,8,9 then
+        @kisetsu = 3
+      when 10,11,12 then
+        @kisetsu = 4
+    end
+
+    @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
+    puts @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+
+  end
+
+  def ota12
+    d = Time.current
+    to2 =  d.since(7.days)
+    puts d,to2
+    @product = Product.find(1)
+    @episord = @product.episords.where(release_date:d...to2).order(release_date: :asc).limit(1)
+  end
+
+  def ota13
+    @review = Review.find(1)
+    @review.destroy
+    @review = Review.find(4)
+    @review.destroy
+    # @review = Review.find(5)
+    # @review.destroy
+    # @userEpisord = Review.where(product_id:3,user_id:1).pluck(:episord_id)
+
+  end
+
+  def ota14
+    # puts Review.find(24).review_emotions
+  #  Review.find(25).destroy
+    # puts Product.all.styles
+
+  #   emotions,through: :review_emotions, source: :emotion
+  # has_many :emotion_products,through: :review_emotions, source: :product
+  # has_many :emotion_episords,through: :review_emotions, source: :episord
+  # has_many :emotion_users,through: :review_emotions , so
+  puts Review.find(6).emotion_products.ids
+  puts Review.find(6).emotion_episords.ids
+  puts Review.find(6).emotion_users.ids
+  puts Review.find(6).review_emotions.ids
+
+  end
+
+  def ota15
+    # puts Product.find(3).emotions.length
+    # puts Product.find(3).left_outer_joins(:review_emotions).where(:review_emotions:{emotion_id:9})
+    Product.find(3).emotions.group(:emotion_id).order("count(emotion_id) desc").length
+  end
+
+  def ota16
+    #emotion sort
+    # puts Product.all.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = 1 THEN 1 ELSE 0 END)/count(emotion_id) desc")).ids
+    # .group("emotions.id")
+    # .order("sum(CASE WHEN id = 1 THEN 1 ELSE 0 END)/count(id) desc")
+
+    @product = Product.find(2)
+    # motionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc").count
+    # motionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc").count
+    # puts @product.review_emotions.
+    # motionList = @product.review_emotions.group(:emotion_id).order("count(emotion_id) desc").count
+    # @emotionList = @product.review_emotions.group(:emotion_id).order("count(emotion_id) desc").each do |a|
+    #   puts a
+    # end
+    # @emotionList = @product.review_emotions.group(:emotion_id).ids
+
+    # @emotionList = @product.emotions.group(:emotion_id).each do |a|
+    #   a.length
+    # end
+
+    # @emotionList = @product.emotions.joins(:review_emotions).group(:emotion_id).order(Arel.sql("count(emotion_id)")).count.each do |a,count|
+    # puts a
+    # end
+
+    # Emotion.joins(:review_emotions).where(review_emotions:{product_id:5}).group("emotions.id").order(Arel.sql("count(emotions.id)")).each do |a|
+    #   a.count.map()
+    # end
+
+
+    # @product = Product.find(params[:id])
+    @stats = @product.scores.group(:value).count
+
+  end
+
+  def ota17
+    # current_time = Time.current 
+    # to = current_time.prev_week(:monday).since(6.hours)   
+    # from = to.next_week.since(6.hours)
+    # puts from,to
+    # current_time = Time.current 
+    # from = current_time.prev_week(:monday).since(6.hours)   
+    # to = from.next_week.since(6.hours)
+    # @product = Product.left_outer_joins(:episords,:acsesses).where(episords:{release_date:from..to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+    # @products.
+
+    # puts  current_time = Time.current.since(6.hours).prev_week(:monday)
+    # dt =DateTime.parse("2022/03/7 0:23:55")
+    # puts dt.ago(6.hours).prev_week(:monday)
+
+    current_time = Time.current 
+    @from = current_time.prev_week(:monday).since(6.hours)   
+    @to = @from.next_week.since(6.hours)
+    @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+    Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
+  end
+
+  def ota18
+    # current = Time.current
+
+    # case current.month
+    # when 1,4,7,10 then
+    #   @ago = 0
+    # when 2,5,8,11 then
+    #   @ago = 1
+    # when 3,6,9,12 then
+    #   @ago = 2
+    # end
+    # puts @from = current.ago(@ago.month).beginning_of_month.wday
+
+    current_time = Time.current.ago(6.hours).prev_week(:monday)
+    current = Time.current
+    # @from = current_time.since(6.hours)   
+    # @to = @from.next_week.since(6.hours)
+
+    puts current_time = Time.current.ago(6.hours).prev_week(:monday).prev_week(:monday).since(1.hours)
+    puts three_month_ago = current_time.ago(3.month)
+    @week_all= Week.where(week:three_month_ago.ago(1.hours)...current_time)
+    puts @week_all.ids
+  end
+
+  def ota19
+    @YearSeason = YearSeasonProduct.includes(:year).group("year.id")
+    @product = Product.group(:year)
+    @product.each do |a|
+      puts a
+    end
+    # puts @yearseason.inspect
+  end
+
+  def ota20
+    puts @tier = TierGroup.find_by(year_id:5,kisetsu_id:5).tiers.includes(:product).group("product_id").order(Arel.sql("avg(tier) asc")).average(:tier)
+    puts @tier_p = TierGroup.find_by(year_id:5,kisetsu_id:5).products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+
+    tierGroup = TierGroup.find_by(year_id:5,kisetsu_id:5)
+    puts tierGroup.present?
+    # @tier_p.inspect
+    # a = @tier.filter{|k,v|k==1 }
+    # puts a
+
+  end
+
+  def ota21
+
+    # tiermain
+    kisetsu_ids = [5,2,3,4]
+    puts tierGroup = TierGroup.all.includes(:year).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).ids
+  end
+
+  def ota22
+    @product = Product.find(3)
+    # @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings)
+    # @episords.each do |a|
+    #   puts a.weeks
+    # end
+    # ["4"]
+    @reviews = @product.reviews.where(episord_id:["4","9"]).each do |a|
+      puts a
+    end
+  end
+
+  def ota23
+    @pss = {
+      "10"=> 0,
+      "20"=> 0,
+      "30"=> 0,
+      "40"=> 0,
+      "50"=> 0,
+      "60"=> 0,
+      "70"=> 0,
+      "80"=> 0,
+      "90"=> 0,
+      "100"=> 0,
+    } 
+    # reduce 
+    @user = User.find(1)
+    # @score = @user.scores.group(:value).count
+    # @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    # puts @pss
+    puts @user.emotions.group("emotions.id").order(Arel.sql("count(emotion_id) desc")).ids
+    # puts @emotion = @user.emotions.group("emotions.id").order(Arel.sql("count(emotion_id) desc")).size
+    # puts @user.emotions.size
+
+    # @user.group("scores").having('count(scores.value) > ?', 0).scores_products
+    # 
+    puts @score_emotions_ids = @user.scores_products.group("scores.id").having('sum(scores.value) > ?', 80).ids
+    puts @user.emotions.where(review_emotions:{product_id:[@score_emotions_ids]}).group("emotions.id").order(Arel.sql("count(emotion_id) asc"))
+  end
+
+  def ota24
+    @pss = {
+      "10"=> 0,
+      "20"=> 0,
+      "30"=> 0,
+      "40"=> 0,
+      "50"=> 0,
+      "60"=> 0,
+      "70"=> 0,
+      "80"=> 0,
+      "90"=> 0,
+      "100"=> 0,
+    } 
+    # puts Review.all.order(episord_id: :asc).ids
+    @user = User.find(1)
+    @score = @user.scores.group(:character).count
+    @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
+    @score_array = []
+    @pss.map{|key,value|@score_array.push(@pss[key])}
+    puts @pss.map{|key,value|value}
+    puts "aa"
+    puts @score_array
+  end
 end

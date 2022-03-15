@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_20_200004) do
+ActiveRecord::Schema.define(version: 2022_03_06_071502) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -113,6 +113,16 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
     t.index ["product_id"], name: "index_characters_on_product_id"
   end
 
+  create_table "chats", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "user_id", null: false
+    t.text "message", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_chats_on_product_id"
+    t.index ["user_id"], name: "index_chats_on_user_id"
+  end
+
   create_table "comment_reviews", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "review_id", null: false
     t.bigint "user_id", null: false
@@ -142,6 +152,12 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["product_id"], name: "index_comprehensives_on_product_id"
+  end
+
+  create_table "emotions", charset: "utf8mb4", force: :cascade do |t|
+    t.string "emotion"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "episords", charset: "utf8mb4", force: :cascade do |t|
@@ -336,6 +352,7 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
     t.text "horizontal_image_url"
     t.text "horizontal_image_url2"
     t.text "horizontal_image_url3"
+    t.text "overview"
   end
 
   create_table "questions", charset: "utf8mb4", force: :cascade do |t|
@@ -382,6 +399,21 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
     t.index ["return_return_thread_id"], name: "index_return_return_comment_threads_on_return_return_thread_id"
   end
 
+  create_table "review_emotions", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "review_id", null: false
+    t.bigint "emotion_id", null: false
+    t.bigint "product_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "episord_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["emotion_id"], name: "index_review_emotions_on_emotion_id"
+    t.index ["episord_id"], name: "index_review_emotions_on_episord_id"
+    t.index ["product_id"], name: "index_review_emotions_on_product_id"
+    t.index ["review_id"], name: "index_review_emotions_on_review_id"
+    t.index ["user_id"], name: "index_review_emotions_on_user_id"
+  end
+
   create_table "reviews", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.bigint "user_id", null: false
@@ -402,6 +434,12 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
     t.integer "value", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "music"
+    t.integer "character"
+    t.integer "animation"
+    t.integer "story"
+    t.integer "performance"
+    t.integer "all"
     t.index ["product_id"], name: "index_scores_on_product_id"
     t.index ["user_id"], name: "index_scores_on_user_id"
   end
@@ -488,6 +526,27 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
     t.index ["user_id"], name: "index_thereds_on_user_id"
   end
 
+  create_table "tier_groups", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "year_id"
+    t.bigint "kisetsu_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["kisetsu_id"], name: "index_tier_groups_on_kisetsu_id"
+    t.index ["year_id"], name: "index_tier_groups_on_year_id"
+  end
+
+  create_table "tiers", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "tier"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "tier_group_id", null: false
+    t.index ["product_id"], name: "index_tiers_on_product_id"
+    t.index ["tier_group_id"], name: "index_tiers_on_tier_group_id"
+    t.index ["user_id"], name: "index_tiers_on_user_id"
+  end
+
   create_table "toptens", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "period_id", null: false
     t.bigint "product_id"
@@ -531,8 +590,54 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  create_table "week_episords", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "episord_id", null: false
+    t.bigint "week_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["episord_id"], name: "index_week_episords_on_episord_id"
+    t.index ["week_id"], name: "index_week_episords_on_week_id"
+  end
+
+  create_table "weeklyrankings", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id"
+    t.datetime "weekly"
+    t.integer "count"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "week_id"
+    t.index ["product_id"], name: "index_weeklyrankings_on_product_id"
+    t.index ["week_id"], name: "index_weeklyrankings_on_week_id"
+  end
+
+  create_table "weeks", charset: "utf8mb4", force: :cascade do |t|
+    t.datetime "week"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "year_products", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "year_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_year_products_on_product_id"
+    t.index ["year_id"], name: "index_year_products_on_year_id"
+  end
+
+  create_table "year_season_products", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "year_id"
+    t.bigint "kisetsu_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["kisetsu_id"], name: "index_year_season_products_on_kisetsu_id"
+    t.index ["product_id"], name: "index_year_season_products_on_product_id"
+    t.index ["year_id"], name: "index_year_season_products_on_year_id"
+  end
+
   create_table "years", charset: "utf8mb4", force: :cascade do |t|
-    t.string "year"
+    t.date "year"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -544,6 +649,8 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "articles", "users"
+  add_foreign_key "chats", "products"
+  add_foreign_key "chats", "users"
   add_foreign_key "comment_reviews", "reviews"
   add_foreign_key "comment_reviews", "users"
   add_foreign_key "comment_threads", "thereds"
@@ -574,6 +681,11 @@ ActiveRecord::Schema.define(version: 2022_02_20_200004) do
   add_foreign_key "return_return_comment_reviews", "return_comment_reviews", column: "return_return_id"
   add_foreign_key "return_return_comment_threads", "return_comment_threads"
   add_foreign_key "return_return_comment_threads", "return_comment_threads", column: "return_return_thread_id"
+  add_foreign_key "review_emotions", "emotions"
+  add_foreign_key "review_emotions", "episords"
+  add_foreign_key "review_emotions", "products"
+  add_foreign_key "review_emotions", "reviews"
+  add_foreign_key "review_emotions", "users"
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"
   add_foreign_key "scores", "products"

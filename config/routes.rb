@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  mount ActionCable.server => '/cable'
+
+
   mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks]
   post 'social_auth/callback', to: 'social_auth#authenticate_social_auth_user' # this is th
   # mount_devise_token_auth_for 'User', at: 'auth'
@@ -7,6 +10,7 @@ Rails.application.routes.draw do
   # }
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   # devise_for :users
+
   namespace :api do
     namespace :v1 do
       # mount_devise_token_auth_for 'User', at: 'auth', controllers: {
@@ -16,11 +20,16 @@ Rails.application.routes.draw do
       # post 'social_auth/callback', to: 'social_auth#authenticate_social_auth_user' # this is the line where we add our routes
       resources :products do
         collection do
-          # get "red"
-          post "red"
-
+          get "red"
+          # post "red"
           get "left"
+          get "edit1"
+          get "product_episords"
+          get "product_review"
+          get "product_thread"
         end
+        resources :chats, only:[:create]
+
         resources :likes, only: [:create, :destroy] do
           collection do
             get "check"
@@ -30,7 +39,7 @@ Rails.application.routes.draw do
         end
         resources :acsesses,only:[:create] do
         end
-        resources :reviews,only:[:create,:show] do
+        resources :reviews,only:[:create,:show,:update] do
           collection do
             get "sort"
           end
@@ -70,6 +79,8 @@ Rails.application.routes.draw do
           get "reviews"
           get "threads"
           get "likeGenres"
+          get "mytiers"
+          get "change_score_arrayies"
         end
       end
 
@@ -85,6 +96,10 @@ Rails.application.routes.draw do
           get "monthduring"
           get "top100"
           get "studiossearch"
+          get "emotion"
+          get "weekliy_main"
+          get "tier_main"
+          get "user_search"
         end
       end
 
@@ -182,6 +197,11 @@ Rails.application.routes.draw do
             get "worldclass"
             get "toptens"
             get "populur_rt"
+            get "ranking"
+            post "vote"
+            post "create_tier"
+            get "user_this_season_tier"
+            get "get_user_tier_2"
           end
         end
       end

@@ -496,8 +496,9 @@ json.set! :tags do
   end
   json.array! @season do |season|
     json.season_id season.id
-    json.season season.season
-    json.season_number season.season_number
+    json.season season.name
+    json.kisetsu season
+    # json.season_number season.season_number
   end
 
 end

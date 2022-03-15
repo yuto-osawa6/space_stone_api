@@ -20,16 +20,14 @@ class Api::V1::ScoresController < ApplicationController
     
     if @score.save
       @score_average = @product.scores.average(:value).round(1)
-
-
-
       @stats = @product.scores.group(:value).count
-      @stats.map{|key,value|@pss["#{key}"]=value}
+      @stats.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
       @stats_array = []
       @pss.map{|key,value|@stats_array.push(@pss[key])}
 
+      @productScore = @product.scores
 
-      render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array} 
+      render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array,productScores:@productScore} 
     else
       render json: { status: 500, message: "失敗しました"  } 
     end
@@ -50,29 +48,34 @@ class Api::V1::ScoresController < ApplicationController
     } 
 
     @user = User.find(params[:score][:user_id])
-    # @score_average = Product.find(params[:score][:product_id]).scores.average(:value)
-    # @score = @user.scores.new(score_params)
     @product = Product.find(params[:score][:product_id])
-    # current_user
-    
-    if  @score = @user.scores.update(score_params)
+    # @value = params[:score][:all] + params[:score][:music] + params[:score][:aninmation] + params[:score][:story] + params[:score][:performance] + params[:score][:character]
+    puts @value
+    @score = Score.find(params[:id])
+    puts params
+    begin
+    if  @score.update(score_params)
       @score_average = @product.scores.average(:value).round(1)
 
 
 
       @stats = @product.scores.group(:value).count
-      @stats.map{|key,value|@pss["#{key}"]=value}
+      @stats.map{|key,value|@pss["#{((key/10).floor+1)*10}"]=value}
       @stats_array = []
       @pss.map{|key,value|@stats_array.push(@pss[key])}
+      @productScore = @product.scores
 
 
-      render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array } 
+      render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array,productScores:@productScore } 
     else
       render json: { status: 500, message: "失敗しました"  } 
+    end
+    rescue => e
+      puts e
     end
   end
   private
   def score_params
-    params.require(:score).permit(:product_id,:user_id,:value)
+    params.require(:score).permit(:product_id,:user_id,:value,:music,:performance,:story,:animation,:character,:all)
   end
 end

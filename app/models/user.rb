@@ -53,7 +53,22 @@ class User < ActiveRecord::Base
   # doneyet base64方式に変更
   has_one_attached :bg_img
 
-  
+  # emotion
+  has_many :review_emotions,dependent: :destroy
+  has_many :emotions,through: :review_emotions, source: :emotion
+  has_many :emotion_products,through: :review_emotions, source: :product
+  has_many :emotion_episords,through: :review_emotions, source: :episord
+  # has_many :users,through: :review_emotions , source: :user
+  has_many :emotion_reviews,through: :review_emotions , source: :review
+
+  # chats
+  has_many :chats
+  has_many :products,through: :chats, source: :product
+
+  # tier
+  has_many :tiers,dependent: :destroy
+  has_many :products,through: :tiers,source: :product
+  has_many :tier_groups,through: :tiers,source: :tier_group
 
 
   devise  :database_authenticatable, 

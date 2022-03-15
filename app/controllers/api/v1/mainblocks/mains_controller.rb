@@ -9,17 +9,34 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     case current.month
       when 1,2,3 then
         @kisetsu = 5
+        @kisetsu_name = "冬"
       when 4,5,6 then
         @kisetsu = 2
+        @kisetsu_name = "春"
       when 7,8,9 then
         @kisetsu = 3
+        @kisetsu_name = "夏"
       when 10,11,12 then
         @kisetsu = 4
+        @kisetsu_name = "秋"
     end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @new_netflix = Product.left_outer_joins(:acsesses,:kisetsus).includes(:styles,:janls,:tags,:scores).where(year:current.year).where(kisetsus:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
-    # Product.joins(:kisetsus).where(year:current.year).where(kisetsus:{id:@kisetsu}).order(Arel.sql('sum(count) DESC'))
+    @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+
+    # tier
+    year = Year.find_by(year:"#{current.year}-01-01")
+    season = Kisetsu.find_by(name:@kisetsu_name)
+
+    tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
+    # doneyet-3 (orderがfrontに送られたときにid順になる問題)
+    if tierGroup.present?
+      @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+      @tier_p = tierGroup.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+    else
+     
+    end
+   
     render :new_netflix,formats: :json
   end
 
@@ -27,18 +44,22 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     # @pickup = Product.where(pickup:true).includes(:styles,:janls,:tags,:scores)
     current = Time.current.ago(3.month)
     current2 = Time.current.since(3.month)
-    puts current.month
+    # puts current.month
 
     case current.month
-      when 1,2,3 then
-        @kisetsu = 5
-      when 4,5,6 then
-        @kisetsu = 2
-      when 7,8,9 then
-        @kisetsu = 3
-      when 10,11,12 then
-        @kisetsu = 4
-    end
+    when 1,2,3 then
+      @kisetsu = 5
+      @kisetsu_name = "冬"
+    when 4,5,6 then
+      @kisetsu = 2
+      @kisetsu_name = "春"
+    when 7,8,9 then
+      @kisetsu = 3
+      @kisetsu_name = "夏"
+    when 10,11,12 then
+      @kisetsu = 4
+      @kisetsu_name = "秋"
+  end
 
     case current2.month
     when 1,2,3 then
@@ -52,10 +73,25 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @pickup = Product.left_outer_joins(:acsesses,:kisetsus).includes(:styles,:janls,:tags,:scores).where(year:current.year).where(kisetsus:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @pickup = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
 
     @current_season2 = "#{current2.year} #{Kisetsu.find(@kisetsu2).name}"
-    @pickup2 = Product.left_outer_joins(:acsesses,:kisetsus).includes(:styles,:janls,:tags,:scores).where(year:current2.year).where(kisetsus:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @pickup2 = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current2.year}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
+
+    # 
+    # tier
+    year = Year.find_by(year:"#{current.year}-01-01")
+    season = Kisetsu.find_by(name:@kisetsu_name)
+
+    tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
+    if tierGroup.present?
+      @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+      @tier_p = tierGroup.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+    else
+     
+    end
+    
+    
 
     render :pickup,formats: :json
   end
@@ -132,4 +168,182 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @popular_threads = Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).limit(6)
     render :populur_rt,formats: :json
   end
+
+  def ranking 
+    current_time = Time.current 
+    @from = current_time.prev_week(:monday).since(6.hours)   
+    @to = @from.next_week.since(6.hours)
+    @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+    @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
+    if session[:weekly_vote]
+      if @to - session[:weekly_vote].since(6.hours) > 0
+        @weekly_vote = false
+        session[:weekly_vote] = nil
+        # @weekly_vote = true
+      else
+        session[:weekly_vote] = nil
+        @weekly_vote = false
+      end
+    else
+      @weekly_vote = false
+    end
+
+    # render json:{products:@products,from:from,to:to,weekly_vote:@weekly_vote }
+    render :ranking, formats: :json
+  end
+
+  def vote
+    puts session[:ranking]
+    # doneyet-1(設定 6時間)
+    current_time = Time.current.ago(6.hours).prev_week(:monday)
+    @week = Week.where(week:current_time).first_or_initialize
+    @week.episord_ids = params[:episord_ids]
+    @week.save
+
+    @vote = Weeklyranking.where(product_id:params[:product_id],weekly:current_time,week_id: @week.id).first_or_initialize
+    puts @vote.inspect
+    @vote.count = @vote.count.nil?? 1 : @vote.count + 1
+
+    if @vote.save
+      session[:weekly_vote] = @vote.weekly
+      @weekly_vote = true
+      @from = current_time.since(6.hours)   
+      @to = @from.next_week.since(6.hours)
+      @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+      @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
+      render :vote, formats: :json
+    else
+      render json:{ }
+    end
+   
+  end
+
+  def create_tier
+    year = params[:season][0..3]
+    kisetsu = params[:season].last
+    
+    @year = Year.find_by(year:"#{year}-01-01")
+    @kisetsu = Kisetsu.find_by(name:kisetsu)
+
+    @tier_group = TierGroup.where(year_id:@year.id,kisetsu_id:@kisetsu.id).first_or_initialize
+    @tier_group.save
+
+    params[:group_product].each do |e|
+      e[:product].each do |product|
+        @tier = Tier.where(product_id:product,user_id:params[:user_id],tier_group_id: @tier_group.id).first_or_initialize
+        case e[:group]
+        when 0 then
+          @tier.tier = 100
+        when 1 then
+          @tier.tier = 80
+        when 2 then
+          @tier.tier = 60
+        when 3 then
+          @tier.tier = 40
+        when 4 then
+          @tier.tier = 20
+        when 5 then
+          @tier.tier = 0
+        else
+        end
+        @tier.save
+      end
+    end
+
+
+  end
+
+  # def update_tier
+  #   year = params[:season][0..3]
+  #   kisetsu = params[:season].last
+    
+  #   @year = Year.find_by(year:"#{year}-01-01")
+  #   @kisetsu = Kisetsu.find_by(name:kisetsu)
+
+  #   @tier_group = TierGroup.where(year_id:@year.id,kisetsu_id:@kisetsu.id).first_or_initialize
+  #   # @tier_group.save
+
+  #   @user = User.find(params[:user_id])
+  #   @tier_group.tiers.where(user_id:@user.id)
+
+  #   @array = []
+  #   params[:group_product].each do |e|
+  #     e[:product].each do |product|
+  #       @tier = Tier.where(product_id:product,user_id:params[:user_id],tier_group_id: @tier_group.id).first_or_initialize
+  #       case e[:group]
+  #       when 0 then
+  #         @tier.tier = 100
+  #       when 1 then
+  #         @tier.tier = 80
+  #       when 2 then
+  #         @tier.tier = 60
+  #       when 3 then
+  #         @tier.tier = 40
+  #       when 4 then
+  #         @tier.tier = 20
+  #       when 5 then
+  #         @tier.tier = 0
+  #       else
+  #       end
+  #       @tier.save
+  #       @array << @tier
+  #     end
+  #   end
+  #     # @tier_group.tiers.where(user_id:@user.id) = 
+
+  # end
+
+  def user_this_season_tier
+    # year = params[:season][0..3]
+    # kisetsu = params[:season].last
+    if params[:current_number] == "1"
+      @time = Time.current
+    elsif params[:current_number] == "2"
+      @time = Time.current.ago(3.month)
+    end
+
+    case @time.month
+    when 1,2,3 then
+      # @kisetsu = 5
+      @kisetsu_name = "冬"
+    when 4,5,6 then
+      # @kisetsu = 2
+      @kisetsu_name = "春"
+    when 7,8,9 then
+      # @kisetsu = 3
+      @kisetsu_name = "夏"
+    when 10,11,12 then
+      # @kisetsu = 4
+      @kisetsu_name = "秋"
+    end
+    
+    @year = Year.find_by(year:"#{@time.year}-01-01")
+    @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
+    group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
+    if group.present?
+      @tier_group =  group.tiers.includes(:product).where(user_id:params[:user_id])
+    else
+
+    end
+    @current_season = "#{@time.year} #{@kisetsu.name}"
+    @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{@time.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    render :user_this_season_tier, formats: :json
+  end
+
+
+  def get_user_tier_2
+    
+    @year = Year.find(params[:year])
+    @kisetsu = Kisetsu.find(params[:kisetsu])
+    group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
+    if group.present?
+      @tier_group =  group.tiers.includes(:product).where(user_id:params[:user_id])
+    else
+
+    end
+    @current_season = "#{@year.year} #{@kisetsu.name}"
+    @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:@year.year}).where(year_season_seasons:{id:@kisetsu.id}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    render :get_user_tier_2 , formats: :json
+  end
+
 end

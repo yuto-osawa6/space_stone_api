@@ -13,7 +13,8 @@ class Api::V1::TheredsController < ApplicationController
 
     # thered.thered_question_questions.build
     if @thered.save
-      render json: {thered:@thered}
+      @product = Product.find(params[:thered][:product_id])
+      render json: {thered:@thered, productThreads:@product.thereds}
     else
       render json: {status:500,thered:@thered}
     end

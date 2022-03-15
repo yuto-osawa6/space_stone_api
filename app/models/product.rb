@@ -1,7 +1,7 @@
 class Product < ApplicationRecord
   # doneyet-1 下
-  has_many :cast_products
-  has_many :casts, through: :cast_products
+  # has_many :cast_products
+  # has_many :casts, through: :cast_products
 
   has_many :janl_products,dependent: :destroy
   has_many :janls, through: :janl_products
@@ -49,6 +49,36 @@ class Product < ApplicationRecord
   has_many :occupations, dependent: :destroy
   has_many :staffs, through: :occupations
 
+  has_many :year_products, dependent: :destroy
+  has_many :years, through: :year_products
+
+  # 3tables
+  has_many :year_season_products, dependent: :destroy
+  has_many :year_season_years, through: :year_season_products, source: :year
+  has_many :year_season_seasons,through: :year_season_products, source: :kisetsu
+
+  # 5table
+  has_many :review_emotions,dependent: :destroy
+  has_many :emotions,through: :review_emotions, source: :emotion
+  # has_many :products,through: :review_emotions, source: :product
+  has_many :emotion_episords,through: :review_emotions, source: :episord
+  has_many :emotion_users,through: :review_emotions , source: :user
+  has_many :emotion_reviews,through: :review_emotions , source: :review
+
+  # chats
+  has_many :chats
+  has_many :users,through: :chats, source: :user
+
+  has_many :weeklyrankings,dependent: :destroy
+  has_many :weeks,through: :weeklyrankings,source: :week
+
+  # tier
+  
+  has_many :tiers,dependent: :destroy
+  has_many :users,through: :tiers,source: :user
+  has_many :tier_groups,through: :tiers,source: :tier_group
+
+
   ransacker :likes_count do
     query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'
     Arel.sql(query)
@@ -71,6 +101,32 @@ class Product < ApplicationRecord
 
   ransacker :thread_count do
     query = '(SELECT  COUNT(thereds.product_id) FROM thereds where thereds.product_id = products.id GROUP BY thereds.product_id)'
+    Arel.sql(query)
+  end
+
+  # 2.0
+  ransacker :average_all_score do
+    query = '(SELECT avg(scores.all) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_music_score do
+    query = '(SELECT avg(scores.music) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_character_score do
+    query = '(SELECT avg(scores.character) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_performance_score do
+    query = '(SELECT avg(scores.performance) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_animation_score do
+    query = '(SELECT avg(scores.animation) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
+    Arel.sql(query)
+  end
+  ransacker :average_story_score do
+    query = '(SELECT avg(scores.story) FROM scores where scores.product_id = products.id GROUP BY scores.product_id)'
     Arel.sql(query)
   end
 

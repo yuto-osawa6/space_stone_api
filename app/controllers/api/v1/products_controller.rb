@@ -115,9 +115,11 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def red
-    content = params[:content]
-    review  = Review.create({title:params[:text],discribe:params[:discribe],content:content,user_id:3,product_id:11})
-    render json: {review:review}
+    # content = params[:content]
+    # review  = Review.create({title:params[:text],discribe:params[:discribe],content:content,user_id:3,product_id:11})
+    # @YearSeason = YearSeasonProduct.group(:product_id)
+    # @week = WeekEpisord.joins(:week).group(:week_id)
+    # render json: {year_season: @week}
 
   end
 
@@ -150,13 +152,14 @@ class Api::V1::ProductsController < ApplicationController
       @scored = false
     end
     @product = Product.find(params[:id])
-    # .includes(:genres,:styles)
     @stats = @product.scores.group(:value).count
-    @stats.map{|key,value|@pss["#{key}"]=value}
+    @stats.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
     @stats_array = []
     @pss.map{|key,value|@stats_array.push(@pss[key])}
+    puts "aaaaaaaa"
+    puts @stats_array
+    puts @stats
 
-    # acsesses_array
     to = Time.current.at_beginning_of_day
     to2 = Time.current.end_of_day
     d = Date.today
@@ -181,18 +184,28 @@ class Api::V1::ProductsController < ApplicationController
 
     # 追加
     if @product.scores.exists?
-      # puts @product.scores.exists?
-      # puts "aaaaaaaa"
       @average_score = @product.scores.average(:value).round(1)
     end
     @like_count = @product.likes.count
 
-    # 追加 reviews
-    # @reviews = @product.reviews.limit(1)
-
-    # 追加
-    # @quesionids = @product.thereds.thered_question_questions
+  
     @quesion = Question.all
+
+    d2 = Time.current
+    to3 =  d.since(7.days)
+    # 2.0
+    @episord = @product.episords.where(release_date:d2...to3).order(release_date: :asc).limit(1)
+    @character = Character.where(product_id:@product.id).includes(:cast)
+    @staff = @product.occupations.includes(:staff)
+    @yearSeason = Year.left_outer_joins(:year_season_products).includes(:year_season_products,:year_season_seasons).where(year_season_products:{product_id:@product.id}).order(year: :asc).distinct
+
+    if current_user
+      @userEpisord = current_user.reviews.includes(:emotions).where(product_id:@product.id,user_id:current_user.id)
+    end
+    @emotions = Emotion.all
+    #emotionList
+    @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
+    @emotionList.count
 
 
     render :show,formats: :json
@@ -223,18 +236,12 @@ class Api::V1::ProductsController < ApplicationController
       @product.studio_ids = params[:studios_array]
       @product.style_ids = params[:formats_array]
 
-    # if 
-    # if 
-    @product.save 
-    #   @news = Newmessage.create(title:@product.title,description:"#{params[:product][:delivery_start].strftime("%Y/%m/%d %H:%M:%S")}に放送開始",judge:1)
-    # else
+   
 
-    # end
-
+    # doneyet-1 (下@product.saveと同時に)
     params[:episord].each do |i|
-      # episord
       @episord = Episord.where(episord:i[:episord_number],product_id:@product.id).first_or_initialize
-        @episord.title = i[:episode_title]
+        @episord.title = i[:episord_tittle]
         @episord.arasuzi = i[:episord_arasuzi]
         @episord.image = i[:episord_image_url]
         @episord.time = i[:episord_time]
@@ -250,15 +257,161 @@ class Api::V1::ProductsController < ApplicationController
     
 
     params[:character_middle_data].each do |c|
-      # Character.create(name:e.character_name)
       @character = Character.where(cast_id:c[:cast_id],product_id:@product.id,name:c[:character_name]).first_or_initialize
-      # @character.name = c[:character_name]
       @character.image = c[:character_image]
-      # puts e
       @character.save
     end
 
+    yearSeason = []  
+    params[:product][:year_season].each do |y|
+      year_id = Year.where(year:"#{y[:year]}-01-01")[0].id
+      y[:season].each do |s|
+        @yearSeason = YearSeasonProduct.where(product_id:@product.id,kisetsu_id:s,year_id:year_id).first_or_initialize
+        yearSeason << @yearSeason
+      end
+    end
+    @product.year_season_products = yearSeason
+    @product.save 
   end
+
+  def edit1
+    # puts params
+    @product = Product.find(params[:id])
+    # @yearSeason = YearSeasonProduct.where(product_id:@product.id).includes(:year_season_years)
+    @year = Year.left_outer_joins(:year_season_products).includes(:year_season_seasons).where(year_season_products:{product_id:@product.id}).order(year: :asc).distinct
+    # render json:{
+    #   # products:@product
+    # }
+    render :edit1,formats: :json
+  end
+
+  def update
+    years = []
+    params[:product][:years].each do |y|
+      year = Year.where(year:"#{y}-01-01").first_or_initialize
+      year.save
+      years<<year.id
+    end
+
+    puts years
+    # aaaaaaaaaaaaa
+    puts params
+    # aaaaaa
+    @product = Product.where(id:params[:id]).first_or_initialize
+    @product.title = params[:product][:title]
+    @product.image_url = params[:product][:image_url]
+    @product.description = params[:product][:description]
+    @product.list = params[:product][:list]
+    @product.year = params[:product][:year]
+    @product.year2 = "#{params[:product][:year]}-01-01"
+    @product.delivery_start = params[:product][:delivery_start]
+    @product.delivery_end = params[:product][:delivery_end]
+    @product.image_url2 = params[:product][:image_url2] 
+    @product.image_url3 = params[:product][:image_url3] 
+    @product.horizontal_image_url = params[:product][:image_urlh1] 
+    @product.horizontal_image_url2 = params[:product][:image_urlh2] 
+    @product.horizontal_image_url3 = params[:product][:image_urlh3] 
+    @product.overview = params[:product][:overview]
+
+    @product.janl_ids = params[:genres_array]
+    @product.kisetsu_ids = params[:product][:kisetsu]
+    @product.studio_ids = params[:studios_array]
+    @product.style_ids = params[:formats_array]
+    @product.year_ids = years
+    
+    episord = []
+    params[:episord].each do |i|
+      @episord = Episord.where(episord:i[:episord_number],product_id:@product.id).first_or_initialize
+      @episord.title = i[:episord_tittle]
+      @episord.arasuzi = i[:episord_arasuzi]
+      @episord.image = i[:episord_image_url]
+      @episord.time = i[:episord_time]
+      @episord.release_date =i[:episord_release_date]
+      @episord.save
+      episord<<@episord
+    end
+    @product.episords = episord
+
+    staff = []
+    params[:staff_middle].each do |s|
+      @staff = Occupation.where(staff_id:s[:cast_id],product_id:@product.id).first_or_initialize
+      @staff.name = s[:character_name]
+      @staff.save
+      staff << @staff
+    end
+    @product.occupations = staff
+  
+    character = []
+    params[:character_middle_data].each do |c| 
+      if c[:id].nil?
+        @character = Character.where(cast_id:c[:cast_id],product_id:@product.id,name:c[:character_name]).first_or_initialize
+        @character.image = c[:character_image]
+        @character.save
+      else
+        @character = Character.where(id:c[:id],cast_id:c[:cast_id],product_id:@product.id).first_or_initialize
+        @character.name = c[:character_name]
+        @character.image = c[:character_image]
+        @character.save
+      end
+      character << @character
+      puts character.inspect
+
+    end
+    @product.characters = character
+
+    yearSeason = []  
+    params[:product][:year_season].each do |y|
+      puts y
+      year_id = Year.where(year:"#{y[:year]}-01-01")[0].id
+     
+      y[:season].each do |s|
+        puts year_id,s,@product_id
+        @yearSeason = YearSeasonProduct.where(product_id:@product.id,kisetsu_id:s,year_id:year_id).first_or_initialize
+        puts @yearSeason.inspect
+        yearSeason << @yearSeason
+      end
+    end
+    puts yearSeason
+
+    @product.year_season_products = yearSeason
+    @product.save
+
+
+  end 
+
+  def product_episords
+    @product = Product.find(params[:product_id])
+    @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings)
+    render :product_episords,formats: :json
+  end
+
+  def product_review
+    @product = Product.find(params[:product_id])
+    if params[:episords].present?
+      if params[:episords].length>0
+        @reviews = @product.reviews.where(episord_id:params[:episords]).order(updated_at: :desc).page(params[:page]).per(2)
+        @length = @product.reviews.where(episord_id:params[:episords]).size
+      else
+        @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(2)
+        @length = @product.reviews.size
+      end
+    else
+      @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(2)
+      @length = @product.reviews.size
+    end
+      render :product_review ,formats: :json
+  end
+
+  def product_thread
+    @product = Product.find(params[:product_id])
+    @reviews = @product.thereds.order(updated_at: :desc).page(params[:page]).per(2)
+    @length = @product.thereds.size
+    render :product_thread ,formats: :json
+  end
+
+  # def product_statistics
+
+  # end
 
   private
     def user_params

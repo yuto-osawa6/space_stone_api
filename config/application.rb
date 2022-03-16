@@ -14,6 +14,9 @@ require "action_view/railtie"
 require "action_cable/engine"
 # require "sprockets/railtie"
 # require "rails/test_unit/railtie"
+# require "graphql/client"
+# require "graphql/client/http"
+
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -52,6 +55,16 @@ module Goldfolten
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
     config.middleware.use ActionDispatch::ContentSecurityPolicy::Middleware
+
+    # HTTP = GraphQL::Client::HTTP.new("https://api.annict.com/graphql") do
+    #   def headers(context)
+    #     # { "User-Agent": "My Client" }
+    #     {"Authorization":"Bearer INosHFWhhSYBhtncuaNpok4WWmi73Jy3rINhIPIhu4Y"}
+    #   end
+    # end  
+    # Schema = GraphQL::Client.load_schema(HTTP)
+    # Client = GraphQL::Client.new(schema: Schema, execute: HTTP)
+  
    
   end
 end

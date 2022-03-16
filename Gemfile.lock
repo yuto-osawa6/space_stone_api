@@ -121,6 +121,10 @@ GEM
     ffi (1.15.4)
     globalid (0.5.2)
       activesupport (>= 5.0)
+    graphql (1.13.10)
+    graphql-client (0.17.0)
+      activesupport (>= 3.0)
+      graphql (~> 1.10)
     hashie (5.0.0)
     http-cookie (1.0.4)
       domain_name (~> 0.5)
@@ -323,6 +327,7 @@ DEPENDENCIES
   devise-i18n
   devise_token_auth
   dotenv-rails
+  graphql-client
   jbuilder (~> 2.7)
   kaminari
   listen (~> 3.3)

@@ -66,3 +66,5 @@ gem 'dotenv-rails'
 gem 'kaminari'
 #carrierwave
 gem 'carrierwave'
+# graph ql
+gem 'graphql-client'

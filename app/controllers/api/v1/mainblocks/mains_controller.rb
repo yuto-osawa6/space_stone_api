@@ -22,7 +22,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @new_netflix = Product.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
 
     # tier
     year = Year.find_by(year:"#{current.year}-01-01")
@@ -32,7 +32,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     # doneyet-3 (orderがfrontに送られたときにid順になる問題)
     if tierGroup.present?
       @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
-      @tier_p = tierGroup.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+      @tier_p = tierGroup.products.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
     else
      
     end
@@ -73,10 +73,10 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @pickup = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @pickup = Product.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
 
     @current_season2 = "#{current2.year} #{Kisetsu.find(@kisetsu2).name}"
-    @pickup2 = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current2.year}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @pickup2 = Product.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current2.year}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
 
     # 
     # tier
@@ -86,7 +86,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
     if tierGroup.present?
       @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
-      @tier_p = tierGroup.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+      @tier_p = tierGroup.products.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
     else
      
     end
@@ -130,7 +130,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     now = Time.current 
     from = now.prev_year
     to = now.next_year
-    @worldclass = Product.left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls,:scores)
+    @worldclass = Product.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls,:scores)
     render :worldclass,formats: :json
   end
 

@@ -1,4 +1,6 @@
+require 'open-uri'
 class Scra2
+  # include Rails.application.routes.url_helpers
   def War
     # @a = ReturnCommentReview.find(12)
     # @b = ReturnCommentThread.find(1)
@@ -590,5 +592,23 @@ class Scra2
     puts @pss.map{|key,value|value}
     puts "aa"
     puts @score_array
+  end
+
+  def ota25
+    file = open("https://www.tbs.co.jp/anime/5hanayome/img/ogp.jpg")
+    puts file.base_uri
+    s = @product = Product.find(17)
+    s.bg_images.attach(io: file, filename: "gorld_field/gotoubun")
+  end
+  # include Rails.application.routes.url_helpers
+  def ota26
+    # include Rails.application.routes.url_helpers
+    s = @product = Product.find(17)
+    puts s.bgimage_url
+  end
+
+  def ota27
+    @tiers = Tier.find(42)
+    puts @tiers.product.id
   end
 end

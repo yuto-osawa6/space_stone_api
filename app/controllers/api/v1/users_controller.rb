@@ -115,7 +115,8 @@ class Api::V1::UsersController < ApplicationController
     @user = User.find(params[:user_id])
     @product = @user.liked_products.page(params[:page]).per(2)
     @length = @user.liked_products.count
-    render json:{product: @product,length: @length}
+    # render json:{product: @product,length: @length}
+    render :likes,formats: :json
   end
 
   def likeGenres

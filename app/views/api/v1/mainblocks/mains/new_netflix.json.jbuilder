@@ -2,7 +2,8 @@ json.set! :products do
   json.array! @new_netflix do |product|
     json.id product.id
     json.title product.title
-    json.image_url product.image_url
+    # json.image_url product.image_url
+    json.image_url product.bgimage_url
     json.arasuzi product.description
     json.year product.year
     json.duration  product.duration 
@@ -55,7 +56,10 @@ json.set! :current_season, @current_season
 # end
 
 json.set! :tier do
-  json.array! @tier_p
+  json.array! @tier_p do |a|
+    json.id a.id
+    json.image_url a.bgimage_url
+  end
 end
 
 json.set! :tier_average do

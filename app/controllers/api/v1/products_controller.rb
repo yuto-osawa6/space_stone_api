@@ -225,10 +225,16 @@ class Api::V1::ProductsController < ApplicationController
       @product.delivery_start = params[:product][:delivery_start]
       @product.delivery_end = params[:product][:delivery_end]
       @product.image_url2 = params[:product][:image_url2] 
-      @product.image_url3 = params[:product][:image_url3] 
-      @product.horizontal_image_url = params[:product][:image_urlh1] 
-      @product.horizontal_image_url2 = params[:product][:image_urlh2] 
-      @product.horizontal_image_url3 = params[:product][:image_urlh3] 
+      @product.titleKa = params[:product][:image_url3] 
+      @product.titleEn = params[:product][:image_urlh1] 
+      @product.titleRo = params[:product][:image_urlh2] 
+      @product.wiki = params[:product][:image_urlh3] 
+
+      @product.wikiEn = params[:product][:wikiEn] 
+      @product.copyright = params[:product][:copyright] 
+      @product.annitict = params[:product][:annitict_id] 
+      @product.shoboiTid = params[:product][:shoboi_tid] 
+
 
 
       @product.janl_ids = params[:genres_array]
@@ -271,6 +277,17 @@ class Api::V1::ProductsController < ApplicationController
       end
     end
     @product.year_season_products = yearSeason
+    begin
+      if params[:product][:image_url].present?
+        file = open(params[:product][:image_url])
+        puts file.base_uri
+        @product.bg_images.attach(io: file, filename: "gorld_field/#{@product.id}")
+      end
+    rescue => exception
+        
+    else
+      
+    end
     @product.save 
   end
 
@@ -279,6 +296,7 @@ class Api::V1::ProductsController < ApplicationController
     @product = Product.find(params[:id])
     # @yearSeason = YearSeasonProduct.where(product_id:@product.id).includes(:year_season_years)
     @year = Year.left_outer_joins(:year_season_products).includes(:year_season_seasons).where(year_season_products:{product_id:@product.id}).order(year: :asc).distinct
+    @yearSeason = YearSeasonProduct.where(product_id:@product.id)
     # render json:{
     #   # products:@product
     # }
@@ -307,10 +325,16 @@ class Api::V1::ProductsController < ApplicationController
     @product.delivery_start = params[:product][:delivery_start]
     @product.delivery_end = params[:product][:delivery_end]
     @product.image_url2 = params[:product][:image_url2] 
-    @product.image_url3 = params[:product][:image_url3] 
-    @product.horizontal_image_url = params[:product][:image_urlh1] 
-    @product.horizontal_image_url2 = params[:product][:image_urlh2] 
-    @product.horizontal_image_url3 = params[:product][:image_urlh3] 
+    @product.titleKa = params[:product][:image_url3] 
+    @product.titleEn = params[:product][:image_urlh1] 
+    @product.titleRo = params[:product][:image_urlh2] 
+    @product.wiki = params[:product][:image_urlh3] 
+
+    @product.wikiEn = params[:product][:wikiEn] 
+    @product.copyright = params[:product][:copyright] 
+    @product.annitict = params[:product][:annitict_id] 
+    @product.shoboiTid = params[:product][:shoboi_tid] 
+
     @product.overview = params[:product][:overview]
 
     @product.janl_ids = params[:genres_array]
@@ -374,6 +398,25 @@ class Api::V1::ProductsController < ApplicationController
     puts yearSeason
 
     @product.year_season_products = yearSeason
+
+    # image activestorage
+    begin
+      if params[:product][:image_url].present?
+        file = open(params[:product][:image_url])
+        puts file.base_uri
+        @product.bg_images.attach(io: file, filename: "gorld_field/#{@product.id}")
+      end
+      # if params[:product][:image_url2].present?
+      #   file = open(params[:product][:image_url2])
+      #   puts file.base_uri
+      #   @product.bg_images2.attach(io: file, filename: "gorld_field/#{@product.id}")
+      # end
+    rescue => exception
+        
+    else
+      
+    end
+
     @product.save
 
 

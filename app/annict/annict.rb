@@ -1,6 +1,8 @@
 require "graphql/client"
 require "graphql/client/http"
 
+require 'open-uri'
+
 module SWAPI
   # Configure GraphQL endpoint using the basic HTTP network adapter.
   HTTP = GraphQL::Client::HTTP.new("https://api.annict.com/graphql") do
@@ -252,6 +254,25 @@ class Annict
       yearSeason << @yearSeason
       puts yearSeason
       @product.year_season_products = yearSeason
+
+      # image activestorage
+      begin
+        if work["image"]["recommendedImageUrl"].present?
+          file = open(work["image"]["recommendedImageUrl"])
+          puts file.base_uri
+          @product.bg_images.attach(io: file, filename: "gorld_field/#{}")
+        end
+        if work["image"]["facebookOgImageUrl"].present?
+          file = open(work["image"]["facebookOgImageUrl"])
+          puts file.base_uri
+          @product.bg_images2.attach(io: file, filename: "gorld_field/#{}")
+        end
+      rescue => exception
+          
+      else
+        
+      end
+     
 
       @product.save
     end

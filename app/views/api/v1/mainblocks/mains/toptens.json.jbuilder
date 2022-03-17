@@ -3,7 +3,8 @@ json.set! :like_topten_month do
 
     json.id product.id
     json.title product.title
-    json.image_url product.image_url
+    # json.image_url product.image_url
+    json.image_url product.bgimage_url
     json.duration product.duration
     json.year product.year
     json.list product.list
@@ -39,7 +40,8 @@ json.set! :like_topten_all  do
 
     json.id product.id
     json.title product.title
-    json.image_url product.image_url
+    # json.image_url product.image_url
+    json.image_url product.bgimage_url
     json.duration product.duration
     json.year product.year
     json.list product.list
@@ -108,7 +110,8 @@ json.set! :score_topten_all do
 
     json.id product.id
     json.title product.title
-    json.image_url product.image_url
+    # json.image_url product.image_url
+    json.image_url product.bgimage_url
     json.duration product.duration
     json.year product.year
     json.list product.list
@@ -142,7 +145,8 @@ json.set! :acsess_topten_month do
 
     json.id product.id
     json.title product.title
-    json.image_url product.image_url
+    # json.image_url product.image_url
+    json.image_url product.bgimage_url
     json.duration product.duration
     json.year product.year
     json.list product.list
@@ -177,7 +181,8 @@ json.set! :acsess_topten_all do
 
     json.id product.id
     json.title product.title
-    json.image_url product.image_url
+    # json.image_url product.image_url
+    json.image_url product.bgimage_url
     json.duration product.duration
     json.year product.year
     json.list product.list
@@ -213,7 +218,8 @@ json.set! :review_topten_month do
 
     json.id product.id
     json.title product.title
-    json.image_url product.image_url
+    # json.image_url product.image_url
+    json.image_url product.bgimage_url
     json.duration product.duration
     json.year product.year
     json.list product.list
@@ -249,7 +255,8 @@ json.set! :review_topten_all do
 
     json.id product.id
     json.title product.title
-    json.image_url product.image_url
+    # json.image_url product.image_url
+    json.image_url product.bgimage_url
     json.duration product.duration
     json.year product.year
     json.list product.list

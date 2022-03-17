@@ -125,7 +125,8 @@ json.set! :episord_start do
   json.array! @episord do |episord|
     json.id episord.product.id
     json.title episord.product.title
-    json.image_url episord.product.image_url
+    # json.image_url episord.product.image_url
+    json.image_url episord.product.bgimage_url
     json.arasuzi episord.product.description
     json.year episord.product.year
     # json.duration  product.duration 

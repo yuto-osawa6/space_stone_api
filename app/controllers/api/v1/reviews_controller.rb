@@ -380,7 +380,7 @@ class Api::V1::ReviewsController < ApplicationController
               @review_length = Review.where(updated_at:from_year..to).length
           end
         else
-          @reviews = Review.includes(:product,:user).page(params[:page]).per(2)
+          @reviews = Review.includes(:product,:user).page(params[:page]).order(created_at: :desc).per(2)
           @review_length = Review.count
         end
       end

@@ -319,7 +319,7 @@ class Api::V1::TheredsController < ApplicationController
               @review_length = Thered.where(updated_at:from_year..to).count
           end
         else
-          @reviews = Thered.page(params[:page]).per(2)
+          @reviews = Thered.order(created_at: :desc).page(params[:page]).per(2)
           @review_length = Thered.count
         end
       end

@@ -15,10 +15,16 @@ class Api::V1::Admin::ProductsController < ApplicationController
   end
 
   def published
-    @year = Year.find_by(params[:year])
-    @season = Kisetsu.find(params[:year])
-    # @yearSeasons = YearSeason.find_by(year_id:@year.id,kisetsu_id:@season.id)
-    puts @products = Product.joins(:year_season_products).where(year_season_products:{year_id:@year.id}).where(year_season_products:{kisetsu_id:@season.id}).ids
-    # @product.joins.where(year_seasons)
+    puts params[:year]
+    puts params[:season]
+
+    @year = Year.find(params[:year])
+    @season = Kisetsu.find(params[:season])
+    puts @products = Product.joins(:year_season_products).where(year_season_products:{year_id:@year.id}).where(year_season_products:{kisetsu_id:@season.id})
+    @products.each do |i|
+      i.update( finished:params[:number] ) 
+      # i.finished == params[:number]
+    end
+
   end
 end

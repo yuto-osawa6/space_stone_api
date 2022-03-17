@@ -7,7 +7,14 @@ json.set! :reviews do
     json.content review.content
     # if ArticleProduct.exists?(article_id:article.id)
       # json.review_product do
-    json.reviewProduct review.product
+    # json.reviewProduct review.product
+    json.reviewProduct do
+      json.id review.product.id
+      json.image_url review.product.bg_images
+      json.title review.product.title
+    end
+    
+
     json.reviewUser review.user
       # end
     # end
@@ -23,7 +30,11 @@ json.set! :threads do
     json.content review.content
     # if ArticleProduct.exists?(article_id:article.id)
       # json.review_product do
-    json.reviewProduct review.product
+    json.reviewProduct do
+      json.id review.product.id
+      json.image_url review.product.bgimage_url
+      json.title review.product.title
+    end
     json.reviewUser review.user
       # end
     # end

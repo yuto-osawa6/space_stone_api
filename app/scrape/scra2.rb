@@ -606,4 +606,9 @@ class Scra2
     s = @product = Product.find(17)
     puts s.bgimage_url
   end
+
+  def ota27
+    @tiers = Tier.find(42)
+    puts @tiers.product.id
+  end
 end

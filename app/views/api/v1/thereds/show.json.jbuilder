@@ -21,7 +21,7 @@
 json.set! :product do 
   json.id @product.id
   json.title @product.title
-  json.image_url @product.image_url
+  json.image_url @product.bgimage_url
 end
 
 json.set! :review do 

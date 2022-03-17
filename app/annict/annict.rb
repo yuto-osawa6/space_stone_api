@@ -5,8 +5,7 @@ module SWAPI
   # Configure GraphQL endpoint using the basic HTTP network adapter.
   HTTP = GraphQL::Client::HTTP.new("https://api.annict.com/graphql") do
     def headers(context)
-      # { "User-Agent": "My Client" }
-      {"Authorization":"Bearer INosHFWhhSYBhtncuaNpok4WWmi73Jy3rINhIPIhu4Y"}
+      {"Authorization":ENV['ANNICT']}
     end
   end  
   Schema = GraphQL::Client.load_schema(HTTP)
@@ -38,7 +37,7 @@ class Annict
       searchWorks(
         seasons: $seasons
         orderBy: { field:  WATCHERS_COUNT, direction: DESC },
-        first: 4
+        first: 10
       ) {
         edges {
           node {
@@ -64,7 +63,7 @@ class Annict
             }
             episodes(
               orderBy: { field: SORT_NUMBER, direction: ASC },
-              first: 2
+              # first: 2
             ) {
               edges {
                 node {
@@ -76,7 +75,7 @@ class Annict
             
             casts(
               orderBy: { field: SORT_NUMBER, direction: ASC },
-              first: 2
+              # first: 2
             ) {
               edges {
                 node {
@@ -96,7 +95,7 @@ class Annict
             }
              staffs(
               orderBy: { field: SORT_NUMBER, direction: ASC },
-              first: 2
+              # first: 2
             ) {
               edges {
                 node {
@@ -216,6 +215,12 @@ class Annict
       staffs = []
       work["staffs"]["edges"].each do |staff|
         s = staff["node"]
+        if s["roleText"] == "その他" 
+          next
+        end
+        if s["roleText"] == "アニメーション制作" 
+          next
+        end
         @staff = Staff.where(name:s["name"]).first_or_initialize
         @staff.save
         @occupations = Occupation.where(staff_id:@staff.id,product_id:@product.id).first_or_initialize

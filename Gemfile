@@ -68,3 +68,6 @@ gem 'kaminari'
 gem 'carrierwave'
 # graph ql
 gem 'graphql-client'
+
+# shobocal
+gem 'syobocal'

@@ -301,6 +301,7 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.7)
+    syobocal (0.13.0)
     thor (1.1.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
@@ -347,6 +348,7 @@ DEPENDENCIES
   ransack
   selenium-webdriver
   spring
+  syobocal
   tzinfo-data
 
 RUBY VERSION

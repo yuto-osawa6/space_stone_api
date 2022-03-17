@@ -113,11 +113,11 @@ class Api::V1::MainsController < ApplicationController
       # puts Product.all.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = 1 THEN 1 ELSE 0 END)/count(emotion_id) desc")).ids
       if pushIdArrays.length > 1
         filteredIdArray = pushIdArrays.flatten.group_by{|e| e}.select{|k,v| v.size > 1}.map(&:first)
-        @products = @q.result(distinct: true).where(id:filteredIdArray).where(finished:0).includes(:styles,:janls,:scores).left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
+        @products = @q.result(distinct: true).where(id:filteredIdArray).where(finished:1).includes(:styles,:janls,:scores).left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
       elsif pushIdArrays.length == 1
-          @products = @q.result(distinct: true).where(id:pushIdArrays).where(finished:0).includes(:styles,:janls,:scores).left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
+          @products = @q.result(distinct: true).where(id:pushIdArrays).where(finished:1).includes(:styles,:janls,:scores).left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
       else
-          @products = @q.result(distinct: true).where(finished:0).includes(:styles,:janls,:scores).left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
+          @products = @q.result(distinct: true).where(finished:1).includes(:styles,:janls,:scores).left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
 
       end
 
@@ -126,11 +126,11 @@ class Api::V1::MainsController < ApplicationController
 
       if pushIdArrays.length > 1
           filteredIdArray = pushIdArrays.flatten.group_by{|e| e}.select{|k,v| v.size > 1}.map(&:first)
-          @products = @q.result(distinct: true).where(id:filteredIdArray).where(finished:0).includes(:styles,:janls,:scores).order(new_content: :desc).order(pickup: :desc).page(params[:page]).per(50)
+          @products = @q.result(distinct: true).where(id:filteredIdArray).where(finished:1).includes(:styles,:janls,:scores).order(new_content: :desc).order(pickup: :desc).page(params[:page]).per(50)
       elsif pushIdArrays.length == 1
-          @products = @q.result(distinct: true).where(id:pushIdArrays).where(finished:0).includes(:styles,:janls,:scores).order(new_content: :desc).order(pickup: :desc).page(params[:page]).per(50)
+          @products = @q.result(distinct: true).where(id:pushIdArrays).where(finished:1).includes(:styles,:janls,:scores).order(new_content: :desc).order(pickup: :desc).page(params[:page]).per(50)
       else
-          @products = @q.result(distinct: true).where(finished:0).includes(:styles,:janls,:scores).order(new_content: :desc).order(pickup: :desc).page(params[:page]).per(50)
+          @products = @q.result(distinct: true).where(finished:1).includes(:styles,:janls,:scores).order(new_content: :desc).order(pickup: :desc).page(params[:page]).per(50)
 
       end
     end

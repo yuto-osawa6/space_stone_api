@@ -5,10 +5,15 @@ json.set! :product do
   json.arasuzi @product.description
   json.list @product.list
   json.image_url2 @product.image_url2
-  json.image_url3 @product.image_url3
-  json.image_urlh1 @product.horizontal_image_url
-  json.image_urlh2 @product.horizontal_image_url2
-  json.image_urlh3 @product.horizontal_image_url3
+  json.image_url3 @product.titleKa
+  json.image_urlh1 @product.titleEn
+  json.image_urlh2 @product.titleRo
+  json.image_urlh3 @product.wiki
+  json.wikiEn @product.wikiEn
+  json.copyright @product.copyright
+  json.annitictId @product.annitict
+  json.shoboiTid @product.shoboiTid
+
   json.year @product.year
   json.delivery_start @product.delivery_start
   json.overview @product.overview
@@ -71,18 +76,17 @@ json.set! :product do
       json.episordReleaseDate = a.release_date
     end
   end
-
-  # json.form_year_season do
-  #   json.array! @product.year_season_years do |ys|
-  #     json.year = ys.id
-  #     json.season = ys.year_season_seasons.ids
+  # json.form_year_season do 
+  #   json.array! @yearSeason do |ys|
+  #     json.year = ys.year.year
+  #     json.season = ys.kisetsu.id
   #   end
   # end
-  # @yearSeason
+
   json.form_year_season do
     json.array!  @year do |ys|
       json.year = ys.year.year
-      json.season = ys.year_season_seasons.ids
+      json.season = ys.year_season_seasons.where(year_season_products:{product_id:@product.id}).ids
     end
   end
 

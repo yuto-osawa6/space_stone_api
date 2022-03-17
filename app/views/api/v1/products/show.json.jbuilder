@@ -60,7 +60,8 @@ json.set! :products do
   json.product_yearSeason do
     json.array! @yearSeason do |ys|
       json.year ys.year
-      json.season ys.year_season_seasons
+      # doneyet-1 n+1発生
+      json.season ys.year_season_seasons.where(year_season_products:{product_id:@product.id})
     end
   end
 

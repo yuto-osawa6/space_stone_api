@@ -2,7 +2,7 @@ json.set! :products do
   json.array! @products do |product|
     json.id product.id
     json.title product.title
-    json.image_url product.image_url
+    json.image_url product.bgimage_url
     json.arasuzi product.description
     json.year product.year
     json.duration  product.duration 

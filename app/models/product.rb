@@ -1,4 +1,5 @@
 class Product < ApplicationRecord
+  include Rails.application.routes.url_helpers
   # doneyet-1 下
   # has_many :cast_products
   # has_many :casts, through: :cast_products
@@ -77,6 +78,20 @@ class Product < ApplicationRecord
   has_many :tiers,dependent: :destroy
   has_many :users,through: :tiers,source: :user
   has_many :tier_groups,through: :tiers,source: :tier_group
+
+  # image
+  has_one_attached :bg_images
+  has_one_attached :bg_images2
+
+  def bgimage_url
+    # 紐づいている画像のURLを取得する
+    self.bg_images.attached? ? url_for(bg_images) : nil
+  end
+  def bgimage2_url
+    # 紐づいている画像のURLを取得する
+    self.bg_images2.attached? ? url_for(bg_images2) : nil
+  end
+
 
 
   ransacker :likes_count do

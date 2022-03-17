@@ -177,6 +177,12 @@ Rails.application.routes.draw do
         end
         resources :news,only:[:create,:destroy] do
         end
+        resources :products,only:[:index,:create,:destroy] do
+          collection do
+            get "setup"
+            patch "published"
+          end
+        end
       end
       # acsess
       namespace :acsesses do

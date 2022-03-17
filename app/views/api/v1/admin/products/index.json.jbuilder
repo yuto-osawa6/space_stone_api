@@ -7,6 +7,9 @@ json.set! :products do
     json.year product.year
     json.duration  product.duration 
     json.list product.list
+    json.finished product.finished
+    # json.a product.id
+
     json.product_styles do
       json.array! product.styles
     end

@@ -181,6 +181,8 @@ Rails.application.routes.draw do
           collection do
             get "setup"
             patch "published"
+            patch "published_one"
+
           end
         end
       end

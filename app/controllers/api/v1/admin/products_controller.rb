@@ -27,4 +27,10 @@ class Api::V1::Admin::ProductsController < ApplicationController
     end
 
   end
+
+  def published_one
+    @product = Product.find(params[:id])
+    @product.update( finished:params[:number] )
+    render json:{message:"#{@product.title}がアップデートされました。"}
+  end
 end

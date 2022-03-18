@@ -75,6 +75,39 @@ class Api::V1::ReviewsController < ApplicationController
 
   end
 
+  def update2
+    content = params[:content]
+    if params[:review][:episord_id]=="null"
+      params[:review][:episord_id]=nil
+    end
+    @review = Review.find(params[:id])
+    # emotion
+    begin
+      emotionArray = []
+      params[:review][:emotion_ids].each do |i|
+        emotion = ReviewEmotion.where(product_id:params[:review][:product_id],review_id:@review.id,episord_id:@review.episord.id,emotion_id:i,user_id:params[:review][:user_id]).first_or_initialize
+        puts emotion.inspect
+        emotion.save!
+        emotionArray << emotion
+      end
+      @review.review_emotions = emotionArray
+
+    if @review.update(reviews_params)
+      @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
+      @product = Product.find(params[:review][:product_id])
+      @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
+      # @emotionList.count
+      render :update2, formats: :json
+    else
+      render json: {status:500,review:@review}
+    end
+
+    rescue => e
+      render json: {status:500,review:@review}
+    end
+
+  end
+
   def show
     puts params[:product_id]
     puts params[:id]
@@ -684,4 +717,9 @@ class Api::V1::ReviewsController < ApplicationController
     # params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id,:review_emotions)
 
   end
+  # def reviews_params2
+  #   params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id)
+  #   # params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id,:review_emotions)
+
+  # end
 end

@@ -43,6 +43,9 @@ Rails.application.routes.draw do
           collection do
             get "sort"
           end
+          member do
+            patch "update2"
+          end
           resources :like_reviews,only:[:create,:destroy] do
             collection do
               get "check"

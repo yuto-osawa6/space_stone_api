@@ -58,9 +58,10 @@ Rails.application.routes.draw do
             # end
           end
         end
-        resources :thereds,only:[:create,:show] do
+        resources :thereds,only:[:create,:show,:destroy] do
           collection do
             get "sort"
+            get "second"
           end
           resources :like_threads,only:[:create,:destroy] do
             collection do

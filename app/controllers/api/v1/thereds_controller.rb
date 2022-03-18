@@ -24,6 +24,22 @@ class Api::V1::TheredsController < ApplicationController
     end
   end
 
+  def destroy
+    begin
+      @review = Thered.find(params[:id])
+      @review.destroy
+      render json:{message:"削除されました。"}
+    rescue => e
+      puts e
+    end
+    puts params
+  end
+
+  def second
+    @product = Product.find(params[:product_id])
+    render :second, formats: :json
+  end
+
   def show
     puts params[:product_id]
     puts params[:id]

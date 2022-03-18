@@ -9,12 +9,16 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
 
   def create
     @commentReview = ReturnCommentReview.new(create_params)
-   
-    if  @commentReview.save
-      render json: {status:200,commentReview:@commentReview}
-    else
-      render json: {status:500}
+    
+    begin
+      if  @commentReview.save
+        render json: {status:200,commentReview:@commentReview}
+      else
+        render json: {status:500}
 
+      end
+    rescue => exception
+      render json: {status:500}      
     end
   end
   def returnreturn
@@ -23,15 +27,18 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
     @commentReview.return_return_comment_reviews.build(return_create_params)
     # @commentReview.return_return_comment_reviews.build(return_return_id:2)
 
+    begin
+      if  @commentReview.save
+        # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
 
-    if  @commentReview.save
-      # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
+        # render json: {status:200,commentReview:@commentReview}
+        render :returnreturn, formats: :json
+      else
+        render json: {status:500}
 
-      # render json: {status:200,commentReview:@commentReview}
-      render :returnreturn, formats: :json
-    else
-      render json: {status:500}
-
+      end
+    rescue => exception
+      render json: {status:500}      
     end
   end
   private

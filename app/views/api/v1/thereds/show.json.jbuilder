@@ -32,6 +32,7 @@ json.set! :review do
   json.like_reviews @review.like_threads
   json.user @review.user
   json.updated_at @review.updated_at.strftime("%Y/%-m/%-d")
+  json.questions @review.questions
 
 end
 json.set! :review_comments do

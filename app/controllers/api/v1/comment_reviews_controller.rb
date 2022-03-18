@@ -29,9 +29,6 @@ class Api::V1::CommentReviewsController < ApplicationController
 
     end
     rescue => e
-      puts e
-      puts "aaaaaaaaaaaa"
-      puts e
       render json: {status:500}
     end
     puts params[:comment_review][:comment].bytesize

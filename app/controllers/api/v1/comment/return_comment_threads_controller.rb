@@ -9,14 +9,17 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
 
   def create
     @commentReview = ReturnCommentThread.new(create_params)
-   
-    if  @commentReview.save
-      render json: {status:200,commentReview:@commentReview}
-      # render :create, formats: :json
-      # render :returnreturn, formats: :json
-    else
-      render json: {status:500}
+    begin
+      if  @commentReview.save
+        render json: {status:200,commentReview:@commentReview}
+        # render :create, formats: :json
+        # render :returnreturn, formats: :json
+      else
+        render json: {status:500}
 
+      end
+    rescue => exception
+      render json: {status:500}      
     end
   end
   def returnreturn
@@ -28,17 +31,20 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
 
 
     
+    begin
+      if  @commentReview.save
+        # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
+        # : {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>12}}
+        # {"return_comment_review"=>{"comment_review_id"=>13, "user_id"=>4, "comment"=>"<p>u</p><p><br></p>"}, "return_return_comment_review"=>{"return_return_id"=>30}}
+        # {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>14}}
+        # render json: {status:200,commentReview:@commentReview}
+        render :returnreturn, formats: :json
+      else
+        render json: {status:500}
 
-    if  @commentReview.save
-      # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
-      # : {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>12}}
-      # {"return_comment_review"=>{"comment_review_id"=>13, "user_id"=>4, "comment"=>"<p>u</p><p><br></p>"}, "return_return_comment_review"=>{"return_return_id"=>30}}
-      # {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>14}}
-      # render json: {status:200,commentReview:@commentReview}
-      render :returnreturn, formats: :json
-    else
-      render json: {status:500}
-
+      end
+    rescue => exception
+      render json: {status:500}      
     end
   end
   private

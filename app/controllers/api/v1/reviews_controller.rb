@@ -78,7 +78,7 @@ class Api::V1::ReviewsController < ApplicationController
   def show
     puts params[:product_id]
     puts params[:id]
-    @review = Review.includes(:like_reviews).find(params[:id])
+    @review = Review.includes(:like_reviews,:emotions).find(params[:id])
     @product = @review.product
 
     @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)

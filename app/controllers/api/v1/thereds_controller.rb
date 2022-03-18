@@ -12,11 +12,15 @@ class Api::V1::TheredsController < ApplicationController
     puts "jkh"
 
     # thered.thered_question_questions.build
-    if @thered.save
-      @product = Product.find(params[:thered][:product_id])
-      render json: {thered:@thered, productThreads:@product.thereds}
-    else
-      render json: {status:500,thered:@thered}
+    begin
+      if @thered.save
+        @product = Product.find(params[:thered][:product_id])
+        render json: {thered:@thered, productThreads:@product.thereds}
+      else
+        render json: {status:500,thered:@thered}
+      end
+    rescue => e
+      render json: {status:500}
     end
   end
 

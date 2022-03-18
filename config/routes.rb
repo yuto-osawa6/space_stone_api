@@ -39,7 +39,7 @@ Rails.application.routes.draw do
         end
         resources :acsesses,only:[:create] do
         end
-        resources :reviews,only:[:create,:show,:update] do
+        resources :reviews,only:[:create,:show,:update,:destroy] do
           collection do
             get "sort"
             get "second"

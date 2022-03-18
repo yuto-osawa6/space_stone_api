@@ -115,6 +115,17 @@ class Api::V1::ReviewsController < ApplicationController
     render :second, formats: :json
   end
 
+  def destroy
+    begin
+      @review = Review.find(params[:id])
+      @review.destroy
+      render json:{message:"削除されました。"}
+    rescue => e
+      puts e
+    end
+    puts params
+  end
+
   def show
     puts params[:product_id]
     puts params[:id]

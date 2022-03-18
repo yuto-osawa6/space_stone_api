@@ -31,7 +31,7 @@ class Api::V1::ReviewsController < ApplicationController
     end
 
     rescue => e
-      puts e
+      render json: {status:500,review:review}
     end
   end
 
@@ -70,7 +70,7 @@ class Api::V1::ReviewsController < ApplicationController
     end
 
     rescue => e
-      puts e
+      render json: {status:500,review:review}
     end
 
   end

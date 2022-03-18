@@ -93,9 +93,9 @@ class Api::V1::ReviewsController < ApplicationController
       @review.review_emotions = emotionArray
 
     if @review.update(reviews_params)
-      @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
-      @product = Product.find(params[:review][:product_id])
-      @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
+      # @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
+      # @product = Product.find(params[:review][:product_id])
+      # @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
       # @emotionList.count
       render :update2, formats: :json
     else
@@ -106,6 +106,13 @@ class Api::V1::ReviewsController < ApplicationController
       render json: {status:500,review:@review}
     end
 
+  end
+
+  def second
+    @userReview = Review.where(product_id:params[:product_id],user_id:params[:user_id])
+    @product = Product.find(params[:product_id])
+    @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
+    render :second, formats: :json
   end
 
   def show

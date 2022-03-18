@@ -42,6 +42,7 @@ Rails.application.routes.draw do
         resources :reviews,only:[:create,:show,:update] do
           collection do
             get "sort"
+            get "second"
           end
           member do
             patch "update2"

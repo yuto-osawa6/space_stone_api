@@ -23,7 +23,7 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
   end
   def returnreturn
     puts params[:return_comment_review_id]
-    @commentReview = ReturnCommentReview.new(create_params)
+    @commentReview = ReturnCommentReview.new(create_params2)
     @commentReview.return_return_comment_reviews.build(return_create_params)
     # @commentReview.return_return_comment_reviews.build(return_return_id:2)
 
@@ -41,9 +41,25 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
       render json: {status:500}      
     end
   end
+
+  def destroy
+    puts params
+    begin
+      @review_comment = ReturnCommentReview.find(params[:id])
+      @review_comment.destroy
+      render json: {}
+    rescue => e
+      render json: {status:500}
+    end
+  end
+
   private
   def create_params
     params.require(:return_comment_review).permit(:user_id,:comment_review_id,:comment)
+    # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
+  end
+  def create_params2
+    params.require(:return_comment_review).permit(:user_id,:comment_review_id,:comment).merge(reply:true)
     # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
   end
 

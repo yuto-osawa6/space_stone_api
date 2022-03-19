@@ -34,6 +34,17 @@ class Api::V1::CommentThreadsController < ApplicationController
       render json: {status:500}
     end
   end
+
+  def destroy
+    puts params
+    begin
+      @review_comment = CommentThread.find(params[:id])
+      @review_comment.destroy
+      render json: {}
+    rescue => e
+      render json: {status:500}
+    end
+  end
   private
   def commentReview_params
     params.require(:comment_thread).permit(:user_id,:thered_id,:comment)

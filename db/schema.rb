@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_15_111655) do
+ActiveRecord::Schema.define(version: 2022_03_19_005006) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -375,6 +375,7 @@ ActiveRecord::Schema.define(version: 2022_03_15_111655) do
     t.text "comment", size: :long
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "reply", default: false
     t.index ["comment_review_id"], name: "index_return_comment_reviews_on_comment_review_id"
     t.index ["user_id"], name: "index_return_comment_reviews_on_user_id"
   end
@@ -385,6 +386,7 @@ ActiveRecord::Schema.define(version: 2022_03_15_111655) do
     t.text "comment", size: :long
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "reply", default: false
     t.index ["comment_thread_id"], name: "index_return_comment_threads_on_comment_thread_id"
     t.index ["user_id"], name: "index_return_comment_threads_on_user_id"
   end

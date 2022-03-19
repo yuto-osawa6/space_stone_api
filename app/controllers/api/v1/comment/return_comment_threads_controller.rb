@@ -24,7 +24,7 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
   end
   def returnreturn
     puts params[:return_comment_thread_id]
-    @commentReview = ReturnCommentThread.new(create_params)
+    @commentReview = ReturnCommentThread.new(create_params2)
     # @commentReview.return_return_comment_threads.build(return_create_params)
 
     @commentReview.return_return_comment_threads.build(return_comment_thread_id:@commentReview.id,return_return_thread_id:params[:return_return_comment_thread][:return_return_thread_id])
@@ -47,9 +47,24 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
       render json: {status:500}      
     end
   end
+
+  def destroy
+    puts params
+    begin
+      @review_comment = ReturnCommentThread.find(params[:id])
+      @review_comment.destroy
+      render json: {}
+    rescue => e
+      render json: {status:500}
+    end
+  end
   private
   def create_params
     params.require(:return_comment_thread).permit(:user_id,:comment_thread_id,:comment)
+    # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
+  end
+  def create_params2
+    params.require(:return_comment_thread).permit(:user_id,:comment_thread_id,:comment).merge(reply:true)
     # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
   end
 

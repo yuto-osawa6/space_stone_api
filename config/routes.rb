@@ -52,7 +52,7 @@ Rails.application.routes.draw do
               get "check"
             end
           end
-          resources :comment_reviews,only:[:create] do
+          resources :comment_reviews,only:[:create,:destroy] do
             # collection do
             #   get "check"
             # end
@@ -68,7 +68,7 @@ Rails.application.routes.draw do
               get "check"
             end
           end
-          resources :comment_threads,only:[:create] do
+          resources :comment_threads,only:[:create,:destroy] do
           end
 
         end
@@ -148,7 +148,7 @@ Rails.application.routes.draw do
               get "check"
             end
         end
-        resources :return_comment_reviews,only:[:index,:create] do
+        resources :return_comment_reviews,only:[:index,:create,:destroy] do
           collection do
             post "returnreturn"
           end
@@ -162,7 +162,7 @@ Rails.application.routes.draw do
             get "check"
           end
         end
-        resources :return_comment_threads,only:[:index,:create] do
+        resources :return_comment_threads,only:[:index,:create,:destroy] do
           collection do
             post "returnreturn"
           end

@@ -33,6 +33,17 @@ class Api::V1::CommentReviewsController < ApplicationController
     end
     puts params[:comment_review][:comment].bytesize
   end
+
+  def destroy
+    puts params
+    begin
+      @review_comment = CommentReview.find(params[:id])
+      @review_comment.destroy
+      render json: {}
+    rescue => e
+      render json: {status:500}
+    end
+  end
   private
   def commentReview_params
     params.require(:comment_review).permit(:user_id,:review_id,:comment)

@@ -310,6 +310,19 @@ class Api::V1::UsersController < ApplicationController
     render json:{score_arrayies:@pss.map{|key,value|value}}
   end
 
+  def destroy
+    begin
+      @user = User.find(params[:id])
+      @user.destroy
+      render json:{status:200}
+    rescue => e
+      puts e
+      render json:{status:500}
+    end
+
+
+  end
+
   private
   def update_params
     params.require(:user).permit(:nickname)

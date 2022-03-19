@@ -74,7 +74,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :users,only:[:show] do
+      resources :users,only:[:show,:destroy] do
         collection do
           patch "setting"
           patch "background"

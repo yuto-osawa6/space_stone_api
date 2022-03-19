@@ -37,6 +37,12 @@ class User < ActiveRecord::Base
   has_many :like_threads, dependent: :destroy
   has_many :like_reviews_threads, through: :like_threads, source: :thered
 
+  has_many :comment_threads, dependent: :destroy
+  has_many :comment_reviews_threads, through: :comment_threads, source: :thered
+
+  has_many :return_comment_threads, dependent: :destroy
+  has_many :return_comment_reviews_users, through: :return_comment_threads, source: :comment_thread
+
   # like_comment_threads
 
   has_many :like_comment_threads,dependent: :destroy
@@ -47,6 +53,7 @@ class User < ActiveRecord::Base
   has_many :like_return_comment_threads_return_comment_threads,through: :like_return_comment_threads,source: :return_comment_thread
   
   # article
+  # doneyet-0(article書く人が増えたとき) dependent destroy
   has_many :articles
 
   # bacground image
@@ -62,7 +69,7 @@ class User < ActiveRecord::Base
   has_many :emotion_reviews,through: :review_emotions , source: :review
 
   # chats
-  has_many :chats
+  has_many :chats,dependent: :destroy
   has_many :products,through: :chats, source: :product
 
   # tier

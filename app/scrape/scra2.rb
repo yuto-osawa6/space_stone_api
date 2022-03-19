@@ -620,4 +620,21 @@ class Scra2
     @tiers = Tier.find(42)
     puts @tiers.product.id
   end
+
+  def ota28
+    # @episord = Episord.joins(:product).where(product:{id:12}).ids
+
+    # @episord = Episord.joins(:product).includes(product: :acsesses).where(product:{id:[12,1]}).order(Arel.sql('product.acsesses.id ASC')).pluck(:id)
+    # @episord = Episord.joins(product: :acsesses).where(product:{id:[12,1]}).group("episords.id").order(Arel.sql('sum(product.acsesses.count) DESC')).pluck(:id)
+    # @episord = Episord.joins(product: :acsesses).where(product:{id:[13,1,2]}).group(Arel.sql("product.id")).order(Arel.sql('sum(product.acsesses.count) DESC')).count
+
+    # @episord = Episord.joins(:product).includes(product: :acsesses).where(product:{id:[12,1]}).group("episords.products.id").order(Arel.sql('sum(product.acsesses.count) DESC')).pluck(:id)
+
+
+    # .order(Arel.sql('sum(product.acsesses.count) DESC')).ids
+    # .order(Arel.sql('sum(product.acsesses.count) DESC')).ids
+    # @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+
+    
+  end
 end

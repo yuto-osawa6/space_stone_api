@@ -12,7 +12,7 @@ class Api::V1::LikeReviewsController < ApplicationController
         # puts @review_good / @review_length * 100
         # puts (2/2) * 100
         puts @score
-      render json: { status: 200, like: @like,score:@score,review_length:@review_length,review_good:@review_good} 
+      render json: { status: 200, like: @like,score:@score,review_length:@review_length,review_good:@review_good,message:{title:"aaa",select:1}} 
 
     else
       render json: { status: 500, message: "失敗しました"  } 

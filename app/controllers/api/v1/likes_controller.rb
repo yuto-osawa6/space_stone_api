@@ -8,8 +8,9 @@ class Api::V1::LikesController < ApplicationController
     # current_user
     
     if @like.save
-      @like_count = Product.find(params[:like][:product_id]).likes.count
-      render json: { status: 200, like: @like,like_count: @like_count} 
+      @product = Product.find(params[:like][:product_id])
+      @like_count = @product.likes.count
+      render json: { status: 200, like: @like,like_count: @like_count,message:{title:"「#{@product.title}」をお気に入りしました。",select:1}} 
     else
       render json: { status: 500, message: "失敗しました"  } 
     end

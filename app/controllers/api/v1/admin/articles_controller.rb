@@ -11,6 +11,29 @@ class Api::V1::Admin::ArticlesController < ApplicationController
     end
   end
 
+  def update
+    puts params
+    @article = Article.find(params[:id])
+    puts "aaaaaaaa"
+    if @article.update(create_params)
+      render json: {status:200}
+    else
+      render json: {status:500}
+    end
+  end
+
+  def destroy
+    puts params
+    begin
+      @article = Article.find(params[:id])
+      @article.destroy
+      render json: {status:200}
+    rescue => e
+      puts e
+      render json: {status:500}
+    end
+  end
+
   def uploadfile
     puts params[:image]
     @image = Image.new(create_params2)

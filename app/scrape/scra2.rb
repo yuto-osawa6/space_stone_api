@@ -1,7 +1,7 @@
 require 'open-uri'
 class Scra2
   # include Rails.application.routes.url_helpers
-  def War
+  def ota1
     # @a = ReturnCommentReview.find(12)
     # @b = ReturnCommentThread.find(1)
     # ReturnCommentReview.where(comment_review_id:)
@@ -24,7 +24,16 @@ class Scra2
     # @user = User.find(4)
     # @user.administrator_gold = true
     # @user.save
-
+    puts "パスワードを入力してください。"
+    pass = gets.chomp
+    if pass === ENV['ADMINSPASSWORD']
+    puts "productIdを入力してください"
+    id = gets.to_i
+    @product = Product.find(id)
+    @product.destroy
+    else
+    puts "パスワードが違います"
+    end
   end
 
   def split_during

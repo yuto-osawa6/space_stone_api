@@ -67,7 +67,7 @@ class Product < ApplicationRecord
   has_many :emotion_reviews,through: :review_emotions , source: :review
 
   # chats
-  has_many :chats
+  has_many :chats,dependent: :destroy
   has_many :users,through: :chats, source: :user
 
   has_many :weeklyrankings,dependent: :destroy

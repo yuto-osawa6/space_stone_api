@@ -4,7 +4,8 @@ json.set! :products do
     json.title product.title
     json.episords do
       # n+1問題 ３冊目の最後の方 ピンク紫
-      json.array! product.episords.where(release_date:@from...@to)
+      json.array! product.episords
+      # .where(release_date:@from...@to)
     end
     json.product_weekly do
       json.array! product.weeklyrankings do |w|

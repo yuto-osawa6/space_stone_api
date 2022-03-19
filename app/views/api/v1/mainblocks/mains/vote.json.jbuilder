@@ -1,25 +1,4 @@
-# json.set! :products do
-#   json.array! @products do |product|
-#     json.id product.id
-#     json.title product.title
-#     # json.image_url product.image_url
-#     # json.arasuzi product.description
-#     # json.year product.year
-#     # json.duration  product.duration 
-    
-#     # json.scores do
-#     #   json.array! product.scores
-#     # end
-#     json.product_episord do
-#       json.array! product.episords
-#     end
-#     json.product_weekly do
-#       json.array! product.weeklyrankings
-#     end
-#   end
-  
-
-# end
+json.set! :status, 200
 
 json.set! :products do
   json.array! @products do |product|
@@ -40,8 +19,6 @@ json.set! :products do
       end
     end
   end
-  
-
 end
 
 json.set! :weekly_count,@weekly_count

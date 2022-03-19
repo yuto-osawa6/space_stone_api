@@ -177,9 +177,9 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
     if session[:weekly_vote]
       if @to - session[:weekly_vote].since(6.hours) > 0
-        @weekly_vote = false
-        session[:weekly_vote] = nil
-        # @weekly_vote = true
+        # @weekly_vote = false
+        # session[:weekly_vote] = nil
+        @weekly_vote = true
       else
         session[:weekly_vote] = nil
         @weekly_vote = false
@@ -187,35 +187,34 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     else
       @weekly_vote = false
     end
-
-    # render json:{products:@products,from:from,to:to,weekly_vote:@weekly_vote }
     render :ranking, formats: :json
   end
 
   def vote
-    puts session[:ranking]
-    # doneyet-1(設定 6時間)
+    # check-1(設定 6時間)
     current_time = Time.current.ago(6.hours).prev_week(:monday)
-    @week = Week.where(week:current_time).first_or_initialize
-    @week.episord_ids = params[:episord_ids]
-    @week.save
-
-    @vote = Weeklyranking.where(product_id:params[:product_id],weekly:current_time,week_id: @week.id).first_or_initialize
-    puts @vote.inspect
-    @vote.count = @vote.count.nil?? 1 : @vote.count + 1
-
-    if @vote.save
+    begin
+      @week = Week.where(week:current_time).first_or_initialize
+      @week.save
+      params[:episord_ids].each do |e|
+      weekEpisord = WeekEpisord.where(week_id:@week.id,episord_id:e).first_or_initialize
+      weekEpisord.save
+      end
+      @vote = Weeklyranking.where(product_id:params[:product_id],weekly:current_time,week_id: @week.id).first_or_initialize
+      @vote.count = @vote.count.nil?? 1 : @vote.count + 1   
+      @vote.save
       session[:weekly_vote] = @vote.weekly
       @weekly_vote = true
       @from = current_time.since(6.hours)   
       @to = @from.next_week.since(6.hours)
-      @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+      # @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
       @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
       render :vote, formats: :json
-    else
-      render json:{ }
+    rescue =>e
+      @EM = ErrorManage.new(controller:"mainblocks/mains/vote",error:"#{e}".slice(0,200))
+      @EM.save
+      render json:{status:500,message:{title:"予期しないエラーが発生しました。もう一度試すか、お問い合わせください。",select:0}}
     end
-   
   end
 
   def create_tier

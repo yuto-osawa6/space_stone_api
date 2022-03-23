@@ -9,6 +9,9 @@ json.set! :tier_main do
       json.array! a.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc")) do |a|
         json.id a.id
         json.image_url a.bgimage_url
+        json.title a.title
+        json.arasuzi a.description
+        json.list a.list
       end
     end
 

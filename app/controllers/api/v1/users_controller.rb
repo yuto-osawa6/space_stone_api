@@ -113,7 +113,7 @@ class Api::V1::UsersController < ApplicationController
 
   def likes
     @user = User.find(params[:user_id])
-    @product = @user.liked_products.page(params[:page]).per(2)
+    @product = @user.liked_products.includes(:styles,:janls).page(params[:page]).per(2)
     @length = @user.liked_products.count
     # render json:{product: @product,length: @length}
     render :likes,formats: :json
@@ -133,25 +133,25 @@ class Api::V1::UsersController < ApplicationController
     @user = User.find(params[:user_id])
     case @index
     when "0" then
-      @products = Product.joins(:scores).where(scores:{user_id:@user.id}).order(value: :desc).page(params[:page]).per(2)
+      @products = Product.joins(:scores).includes(:styles,:janls).where(scores:{user_id:@user.id}).order(value: :desc).page(params[:page]).per(2)
       @your_score = @user.scores.where(product_id:@products.ids).order(value: :desc)
     when "1" then
-      @products = Product.joins(:scores).where(scores:{user_id:@user.id}).order(all: :desc).page(params[:page]).per(2)
+      @products = Product.joins(:scores).includes(:styles,:janls).where(scores:{user_id:@user.id}).order(all: :desc).page(params[:page]).per(2)
       @your_score = @user.scores.where(product_id:@products.ids).order(all: :desc)
     when "2" then
-      @products = Product.joins(:scores).where(scores:{user_id:@user.id}).order(story: :desc).page(params[:page]).per(2)
+      @products = Product.joins(:scores).includes(:styles,:janls).where(scores:{user_id:@user.id}).order(story: :desc).page(params[:page]).per(2)
       @your_score = @user.scores.where(product_id:@products.ids).order(story: :desc)
     when "3" then
-      @products = Product.joins(:scores).where(scores:{user_id:@user.id}).order(animation: :desc).page(params[:page]).per(2)
+      @products = Product.joins(:scores).includes(:styles,:janls).where(scores:{user_id:@user.id}).order(animation: :desc).page(params[:page]).per(2)
       @your_score = @user.scores.where(product_id:@products.ids).order(animation: :desc)
     when "4" then
-      @products = Product.joins(:scores).where(scores:{user_id:@user.id}).order(performance: :desc).page(params[:page]).per(2)
+      @products = Product.joins(:scores).includes(:styles,:janls).where(scores:{user_id:@user.id}).order(performance: :desc).page(params[:page]).per(2)
       @your_score = @user.scores.where(product_id:@products.ids).order(performance: :desc)
     when "5" then
-      @products = Product.joins(:scores).where(scores:{user_id:@user.id}).order(music: :desc).page(params[:page]).per(2)
+      @products = Product.joins(:scores).includes(:styles,:janls).where(scores:{user_id:@user.id}).order(music: :desc).page(params[:page]).per(2)
       @your_score = @user.scores.where(product_id:@products.ids).order(music: :desc)
     when "6" then
-      @products = Product.joins(:scores).where(scores:{user_id:@user.id}).order(character: :desc).page(params[:page]).per(2)
+      @products = Product.joins(:scores).includes(:styles,:janls).where(scores:{user_id:@user.id}).order(character: :desc).page(params[:page]).per(2)
       @your_score = @user.scores.where(product_id:@products.ids).order(character: :desc)
     end
     @length = @user.scores_products.count

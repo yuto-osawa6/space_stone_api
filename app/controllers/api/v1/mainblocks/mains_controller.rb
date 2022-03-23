@@ -116,8 +116,8 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     from = now.ago(3.month).beginning_of_month
     to = now.since(2.month).end_of_month
     # @delivery_end = Product.where(delivery_end:from...to).includes(:styles,:janls,:tags,:scores)
-    @delivery_start = Product.where(delivery_start:from...to).includes(:styles,:janls,:tags,:scores)
-    @episord = Episord.where(release_date:from...to).includes(product: :styles).includes(product: {bg_images_attachment: :blob}).includes(product: :janls).includes(product: :scores)
+    # @delivery_start = Product.where(delivery_start:from...to).includes(:styles,:janls,:tags,:scores)
+    @episord = Episord.where(release_date:from...to).includes(product: :styles).includes(product: {bg_images_attachment: :blob}).includes(product: :janls).includes(product: :scores).includes(product: {year_season_products: :year}).includes(product: {year_season_products: :kisetsu})
     @scores = Score.where(product_id:@episord.pluck(:product_id).uniq).group("product_id").average_value
     render :calendar,formats: :json
   end
@@ -127,7 +127,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     from = now.prev_year
     to = now.next_year
     @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
-    @scores = Score.where(product_id:@worldclass.ids).group("product_id").average_value
+    @scores = Score.where(product_id:@worldclass.ids.uniq).group("product_id").average_value
     render :worldclass,formats: :json
   end
 
@@ -161,8 +161,8 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     to = Time.current 
     from = to.prev_month
 
-    @popular_reviews = Review.left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from..to}).includes(product: {bg_images_attachment: :blob}).group("reviews.id").order(Arel.sql("sum(count) desc")).limit(6)
-    @popular_threads = Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from..to}).includes(product: {bg_images_attachment: :blob}).group("thereds.id").order(Arel.sql("sum(count) desc")).limit(6)
+    @popular_reviews = Review.left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from..to}).includes(:user).includes(product: {bg_images_attachment: :blob}).group("reviews.id").order(Arel.sql("sum(count) desc")).limit(6)
+    @popular_threads = Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from..to}).includes(:user).includes(product: {bg_images_attachment: :blob}).group("thereds.id").order(Arel.sql("sum(count) desc")).limit(6)
     render :populur_rt,formats: :json
   end
 

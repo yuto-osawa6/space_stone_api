@@ -2,12 +2,9 @@ json.set! :products do
   json.array! @pickup do |product|
     json.id product.id
     json.title product.title
-    # json.image_url product.image_url
     json.image_url product.bgimage_url
     json.arasuzi product.description
-    json.year product.year
-    json.duration  product.duration 
-    # json.products_style product.styles.name
+    json.list product.list
     json.product_styles do
       json.array! product.styles
     end
@@ -31,12 +28,10 @@ json.set! :products2 do
   json.array! @pickup2 do |product|
     json.id product.id
     json.title product.title
-    # json.image_url product.image_url
     json.image_url product.bgimage_url
     json.arasuzi product.description
-    json.year product.year
-    json.duration  product.duration 
-    # json.products_style product.styles.name
+    json.list product.list
+
     json.product_styles do
       json.array! product.styles
     end
@@ -64,6 +59,9 @@ json.set! :tier do
   json.array! @tier_p do |a|
     json.id a.id
     json.image_url a.bgimage_url
+    json.arasuzi a.description
+    json.list a.list
+    json.title a.title
   end
 end
 

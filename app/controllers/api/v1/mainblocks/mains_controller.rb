@@ -19,8 +19,8 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @new_netflix = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
-
+    @new_netflix = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
+    @scores = Score.where(product_id:@new_netflix.ids).group("product_id").average_value
     # tier
     year = Year.find_by(year:"#{current.year}-01-01")
     season = Kisetsu.find_by(name:@kisetsu_name)
@@ -68,10 +68,12 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   end
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @pickup = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @pickup = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
+    @scores = Score.where(product_id:@pickup.ids).group("product_id").average_value
 
     @current_season2 = "#{current2.year} #{Kisetsu.find(@kisetsu2).name}"
-    @pickup2 = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{current2.year}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(count) DESC'))
+    @pickup2 = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current2.year}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
+    @scores2 = Score.where(product_id:@pickup2.ids).group("product_id").average_value
 
     # 
     # tier
@@ -116,6 +118,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     # @delivery_end = Product.where(delivery_end:from...to).includes(:styles,:janls,:tags,:scores)
     @delivery_start = Product.where(delivery_start:from...to).includes(:styles,:janls,:tags,:scores)
     @episord = Episord.where(release_date:from...to).includes(product: :styles).includes(product: {bg_images_attachment: :blob}).includes(product: :janls).includes(product: :scores)
+    @scores = Score.where(product_id:@episord.pluck(:product_id).uniq).group("product_id").average_value
     render :calendar,formats: :json
   end
 
@@ -123,7 +126,8 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     now = Time.current 
     from = now.prev_year
     to = now.next_year
-    @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls,:scores)
+    @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
+    @scores = Score.where(product_id:@worldclass.ids).group("product_id").average_value
     render :worldclass,formats: :json
   end
 
@@ -157,8 +161,8 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     to = Time.current 
     from = to.prev_month
 
-    @popular_reviews = Review.left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from..to}).group("reviews.id").order(Arel.sql("sum(count) desc")).limit(6)
-    @popular_threads = Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).limit(6)
+    @popular_reviews = Review.left_outer_joins(:acsess_reviews).where(acsess_reviews:{updated_at:from..to}).includes(product: {bg_images_attachment: :blob}).group("reviews.id").order(Arel.sql("sum(count) desc")).limit(6)
+    @popular_threads = Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from..to}).includes(product: {bg_images_attachment: :blob}).group("thereds.id").order(Arel.sql("sum(count) desc")).limit(6)
     render :populur_rt,formats: :json
   end
 

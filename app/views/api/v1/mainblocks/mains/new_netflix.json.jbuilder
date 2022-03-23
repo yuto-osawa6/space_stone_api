@@ -12,9 +12,17 @@ json.set! :products do
     json.product_genres do
       json.array! product.janls
     end
-    json.scores do
-      json.array! product.scores
-    end
+
+    json.product_year_season2 do
+      json.array! product.year_season_products do |a|
+        json.id a.id
+        json.year a.year
+        json.season a.kisetsu
+      end
+    end 
+    # json.scores do
+    #   json.array! product.scores
+    # end
   end
 end
 
@@ -39,4 +47,9 @@ end
 
 json.set! :tier_average do
   json.tierAvg @tier
+end
+
+
+json.set! :scores do
+  json.avgScore @scores
 end

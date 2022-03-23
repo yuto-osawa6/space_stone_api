@@ -709,4 +709,14 @@ class Scra2
     puts @acsess = Acsess.where(product_id:@acsess_topten_all.ids).group("product_id").sum(:count)
     # @scores = Score.where(product_id:@acsess_topten_all.ids).group("product_id").average_value
   end
+
+  def ota33
+    now = Time.current
+    from = now.ago(3.month).beginning_of_month
+    to = now.since(2.month).end_of_month
+    # @delivery_end = Product.where(delivery_end:from...to).includes(:styles,:janls,:tags,:scores)
+    @delivery_start = Product.where(delivery_start:from...to).includes(:styles,:janls,:tags,:scores)
+    @episord = Episord.where(release_date:from...to).includes(product: :styles).includes(product: {bg_images_attachment: :blob}).includes(product: :janls).includes(product: :scores).pluck(:product_id).uniq
+    # @scores = Score.where(product_id:@episord.plunk[:product_id]).group("product_id").average_value
+  end
 end

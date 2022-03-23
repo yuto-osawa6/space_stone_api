@@ -5,7 +5,7 @@ json.set! :reviews do
     json.content review.content
     json.reviewProduct do
       json.id review.product.id
-      json.image_url review.product.bg_images
+      json.image_url review.product.bgimage_url
       json.title review.product.title
     end
     json.reviewUser review.user

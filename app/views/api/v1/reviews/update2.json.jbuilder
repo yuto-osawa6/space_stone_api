@@ -22,7 +22,11 @@
 #       json.length k[1]
 #     end
 #   end
-
+json.set! :status,200
+json.set! :message do
+  json.title "「レビューを更新しました。"
+  json.select 1
+end
   json.set! :review do 
     json.id @review.id
     json.title @review.title
@@ -33,5 +37,4 @@
     json.updated_at @review.updated_at.strftime("%Y/%-m/%-d")
     json.review_emotions @review.emotions
     json.episord_id @review.episord_id
-  
   end

@@ -214,7 +214,21 @@ Rails.application.routes.draw do
             post "vote"
             post "create_tier"
             get "user_this_season_tier"
+            get "user_this_season_tier_user_page"
             get "get_user_tier_2"
+            get "update_tier_list"
+          end
+        end
+        resources :toptens,only:[:index] do
+          collection do
+            get "topten_l"
+            get "topten_lm"
+            get "topten_a"
+            get "topten_am"
+            get "topten_s"
+            get "topten_sm"
+            get "topten_r"
+            get "topten_rm"
           end
         end
       end

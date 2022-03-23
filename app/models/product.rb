@@ -93,6 +93,11 @@ class Product < ApplicationRecord
 
 
 
+  scope :years_year, -> { includes(year_season_products: :year) }
+  scope :kisetsus_kisetsu, -> { includes(year_season_products: :kisetsu) }
+  scope :year_season_scope, -> { years_year.kisetsus_kisetsu}
+
+
   ransacker :likes_count do
     query = '(SELECT COUNT(likes.product_id) FROM likes where likes.product_id = products.id GROUP BY likes.product_id)'
     Arel.sql(query)

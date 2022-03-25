@@ -1,3 +1,4 @@
+json.set! :status,200
 json.set! :user do
   json.id @user.id
   json.nickname @user.nickname
@@ -7,21 +8,8 @@ json.set! :user do
   json.likeProducts do
     json.array! @like
   end
-  # json.scoreProducts do
-  #   json.array! @user.scores_products
-  # end
-
-  # json.reviewProducts do
-  #   # json.array! @user.reviews_products
-  #   json.array! @user.reviews
-  # end
-  # json.threadProducts do
-  #   # json.array! @user.thereds_products
-  #   json.array! @user.thereds
-  # end
-
+ 
   json.likeGenres do
-    # json.array! @user.thereds_products
     json.array! @genre
   end
 
@@ -53,7 +41,3 @@ json.set! :user do
   
 
 end
-
-# json.set! :yearSeason do
-#   json.yearSeason @yearSeason
-# end

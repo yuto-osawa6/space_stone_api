@@ -1,17 +1,16 @@
 class Api::V1::LikesController < ApplicationController
   def create
-    # @like = current_user.likes.create(product_id: params[:product_id])
-    # puts current_user.id
     @user = User.find(params[:like][:user_id])
-    # @like_count = Product.find(params[:like][:product_id]).likes.count
     @like = @user.likes.new(like_params)
-    # current_user
     
     begin
-      @like.save
-      @product = Product.find(params[:like][:product_id])
-      @like_count = @product.likes.count
-      render json: { status: 200, like: @like,like_count: @like_count,message:{title:"「#{@product.title}」のお気に入りを登録しました。",select:1}} 
+      if @like.save
+        @product = Product.find(params[:like][:product_id])
+        @like_count = @product.likes.count
+        render json: { status: 200, like: @like,like_count: @like_count,message:{title:"「#{@product.title}」のお気に入りを登録しました。",select:1}}
+      else
+        render json: { status: 500 }
+      end 
     rescue =>e
       @EM = ErrorManage.new(controller:"like/create",error:"#{e}".slice(0,200))
       @EM.save

@@ -8,54 +8,71 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
   end
 
   def create
-    @commentReview = ReturnCommentThread.new(create_params)
     begin
-      if  @commentReview.save
-        render json: {status:200,commentReview:@commentReview}
-        # render :create, formats: :json
-        # render :returnreturn, formats: :json
+      @commentReview = ReturnCommentThread.new(create_params)
+      @commentReview.save!
+      render json: {status:200,commentReview:@commentReview}
+    rescue => e
+      if Thered.exists?(id:params[:thread_id])
+        if CommentThread.exists?(id:params[:return_comment_thread][:comment_thread_id])
+          @EM = ErrorManage.new(controller:"return_comment_thread/create",error:"#{e}".slice(0,200))
+          @EM.save
+          render json: {status:500}
+        else
+          render json: {status:410}
+        end
       else
-        render json: {status:500}
-
-      end
-    rescue => exception
-      render json: {status:500}      
+        render json: {status:400}
+      end      
     end
   end
   def returnreturn
-    puts params[:return_comment_thread_id]
-    @commentReview = ReturnCommentThread.new(create_params2)
-    # @commentReview.return_return_comment_threads.build(return_create_params)
-
-    @commentReview.return_return_comment_threads.build(return_comment_thread_id:@commentReview.id,return_return_thread_id:params[:return_return_comment_thread][:return_return_thread_id])
-
-
-    
     begin
-      if  @commentReview.save
-        # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
-        # : {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>12}}
-        # {"return_comment_review"=>{"comment_review_id"=>13, "user_id"=>4, "comment"=>"<p>u</p><p><br></p>"}, "return_return_comment_review"=>{"return_return_id"=>30}}
-        # {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>14}}
-        # render json: {status:200,commentReview:@commentReview}
+      @commentReview = ReturnCommentThread.new(create_params2)
+      @commentReview.return_return_comment_threads.build(return_comment_thread_id:@commentReview.id,return_return_thread_id:params[:return_return_comment_thread][:return_return_thread_id])
+      @commentReview.save!
         render :returnreturn, formats: :json
+    rescue => e
+      if Thered.exists?(id:params[:thread_id])
+        if CommentThread.exists?(id:params[:return_comment_thread][:comment_thread_id])
+          if ReturnCommentThread.exists?(id:params[:return_return_comment_thread][:return_return_thread_id])
+            @EM = ErrorManage.new(controller:"return_comment_thread/return_return",error:"#{e}".slice(0,200))
+            @EM.save
+            render json: {status:500}
+          else
+            render json: {status:430}
+          end
+        else
+          render json: {status:410}
+        end
       else
-        render json: {status:500}
-
-      end
-    rescue => exception
-      render json: {status:500}      
+        render json: {status:400}
+      end   
     end
+
   end
 
   def destroy
-    puts params
     begin
       @review_comment = ReturnCommentThread.find(params[:id])
       @review_comment.destroy
-      render json: {}
+      render json: {status:200}
     rescue => e
-      render json: {status:500}
+      if Thered.exists?(id:params[:thread_id])
+        if CommentThread.exists?(id:params[:comment_thread_id])
+          if ReturnCommentThread.exists?(id:params[:id])
+            @EM = ErrorManage.new(controller:"return_comment_thread/destroy",error:"#{e}".slice(0,200))
+            @EM.save
+            render json: {status:500}
+          else
+            render json: {status:420}
+          end
+        else
+          render json: {status:410}
+        end
+      else
+        render json: {status:400}
+      end
     end
   end
   private

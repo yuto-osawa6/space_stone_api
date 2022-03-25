@@ -1,28 +1,28 @@
 class Api::V1::ReviewsController < ApplicationController
   def create 
-    content = params[:content]
-    if params[:review][:episord_id]=="null"
-      params[:review][:episord_id]=nil
-    end
-
     begin
-    review  = Review.new(reviews_params)
-    emotionArray = []
-    params[:review][:emotion_ids].each do |i|
-      emotion = ReviewEmotion.new(review_id:review.id,product_id:params[:review][:product_id],review_id:params[:review][:review_id],episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id])
-      # emotion.save!
-      emotionArray << emotion
-    end
-    review.review_emotions = emotionArray
-
-
-  
+      content = params[:content]
+      if params[:review][:episord_id]=="null"
+        params[:review][:episord_id]=nil
+      end
+      review  = Review.new(reviews_params)
+      emotionArray = []
+      params[:review][:emotion_ids].each do |i|
+        emotion = ReviewEmotion.new(review_id:review.id,product_id:params[:review][:product_id],review_id:params[:review][:review_id],episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id])
+        # emotion.save!
+        emotionArray << emotion
+      end
+      review.review_emotions = emotionArray
+      # if
       review.save!
       @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
       @product = Product.find(params[:review][:product_id])
       @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
       @emotionList.count
       render :create, formats: :json
+      # else
+      #   render json: { status: 500 } 
+      # end
     rescue => e
       @EM = ErrorManage.new(controller:"review/create",error:"#{e}".slice(0,200))
       @EM.save
@@ -31,38 +31,38 @@ class Api::V1::ReviewsController < ApplicationController
   end
 
   def update
-
     content = params[:content]
     if params[:review][:episord_id]=="null"
       params[:review][:episord_id]=nil
     end
-
-    # review  = Review.new(reviews_params)
     review = Review.find(params[:id])
-
     # emotion
     begin
       emotionArray = []
       params[:review][:emotion_ids].each do |i|
         emotion = ReviewEmotion.where(product_id:params[:review][:product_id],review_id:review.id,episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id]).first_or_initialize
-        puts emotion.inspect
-        emotion.save!
-        emotionArray << emotion
+        if emotion.save!
+          emotionArray << emotion
+        else
+          render json: {status:500}
+          return
+        end
       end
       review.review_emotions = emotionArray
-
-      review.update(reviews_params)
-      @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
-      @product = Product.find(params[:review][:product_id])
-      @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
-      @emotionList.count
-      render :update, formats: :json
+      if review.update(reviews_params)
+        @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
+        @product = Product.find(params[:review][:product_id])
+        @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
+        @emotionList.count
+        render :update, formats: :json
+      else
+        render json: {status:500}
+      end
     rescue => e
       @EM = ErrorManage.new(controller:"review/update",error:"#{e}".slice(0,200))
       @EM.save
-      render json: {status:500,review:review}
+      render json: {status:500}
     end
-
   end
 
   def update2
@@ -76,22 +76,24 @@ class Api::V1::ReviewsController < ApplicationController
       params[:review][:emotion_ids].each do |i|
         emotion = ReviewEmotion.where(product_id:params[:review][:product_id],review_id:@review.id,episord_id:@review.episord.id,emotion_id:i,user_id:params[:review][:user_id]).first_or_initialize
         puts emotion.inspect
-        emotion.save!
-        emotionArray << emotion
+        if emotion.save!
+          emotionArray << emotion
+        else
+          render json: {status:500}
+          return
+        end
       end
       @review.review_emotions = emotionArray
-      @review.update(reviews_params)
-      # @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
-      # @product = Product.find(params[:review][:product_id])
-      # @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
-      # @emotionList.count
-      render :update2, formats: :json
+      if @review.update(reviews_params)
+        render :update2, formats: :json
+      else
+        render json: {status:500}
+      end
     rescue => e
       @EM = ErrorManage.new(controller:"review/update2",error:"#{e}".slice(0,200))
       @EM.save
-      render json: {status:500,review:@review}
+      render json: {status:500}
     end
-
   end
 
   def second
@@ -115,33 +117,47 @@ class Api::V1::ReviewsController < ApplicationController
   end
 
   def show
-    puts params[:product_id]
-    puts params[:id]
-    @review = Review.includes(:like_reviews,:emotions).find(params[:id])
-    @product = @review.product
-
-    @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
-
-
-    
-
-    render :show,formats: :json
+    begin
+      @review = Review.includes(:like_reviews,:emotions).find(params[:id])
+      @product = @review.product
+      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
+      render :show,formats: :json
+    rescue 
+      puts params
+      puts params[:id]
+      if Review.exists?(id:params[:id])
+        @EM = ErrorManage.new(controller:"review/show",error:"#{e}".slice(0,200))
+        @EM.save
+        render json:{status:500}
+      else
+        render json:{status:400}
+      end
+    end
   end
 
   def sort
-    @review = Review.find(params[:review_id])
-    puts params[:value]
-    case params[:value]
-    when "0" then
-      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
-    when "1" then
-      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"desc").page(params[:page]).per(5)
-    when "2" then
-      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"asc").page(params[:page]).per(5)
-    else
-      @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
+    begin
+      @review = Review.find(params[:review_id])
+      case params[:value]
+      when "0" then
+        @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
+      when "1" then
+        @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"desc").page(params[:page]).per(5)
+      when "2" then
+        @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"asc").page(params[:page]).per(5)
+      else
+        @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
+      end
+      render :sort, formats: :json
+    rescue 
+      if Review.exists?(id:params[:review_id])
+        @EM = ErrorManage.new(controller:"review/sort",error:"#{e}".slice(0,200))
+        @EM.save
+        render json:{status:500}
+      else
+        render json:{status:400}
+      end
     end
-    render :sort, formats: :json
   end
   # ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
   def index

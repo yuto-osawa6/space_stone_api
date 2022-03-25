@@ -192,21 +192,32 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     current_time = Time.current.ago(6.hours).prev_week(:monday)
     begin
       @week = Week.where(week:current_time).first_or_initialize
-      @week.save
+      if @week.save
+      else
+        render json:{status:500,message:{title:"予期しないエラーが発生しました。もう一度試すか、お問い合わせください。",select:0}}
+        return
+      end
       params[:episord_ids].each do |e|
       weekEpisord = WeekEpisord.where(week_id:@week.id,episord_id:e).first_or_initialize
-      weekEpisord.save
+        if weekEpisord.save
+        else
+          render json:{status:500,message:{title:"予期しないエラーが発生しました。もう一度試すか、お問い合わせください。",select:0}}
+          return
+        end
       end
       @vote = Weeklyranking.where(product_id:params[:product_id],weekly:current_time,week_id: @week.id).first_or_initialize
       @vote.count = @vote.count.nil?? 1 : @vote.count + 1   
-      @vote.save
-      session[:weekly_vote] = @vote.weekly
-      @weekly_vote = true
-      @from = current_time.since(6.hours)   
-      @to = @from.next_week.since(6.hours)
-      # @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
-      @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
-      render :vote, formats: :json
+      if @vote.save
+        session[:weekly_vote] = @vote.weekly
+        @weekly_vote = true
+        @from = current_time.since(6.hours)   
+        @to = @from.next_week.since(6.hours)
+        # @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+        @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
+        render :vote, formats: :json
+      else
+        render json:{status:500,message:{title:"予期しないエラーが発生しました。もう一度試すか、お問い合わせください。",select:0}}
+      end
     rescue =>e
       @EM = ErrorManage.new(controller:"mainblocks/mains/vote",error:"#{e}".slice(0,200))
       @EM.save
@@ -222,7 +233,11 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
       @year = Year.find_by(year:"#{year}-01-01")
       @kisetsu = Kisetsu.find_by(name:kisetsu)
       @tier_group = TierGroup.where(year_id:@year.id,kisetsu_id:@kisetsu.id).first_or_initialize
-      @tier_group.save
+      if @tier_group.save
+      else
+        render json:{status:500}
+        return
+      end
 
       params[:group_product].each do |e|
         e[:product].each do |product|
@@ -242,7 +257,11 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
             @tier.tier = 0
           else
           end
-          @tier.save
+          if @tier.save
+          else
+            render json:{status:500}
+            return
+          end
         end
       end
 

@@ -6,7 +6,7 @@
     
 #   end
 # end
-
+json.set! :status,200
 
 json.set! :review_comments do
   # json.goodbad  @review_comments

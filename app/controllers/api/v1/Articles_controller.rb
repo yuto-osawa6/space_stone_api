@@ -31,6 +31,8 @@ class Api::V1::ArticlesController < ApplicationController
 
     def show
       @article = Article.includes(:products).includes(products: :janls).includes(products: :styles).find(params[:article_id])
+      # doneyet-2 article productをどうするか
+      # @article = Article.includes(:products).includes(products: :janls).includes(products: :styles).includes(product: {year_season_products: :year}).includes(product: {year_season_products: :kisetsu}).find(params[:article_id])
       render :show, formats: :json
     end
 

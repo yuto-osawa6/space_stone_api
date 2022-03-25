@@ -21,7 +21,7 @@ class Review < ApplicationRecord
   has_many :emotion_products,through: :review_emotions, source: :product
   has_many :emotion_episords,through: :review_emotions, source: :episord
   has_many :emotion_users,through: :review_emotions , source: :user
-  # has_many :reviews,through: :review_emotions , source: :review
+
 
 
 

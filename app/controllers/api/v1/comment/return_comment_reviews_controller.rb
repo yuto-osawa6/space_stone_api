@@ -8,48 +8,77 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
   end
 
   def create
-    @commentReview = ReturnCommentReview.new(create_params)
-    
     begin
-      if  @commentReview.save
-        render json: {status:200,commentReview:@commentReview}
+      @commentReview = ReturnCommentReview.new(create_params)
+      @commentReview.save!
+      render json: {status:200,commentReview:@commentReview}
+    rescue => e
+      if Review.exists?(id:params[:review_id])
+        if CommentReview.exists?(id:params[:comment_review_id])
+          @EM = ErrorManage.new(controller:"return_comment_review/create",error:"#{e}".slice(0,200))
+          @EM.save
+          render json: {status:500}
+        else
+          render json: {status:410}
+        end
       else
-        render json: {status:500}
-
-      end
-    rescue => exception
-      render json: {status:500}      
+        render json: {status:400}
+      end      
     end
   end
+  
   def returnreturn
-    puts params[:return_comment_review_id]
-    @commentReview = ReturnCommentReview.new(create_params2)
-    @commentReview.return_return_comment_reviews.build(return_create_params)
-    # @commentReview.return_return_comment_reviews.build(return_return_id:2)
-
     begin
-      if  @commentReview.save
-        # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
-
-        # render json: {status:200,commentReview:@commentReview}
-        render :returnreturn, formats: :json
+      @commentReview = ReturnCommentReview.new(create_params2)
+      @commentReview.return_return_comment_reviews.build(return_create_params)
+      @commentReview.save!
+      render :returnreturn, formats: :json
+    rescue => e
+      if Review.exists?(id:params[:review_id])
+        if CommentReview.exists?(id:params[:return_comment_review][:comment_review_id])
+          if ReturnCommentReview.exists?(id:params[:return_return_comment_review][:return_return_id])
+            @EM = ErrorManage.new(controller:"return_comment_review/return_return",error:"#{e}".slice(0,200))
+            @EM.save
+            render json: {status:500}
+          else
+            render json: {status:430}
+          end
+        else
+          render json: {status:410}
+        end
       else
-        render json: {status:500}
-
-      end
-    rescue => exception
-      render json: {status:500}      
+        render json: {status:400}
+      end   
     end
   end
 
   def destroy
     puts params
+    # {"review_id"=>"62", "comment_review_id"=>59, "id"=>"105", "return_comment_review"=>{"comment_review_id"=>59}}
     begin
       @review_comment = ReturnCommentReview.find(params[:id])
       @review_comment.destroy
-      render json: {}
+      render json: {status:200}
     rescue => e
-      render json: {status:500}
+      if Review.exists?(id:params[:review_id])
+        if CommentReview.exists?(id:params[:comment_review_id])
+          if ReturnCommentReview.exists?(id:params[:id])
+            # if ReturnCommentReview.exists?(id:params[:return_return_comment_review][:return_return_id])
+              @EM = ErrorManage.new(controller:"return_comment_review/destroy",error:"#{e}".slice(0,200))
+              @EM.save
+              render json: {status:500}
+            # else
+            #   render json: {status:420}
+            # end
+          else
+            render json: {status:420}
+          end
+        else
+          render json: {status:410}
+        end
+      else
+        render json: {status:400}
+      end
     end
   end
 

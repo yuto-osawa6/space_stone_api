@@ -1,5 +1,8 @@
 json.set! :status,200
-
+json.set! :message do
+  json.title "コメントを作成しました。"
+  json.select 1
+end
 
 json.set! :review_comments do
   # json.goodbad  @review_comments

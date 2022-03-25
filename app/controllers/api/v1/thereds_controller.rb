@@ -1,25 +1,15 @@
 class Api::V1::TheredsController < ApplicationController
   def create 
-    content = params[:content]
-    # thered.thered_question_questions.build
-
-    @thered = Thered.new(reviews_params)
-    puts "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    # puts params[:question_ids]
-    puts params[:text]
-    # puts Thered.find(8).questions[0].thered_quesitons.ids
-    @thered.question_ids
-    puts "jkh"
-
-    # thered.thered_question_questions.build
     begin
-      if @thered.save
-        @product = Product.find(params[:thered][:product_id])
-        render json: {thered:@thered, productThreads:@product.thereds}
-      else
-        render json: {status:500,thered:@thered}
-      end
+      content = params[:content]
+      @thered = Thered.new(reviews_params)
+      @thered.question_ids
+      @thered.save!
+      @product = Product.find(params[:thered][:product_id])
+      render json: {status:200,thered:@thered, productThreads:@product.thereds,message:{title:"「#{@product.title}」のスレッドを作成しました。",select:1}}
     rescue => e
+      @EM = ErrorManage.new(controller:"review/update2",error:"#{e}".slice(0,200))
+      @EM.save
       render json: {status:500}
     end
   end
@@ -28,11 +18,12 @@ class Api::V1::TheredsController < ApplicationController
     begin
       @review = Thered.find(params[:id])
       @review.destroy
-      render json:{message:"削除されました。"}
+      render json:{status:200,message:{title:"スレッドを削除しました。",select:2}}
     rescue => e
-      puts e
+      @EM = ErrorManage.new(controller:"review/update2",error:"#{e}".slice(0,200))
+      @EM.save
+      render json: {status:500}
     end
-    puts params
   end
 
   def second
@@ -41,29 +32,48 @@ class Api::V1::TheredsController < ApplicationController
   end
 
   def show
-    puts params[:product_id]
-    puts params[:id]
-    @review = Thered.find(params[:id])
-    @product = @review.product
-    @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
+    begin
+      @review = Thered.find(params[:id])
+      @product = @review.product
+      @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
 
-    render :show,formats: :json
+      render :show,formats: :json
+    rescue 
+      if Thered.exists?(id:params[:id])
+        @EM = ErrorManage.new(controller:"thered/show",error:"#{e}".slice(0,200))
+        @EM.save
+        render json:{status:500}
+      else
+        render json:{status:400}
+      end
+    end
   end
 
   def sort
-    @review = Thered.find(params[:thered_id])
-    # puts params[:value]
-    case params[:value]
-    when "0" then
-      @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
-    when "1" then
-      @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(created_at:"desc").page(params[:page]).per(5)
-    when "2" then
-      @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(created_at:"asc").page(params[:page]).per(5)
-    else
-      @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_review_id) FROM like_comment_threads where like_comment_reviews.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
+    begin
+      @review = Thered.find(params[:thered_id])
+      # puts params[:value]
+      case params[:value]
+      when "0" then
+        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
+      when "1" then
+        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(created_at:"desc").page(params[:page]).per(5)
+      when "2" then
+        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(created_at:"asc").page(params[:page]).per(5)
+      else
+        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_review_id) FROM like_comment_threads where like_comment_reviews.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
+      end
+      render :sort, formats: :json
+    rescue 
+      if Thered.exists?(id:params[:thered_id])
+        @EM = ErrorManage.new(controller:"thered/sort",error:"#{e}".slice(0,200))
+        @EM.save
+        render json:{status:500}
+      else
+        render json:{status:400}
+      end
     end
-    render :sort, formats: :json
+    
   end
 
   # ---------------------------------------------------------------------------------

@@ -76,6 +76,15 @@ class User < ActiveRecord::Base
   has_many :tiers,dependent: :destroy
   has_many :products,through: :tiers,source: :product
   has_many :tier_groups,through: :tiers,source: :tier_group
+  has_many :user_tier_groups,through: :tiers,source: :user_tier_group
+
+
+  # tier scope
+  # has_many :group_tiers, -> { where tier_group_id:1 },class_name: "Tier"
+  # has_many :group_tiers2, -> { group 'tier_groups.id' },through: :tier_group
+
+  has_many :user_tier_groups,dependent: :destroy
+  has_many :tier_groups,through: :user_tier_groups,source: :tier_group
 
 
   devise  :database_authenticatable, 

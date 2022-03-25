@@ -77,6 +77,7 @@ class Product < ApplicationRecord
   has_many :tiers,dependent: :destroy
   has_many :users,through: :tiers,source: :user
   has_many :tier_groups,through: :tiers,source: :tier_group
+  has_many :user_tier_groups,through: :tiers,source: :user_tier_group
 
   # image
   has_one_attached :bg_images

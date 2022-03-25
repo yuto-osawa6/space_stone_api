@@ -20,9 +20,13 @@ class Api::V1::TheredsController < ApplicationController
       @review.destroy
       render json:{status:200,message:{title:"スレッドを削除しました。",select:2}}
     rescue => e
-      @EM = ErrorManage.new(controller:"review/update2",error:"#{e}".slice(0,200))
-      @EM.save
-      render json: {status:500}
+      if Thered.exists?(id:params[:id])
+        @EM = ErrorManage.new(controller:"review/update2",error:"#{e}".slice(0,200))
+        @EM.save
+        render json: {status:500}
+      else
+        render json: {status:440}
+      end
     end
   end
 

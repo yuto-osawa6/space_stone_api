@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_19_221122) do
+ActiveRecord::Schema.define(version: 2022_03_25_043736) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -559,9 +559,11 @@ ActiveRecord::Schema.define(version: 2022_03_19_221122) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "tier_group_id", null: false
+    t.bigint "user_tier_group_id", null: false
     t.index ["product_id"], name: "index_tiers_on_product_id"
     t.index ["tier_group_id"], name: "index_tiers_on_tier_group_id"
     t.index ["user_id"], name: "index_tiers_on_user_id"
+    t.index ["user_tier_group_id"], name: "index_tiers_on_user_tier_group_id"
   end
 
   create_table "toptens", charset: "utf8mb4", force: :cascade do |t|
@@ -577,6 +579,15 @@ ActiveRecord::Schema.define(version: 2022_03_19_221122) do
     t.boolean "netflix_japan", default: false, null: false
     t.index ["period_id"], name: "index_toptens_on_period_id"
     t.index ["product_id"], name: "index_toptens_on_product_id"
+  end
+
+  create_table "user_tier_groups", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "tier_group_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["tier_group_id"], name: "index_user_tier_groups_on_tier_group_id"
+    t.index ["user_id"], name: "index_user_tier_groups_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", force: :cascade do |t|

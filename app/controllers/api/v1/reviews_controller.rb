@@ -13,16 +13,19 @@ class Api::V1::ReviewsController < ApplicationController
         emotionArray << emotion
       end
       review.review_emotions = emotionArray
-      # if
-      review.save!
-      @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
-      @product = Product.find(params[:review][:product_id])
-      @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
-      @emotionList.count
-      render :create, formats: :json
-      # else
-      #   render json: { status: 500 } 
-      # end
+      if review.save
+        @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
+        @product = Product.find(params[:review][:product_id])
+        @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
+        @emotionList.count
+        render :create, formats: :json
+      else
+        if Review.exists?(product_id:params[:review][:product_id],user_id:params[:review][:user_id],episord_id:params[:review][:episord_id])
+          render json: { status: 450 } 
+        else
+          render json: { status: 440 } 
+        end
+      end
     rescue => e
       @EM = ErrorManage.new(controller:"review/create",error:"#{e}".slice(0,200))
       @EM.save
@@ -31,13 +34,13 @@ class Api::V1::ReviewsController < ApplicationController
   end
 
   def update
-    content = params[:content]
-    if params[:review][:episord_id]=="null"
-      params[:review][:episord_id]=nil
-    end
-    review = Review.find(params[:id])
-    # emotion
     begin
+      content = params[:content]
+      if params[:review][:episord_id]=="null"
+        params[:review][:episord_id]=nil
+      end
+      review = Review.find(params[:id])
+    # emotion
       emotionArray = []
       params[:review][:emotion_ids].each do |i|
         emotion = ReviewEmotion.where(product_id:params[:review][:product_id],review_id:review.id,episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id]).first_or_initialize
@@ -56,22 +59,26 @@ class Api::V1::ReviewsController < ApplicationController
         @emotionList.count
         render :update, formats: :json
       else
-        render json: {status:500}
+        render json: {status:440}
       end
     rescue => e
-      @EM = ErrorManage.new(controller:"review/update",error:"#{e}".slice(0,200))
-      @EM.save
-      render json: {status:500}
+      if Review.exists?(id:params[:id])
+        @EM = ErrorManage.new(controller:"review/update",error:"#{e}".slice(0,200))
+        @EM.save
+        render json: {status:500}
+      else
+        render json: {status:460}
+      end
     end
   end
 
   def update2
-    content = params[:content]
-    if params[:review][:episord_id]=="null"
-      params[:review][:episord_id]=nil
-    end
-    @review = Review.find(params[:id])
     begin
+      content = params[:content]
+      if params[:review][:episord_id]=="null"
+        params[:review][:episord_id]=nil
+      end
+      @review = Review.find(params[:id])
       emotionArray = []
       params[:review][:emotion_ids].each do |i|
         emotion = ReviewEmotion.where(product_id:params[:review][:product_id],review_id:@review.id,episord_id:@review.episord.id,emotion_id:i,user_id:params[:review][:user_id]).first_or_initialize
@@ -87,12 +94,16 @@ class Api::V1::ReviewsController < ApplicationController
       if @review.update(reviews_params)
         render :update2, formats: :json
       else
-        render json: {status:500}
+        render json: {status:440}
       end
     rescue => e
-      @EM = ErrorManage.new(controller:"review/update2",error:"#{e}".slice(0,200))
-      @EM.save
-      render json: {status:500}
+      if Review.exists?(id:params[:id])
+        @EM = ErrorManage.new(controller:"review/update",error:"#{e}".slice(0,200))
+        @EM.save
+        render json: {status:500}
+      else
+        render json: {status:460}
+      end
     end
   end
 
@@ -109,9 +120,13 @@ class Api::V1::ReviewsController < ApplicationController
       @review.destroy
       render json:{status:200,message:{title:"レビューを削除しました。",select:2}}
     rescue => e
-      @EM = ErrorManage.new(controller:"review/destroy",error:"#{e}".slice(0,200))
-      @EM.save
-      render json:{status:500}
+      if  Review.exists?(id:params[:id])
+        @EM = ErrorManage.new(controller:"review/destroy",error:"#{e}".slice(0,200))
+        @EM.save
+        render json:{status:500}  
+      else
+        render json:{status:440}  
+      end
     end
     puts params
   end

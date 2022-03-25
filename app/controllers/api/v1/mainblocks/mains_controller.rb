@@ -233,15 +233,18 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
       @year = Year.find_by(year:"#{year}-01-01")
       @kisetsu = Kisetsu.find_by(name:kisetsu)
       @tier_group = TierGroup.where(year_id:@year.id,kisetsu_id:@kisetsu.id).first_or_initialize
-      if @tier_group.save
-      else
-        render json:{status:500}
-        return
-      end
+      @tier_group.save!
+      # else
+      #   render json:{status:500}
+      #   return
+      # end
+      @user_tier_group = UserTierGroup.where(user_id:params[:user_id],tier_group:@tier_group.id).first_or_initialize
+      @user_tier_group.save!
 
+      tier_array = []
       params[:group_product].each do |e|
         e[:product].each do |product|
-          @tier = Tier.where(product_id:product,user_id:params[:user_id],tier_group_id: @tier_group.id).first_or_initialize
+          @tier = Tier.where(product_id:product,user_id:params[:user_id],tier_group_id: @tier_group.id,user_tier_group_id:@user_tier_group.id).first_or_initialize
           case e[:group]
           when 0 then
             @tier.tier = 100
@@ -258,12 +261,36 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
           else
           end
           if @tier.save
+            tier_array << @tier
           else
             render json:{status:500}
             return
           end
         end
       end
+  #     belongs_to :user
+  # belongs_to :tier_group
+  @user_tier_group.tiers = tier_array
+  # has_many :tiers,dependent: :destroy
+  # has_many :users,through: :tiers,source: :user
+  # has_many :products,through: :tiers,source: :product
+  # has_many :tier_groups,through: :tiers,source: :tier_group
+      # @user = User.find(params[:user_id])
+      # # @user.tiers.includes(:tier_group).where(tier_group:{id:@tier_group.id}) =  tier_array
+      # puts @user.tiers.where(tier_group_id:@tier_group.id)
+      # # @user.group_tiers = tier_array
+      # # ab = tier_array
+      # puts "aaaaaaaa"
+      # puts @user.tiers
+      # puts "aaagggggggg"
+      # # puts @user.tiers.where(tier_group_id:@tier_group.id) = tier_array
+      # puts @user.group_tiers
+      # @user.group_tiers = tier_array
+
+      # puts "ggggggggg"
+      # puts tier_array
+
+      @user_tier_group.save!
 
       render json:{status:200,message:{title:"#{year}年 #{kisetsu}シーズンのTierを更新しました。",select:1}}
     rescue => e

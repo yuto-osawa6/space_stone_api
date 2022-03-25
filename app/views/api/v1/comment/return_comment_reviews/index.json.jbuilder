@@ -16,6 +16,8 @@ json.set! :returncomment do
     json.id returncomment.id
     json.comment returncomment.comment
     json.user_id returncomment.user_id
+    json.reply returncomment.reply
+
     # json.like_comment returncomment.like_comment_reviews
     json.comment_review_id returncomment.comment_review_id
 

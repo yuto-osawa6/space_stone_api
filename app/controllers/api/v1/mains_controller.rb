@@ -62,40 +62,26 @@ class Api::V1::MainsController < ApplicationController
   end 
   def search
     @q = Product.ransack(params[:q])
-
-    # puts Product.where("delivery_end >= ?", params[:q][:delivery_end_qteq]).ids
-    puts params[:q][:sort_emotion_id].present?
-   
     @categories = params[:q][:janls_id_in].drop(1)
     @casts = params[:q][:casts_id_in].drop(1)
     @studios = params[:q][:studios_id_in].drop(1)
-
-    # @genres = Janl.where(id:@categories)
-
     pushIdArrays = []
- 
     unless @categories.length < 2
       @matchAllCategories = JanlProduct.where(janl_id: @categories).select(:product_id).group(:product_id).having('count(product_id) = ?', @categories.length)
       categoryRestaurantIds = @matchAllCategories.map(&:product_id)
       puts @matchAllCategories
       pushIdArrays.push(categoryRestaurantIds)
     end
-
     unless  @casts.length < 2
       @matchAllCasts = CastProduct.where(cast_id: @casts).select(:product_id).group(:product_id).having('count(product_id) = ?', @casts.length)
-      # puts @matchAllCasts
       castsIds = @matchAllCasts.map(&:product_id)
       pushIdArrays.push(castsIds)
     end
-
     unless  @studios.length < 2
       @matchAllStudios = StudioProduct.where(studio_id: @studios).select(:product_id).group(:product_id).having('count(product_id) = ?', @studios.length)
-      # puts @matchAllCasts
       studiosIds = @matchAllStudios.map(&:product_id)
       pushIdArrays.push(studiosIds)
     end
-
-
 
     @tags = params[:q][:styles_id_eq]
     @style_names = Style.where(id:@tags)
@@ -104,34 +90,35 @@ class Api::V1::MainsController < ApplicationController
     unless @tags.empty?
       matchAllTags = StyleProduct.where(style_id: @tags).select(:product_id).group(:product_id).having('count(product_id) = ?', @tags.length)
       tagRestaurantIds = matchAllTags.map(&:product_id)
-      # print tagRestaurantIds
       pushIdArrays.push(tagRestaurantIds)
-     
     end
 
     if params[:q][:sort_emotion_id].present?
-      # puts Product.all.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = 1 THEN 1 ELSE 0 END)/count(emotion_id) desc")).ids
       if pushIdArrays.length > 1
         filteredIdArray = pushIdArrays.flatten.group_by{|e| e}.select{|k,v| v.size > 1}.map(&:first)
-        @products = @q.result(distinct: true).where(id:filteredIdArray).where(finished:1).includes(:styles,:janls,:scores).left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
+        @products = @q.result(distinct: true).where(id:filteredIdArray).with_attached_bg_images.where(finished:1).includes(:styles,:janls).year_season_scope.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
+        @scores = Score.where(product_id:@products.ids).group("product_id").average_value
       elsif pushIdArrays.length == 1
-          @products = @q.result(distinct: true).where(id:pushIdArrays).where(finished:1).includes(:styles,:janls,:scores).left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
+        @products = @q.result(distinct: true).where(id:pushIdArrays).with_attached_bg_images.where(finished:1).includes(:styles,:janls).year_season_scope.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
+        @scores = Score.where(product_id:@products.ids).group("product_id").average_value
       else
-          @products = @q.result(distinct: true).where(finished:1).includes(:styles,:janls,:scores).left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
-
+        @products = @q.result(distinct: true).where(finished:1).with_attached_bg_images.includes(:styles,:janls).year_season_scope.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
+        @scores = Score.where(product_id:@products.ids).group("product_id").average_value
       end
 
 
     else
 
       if pushIdArrays.length > 1
-          filteredIdArray = pushIdArrays.flatten.group_by{|e| e}.select{|k,v| v.size > 1}.map(&:first)
-          @products = @q.result(distinct: true).where(id:filteredIdArray).where(finished:1).includes(:styles,:janls,:scores).order(new_content: :desc).order(pickup: :desc).page(params[:page]).per(50)
+        filteredIdArray = pushIdArrays.flatten.group_by{|e| e}.select{|k,v| v.size > 1}.map(&:first)
+        @products = @q.result(distinct: true).where(id:filteredIdArray).with_attached_bg_images.where(finished:1).includes(:styles,:janls).year_season_scope.page(params[:page]).per(50)
+        @scores = Score.where(product_id:@products.ids).group("product_id").average_value
       elsif pushIdArrays.length == 1
-          @products = @q.result(distinct: true).where(id:pushIdArrays).where(finished:1).includes(:styles,:janls,:scores).order(new_content: :desc).order(pickup: :desc).page(params[:page]).per(50)
+        @products = @q.result(distinct: true).where(id:pushIdArrays).with_attached_bg_images.where(finished:1).includes(:styles,:janls).year_season_scope.page(params[:page]).per(50)
+        @scores = Score.where(product_id:@products.ids).group("product_id").average_value
       else
-          @products = @q.result(distinct: true).where(finished:1).includes(:styles,:janls,:scores).order(new_content: :desc).order(pickup: :desc).page(params[:page]).per(50)
-
+        @products = @q.result(distinct: true).where(finished:1).with_attached_bg_images.includes(:styles,:janls).year_season_scope.page(params[:page]).per(50)
+        @scores = Score.where(product_id:@products.ids).group("product_id").average_value
       end
     end
 

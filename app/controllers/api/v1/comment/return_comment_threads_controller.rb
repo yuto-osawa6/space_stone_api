@@ -8,42 +8,80 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
   end
 
   def create
-    @commentReview = ReturnCommentThread.new(create_params)
-   
-    if  @commentReview.save
+    begin
+      @commentReview = ReturnCommentThread.new(create_params)
+      @commentReview.save!
       render json: {status:200,commentReview:@commentReview}
-      # render :create, formats: :json
-      # render :returnreturn, formats: :json
-    else
-      render json: {status:500}
-
+    rescue => e
+      if Thered.exists?(id:params[:thread_id])
+        if CommentThread.exists?(id:params[:return_comment_thread][:comment_thread_id])
+          @EM = ErrorManage.new(controller:"return_comment_thread/create",error:"#{e}".slice(0,200))
+          @EM.save
+          render json: {status:500}
+        else
+          render json: {status:410}
+        end
+      else
+        render json: {status:400}
+      end      
     end
   end
   def returnreturn
-    puts params[:return_comment_thread_id]
-    @commentReview = ReturnCommentThread.new(create_params)
-    # @commentReview.return_return_comment_threads.build(return_create_params)
+    begin
+      @commentReview = ReturnCommentThread.new(create_params2)
+      @commentReview.return_return_comment_threads.build(return_comment_thread_id:@commentReview.id,return_return_thread_id:params[:return_return_comment_thread][:return_return_thread_id])
+      @commentReview.save!
+        render :returnreturn, formats: :json
+    rescue => e
+      if Thered.exists?(id:params[:thread_id])
+        if CommentThread.exists?(id:params[:return_comment_thread][:comment_thread_id])
+          if ReturnCommentThread.exists?(id:params[:return_return_comment_thread][:return_return_thread_id])
+            @EM = ErrorManage.new(controller:"return_comment_thread/return_return",error:"#{e}".slice(0,200))
+            @EM.save
+            render json: {status:500}
+          else
+            render json: {status:430}
+          end
+        else
+          render json: {status:410}
+        end
+      else
+        render json: {status:400}
+      end   
+    end
 
-    @commentReview.return_return_comment_threads.build(return_comment_thread_id:@commentReview.id,return_return_thread_id:params[:return_return_comment_thread][:return_return_thread_id])
+  end
 
-
-    
-
-    if  @commentReview.save
-      # @commentReview.return_return_comment_reviews.return_comment_review_id = params[:return_comment_review_id]
-      # : {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>12}}
-      # {"return_comment_review"=>{"comment_review_id"=>13, "user_id"=>4, "comment"=>"<p>u</p><p><br></p>"}, "return_return_comment_review"=>{"return_return_id"=>30}}
-      # {"return_comment_thread"=>{"comment_thread_id"=>6, "user_id"=>4, "comment"=>"<p>a</p>"}, "return_return_comment_thread"=>{"return_return_thread_id"=>14}}
-      # render json: {status:200,commentReview:@commentReview}
-      render :returnreturn, formats: :json
-    else
-      render json: {status:500}
-
+  def destroy
+    begin
+      @review_comment = ReturnCommentThread.find(params[:id])
+      @review_comment.destroy
+      render json: {status:200}
+    rescue => e
+      if Thered.exists?(id:params[:thread_id])
+        if CommentThread.exists?(id:params[:comment_thread_id])
+          if ReturnCommentThread.exists?(id:params[:id])
+            @EM = ErrorManage.new(controller:"return_comment_thread/destroy",error:"#{e}".slice(0,200))
+            @EM.save
+            render json: {status:500}
+          else
+            render json: {status:420}
+          end
+        else
+          render json: {status:410}
+        end
+      else
+        render json: {status:400}
+      end
     end
   end
   private
   def create_params
     params.require(:return_comment_thread).permit(:user_id,:comment_thread_id,:comment)
+    # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
+  end
+  def create_params2
+    params.require(:return_comment_thread).permit(:user_id,:comment_thread_id,:comment).merge(reply:true)
     # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
   end
 

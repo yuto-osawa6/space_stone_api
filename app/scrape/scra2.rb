@@ -1,7 +1,7 @@
 require 'open-uri'
 class Scra2
   # include Rails.application.routes.url_helpers
-  def War
+  def ota1
     # @a = ReturnCommentReview.find(12)
     # @b = ReturnCommentThread.find(1)
     # ReturnCommentReview.where(comment_review_id:)
@@ -24,7 +24,16 @@ class Scra2
     # @user = User.find(4)
     # @user.administrator_gold = true
     # @user.save
-
+    puts "パスワードを入力してください。"
+    pass = gets.chomp
+    if pass === ENV['ADMINSPASSWORD']
+    puts "productIdを入力してください"
+    id = gets.to_i
+    @product = Product.find(id)
+    @product.destroy
+    else
+    puts "パスワードが違います"
+    end
   end
 
   def split_during
@@ -610,5 +619,104 @@ class Scra2
   def ota27
     @tiers = Tier.find(42)
     puts @tiers.product.id
+  end
+
+  def ota28
+    # @episord = Episord.joins(:product).where(product:{id:12}).ids
+
+    # @episord = Episord.joins(:product).includes(product: :acsesses).where(product:{id:[12,1]}).order(Arel.sql('product.acsesses.id ASC')).pluck(:id)
+    # @episord = Episord.joins(product: :acsesses).where(product:{id:[12,1]}).group("episords.id").order(Arel.sql('sum(product.acsesses.count) DESC')).pluck(:id)
+    # @episord = Episord.joins(product: :acsesses).where(product:{id:[13,1,2]}).group(Arel.sql("product.id")).order(Arel.sql('sum(product.acsesses.count) DESC')).count
+
+    # @episord = Episord.joins(:product).includes(product: :acsesses).where(product:{id:[12,1]}).group("episords.products.id").order(Arel.sql('sum(product.acsesses.count) DESC')).pluck(:id)
+
+
+    # .order(Arel.sql('sum(product.acsesses.count) DESC')).ids
+    # .order(Arel.sql('sum(product.acsesses.count) DESC')).ids
+    # @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+
+    
+  end
+
+  def ota29
+    current = Time.current
+    puts current.month
+
+    case current.month
+      when 1,2,3 then
+        @kisetsu = 5
+        @kisetsu_name = "冬"
+      when 4,5,6 then
+        @kisetsu = 2
+        @kisetsu_name = "春"
+      when 7,8,9 then
+        @kisetsu = 3
+        @kisetsu_name = "夏"
+      when 10,11,12 then
+        @kisetsu = 4
+        @kisetsu_name = "秋"
+    end
+     # tier
+     year = Year.find_by(year:"#{current.year}-01-01")
+     season = Kisetsu.find_by(name:@kisetsu_name)
+ 
+     tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
+     # doneyet-3 (orderがfrontに送られたときにid順になる問題)
+     if tierGroup.present?
+       @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+       @tier_p = tierGroup.products.with_attached_bg_images.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+     else
+      
+     end
+     puts @tier
+
+    @like_topten_all = Product.with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where.not(likes:{id:nil}).group("products.id").order(Arel.sql('count(products.id) DESC')).ids
+  #  puts  @scores = Score.where(product_id:@like_topten_all).group("product_id").average_value
+  #  puts @scores.map{}
+  #  puts @yearSeasons = YearSeasonProduct.where(product_id:@like_topten_all).order(year: :asc)
+  #  @yearSeason = Year.left_outer_joins(:year_season_products).includes(:year_season_products,:year_season_seasons).where(year_season_products:{product_id:@product.id}).order(year: :asc).distinct
+    #  @scores.map
+  end 
+
+  def ota30
+    now = Time.current 
+    from = now.prev_month
+    to = now
+    puts @score_topten_month = Product.with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).year_season_scope.where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(scores.value) DESC')).order(id: :asc).limit(10).ids
+    puts @score_topten_all = Product.with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).year_season_scope.group("products.id").order(Arel.sql('avg(scores.value) DESC')).order(id: :asc).limit(10).ids
+    puts @scores = Score.where(product_id:@score_topten_month,updated_at: from...to).group("product_id").average_value
+    puts @scores = Score.where(product_id:@score_topten_all).group("product_id").average_value
+
+
+  end
+
+  def ota31
+    now = Time.current 
+    from = now.prev_month
+    to = now
+    # puts @acsess_topten_month = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).year_season_scope.where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+    # @acsess = Acsess.where(product_id:@acsess_topten_month.ids,updated_at: Time.current.prev_month.beginning_of_month...to).group("product_id").sum(:count)
+    # @scores = Score.where(product_id:@acsess_topten_month.ids).group("product_id").average_value
+
+    @acsess_topten_month = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).year_season_scope.where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+    @acsess = Acsess.where(product_id:@acsess_topten_month.ids,updated_at: Time.current.prev_month.beginning_of_month...to).group("product_id").sum(:count)
+    @scores = Score.where(product_id:@acsess_topten_month.ids).group("product_id").average_value
+    puts @acsess_topten_month.ids
+  end
+
+  def ota32
+    @acsess_topten_all = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).year_season_scope.where.not(acsesses:{id:nil}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+    puts @acsess = Acsess.where(product_id:@acsess_topten_all.ids).group("product_id").sum(:count)
+    # @scores = Score.where(product_id:@acsess_topten_all.ids).group("product_id").average_value
+  end
+
+  def ota33
+    now = Time.current
+    from = now.ago(3.month).beginning_of_month
+    to = now.since(2.month).end_of_month
+    # @delivery_end = Product.where(delivery_end:from...to).includes(:styles,:janls,:tags,:scores)
+    @delivery_start = Product.where(delivery_start:from...to).includes(:styles,:janls,:tags,:scores)
+    @episord = Episord.where(release_date:from...to).includes(product: :styles).includes(product: {bg_images_attachment: :blob}).includes(product: :janls).includes(product: :scores).pluck(:product_id).uniq
+    # @scores = Score.where(product_id:@episord.plunk[:product_id]).group("product_id").average_value
   end
 end

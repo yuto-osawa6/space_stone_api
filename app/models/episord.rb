@@ -1,6 +1,7 @@
 class Episord < ApplicationRecord
   belongs_to :product
 
+  # check-1()
   has_many :reviews
 
   has_many :review_emotions,dependent: :destroy

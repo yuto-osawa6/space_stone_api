@@ -1,29 +1,44 @@
 class Api::V1::LikesController < ApplicationController
   def create
-    # @like = current_user.likes.create(product_id: params[:product_id])
-    # puts current_user.id
     @user = User.find(params[:like][:user_id])
-    # @like_count = Product.find(params[:like][:product_id]).likes.count
+    @product = Product.find(params[:like][:product_id])
     @like = @user.likes.new(like_params)
-    # current_user
-    
-    if @like.save
-      @like_count = Product.find(params[:like][:product_id]).likes.count
-      render json: { status: 200, like: @like,like_count: @like_count} 
-    else
-      render json: { status: 500, message: "失敗しました"  } 
+    begin
+      # if
+      @like.save!
+      @like_count = @product.likes.count
+      render json: { status: 200, like: @like,like_count: @like_count,message:{title:"「#{@product.title}」のお気に入りを登録しました。",select:1}}
+      # else
+      #   render json: { status: 500 }
+      # end 
+    rescue =>e
+      if Like.exists?(product_id:@product.id,user_id:@user.id)
+        render json: { status: 440 }
+      else
+        @EM = ErrorManage.new(controller:"like/create",error:"#{e}".slice(0,200))
+        @EM.save
+        render json: { status: 500 }
+      end
     end
-    # redirect_back(fallback_location: root_path)
-
   end
 
   def destroy
-    @user = User.find(params[:like][:user_id])
-    @like = Like.find_by(product_id: params[:product_id], user_id: @user.id)
-    @like.destroy
-    @like_count = Product.find(params[:product_id]).likes.count
-    # doneyet
-    render json: { status: 200, message: "削除されました",like_count:@like_count } 
+    begin
+      @user = User.find(params[:like][:user_id])
+      @product = Product.find(params[:product_id])
+      @like = Like.find_by(product_id: params[:product_id], user_id: @user.id)
+      @like.destroy
+      @like_count = @product.likes.count
+      render json: { status: 200,like_count:@like_count,message:{title:"「#{@product.title}」のお気に入りを削除しました。",select:2} } 
+    rescue =>e
+      if Like.exists?(product_id:@product.id,user_id:@user.id)
+        @EM = ErrorManage.new(controller:"like/destroy",error:"#{e}".slice(0,200))
+        @EM.save
+        render json: { status: 500 }
+      else
+        render json: { status: 440 }
+      end
+    end
   end
 
   def check

@@ -16,9 +16,8 @@ class Api::V1::ScoresController < ApplicationController
     @user = User.find(params[:score][:user_id])
     @score = @user.scores.new(score_params)
     @product = Product.find(params[:score][:product_id])
-    # current_user
-    
-    if @score.save
+    begin
+      @score.save
       @score_average = @product.scores.average(:value).round(1)
       @stats = @product.scores.group(:value).count
       @stats.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
@@ -27,9 +26,11 @@ class Api::V1::ScoresController < ApplicationController
 
       @productScore = @product.scores
 
-      render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array,productScores:@productScore} 
-    else
-      render json: { status: 500, message: "失敗しました"  } 
+      render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array,productScores:@productScore,message:{title:"「#{@product.title}」のスコアを登録しました。",select:1}} 
+    rescue =>e
+      @EM = ErrorManage.new(controller:"score/create",error:"#{e}".slice(0,200))
+      @EM.save
+      render json: { status: 500 }
     end
   end
 
@@ -49,29 +50,22 @@ class Api::V1::ScoresController < ApplicationController
 
     @user = User.find(params[:score][:user_id])
     @product = Product.find(params[:score][:product_id])
-    # @value = params[:score][:all] + params[:score][:music] + params[:score][:aninmation] + params[:score][:story] + params[:score][:performance] + params[:score][:character]
     puts @value
     @score = Score.find(params[:id])
     puts params
     begin
-    if  @score.update(score_params)
+      @score.update(score_params)
       @score_average = @product.scores.average(:value).round(1)
-
-
-
       @stats = @product.scores.group(:value).count
       @stats.map{|key,value|@pss["#{((key/10).floor+1)*10}"]=value}
       @stats_array = []
       @pss.map{|key,value|@stats_array.push(@pss[key])}
       @productScore = @product.scores
-
-
-      render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array,productScores:@productScore } 
-    else
-      render json: { status: 500, message: "失敗しました"  } 
-    end
+      render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array,productScores:@productScore,message:{title:"「#{@product.title}」のスコアを更新しました。",select:1} } 
     rescue => e
-      puts e
+      @EM = ErrorManage.new(controller:"score/update",error:"#{e}".slice(0,200))
+      @EM.save
+      render json: { status: 500 }
     end
   end
   private

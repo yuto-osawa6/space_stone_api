@@ -61,13 +61,12 @@ class Product < ApplicationRecord
   # 5table
   has_many :review_emotions,dependent: :destroy
   has_many :emotions,through: :review_emotions, source: :emotion
-  # has_many :products,through: :review_emotions, source: :product
   has_many :emotion_episords,through: :review_emotions, source: :episord
   has_many :emotion_users,through: :review_emotions , source: :user
   has_many :emotion_reviews,through: :review_emotions , source: :review
 
   # chats
-  has_many :chats
+  has_many :chats,dependent: :destroy
   has_many :users,through: :chats, source: :user
 
   has_many :weeklyrankings,dependent: :destroy
@@ -78,6 +77,7 @@ class Product < ApplicationRecord
   has_many :tiers,dependent: :destroy
   has_many :users,through: :tiers,source: :user
   has_many :tier_groups,through: :tiers,source: :tier_group
+  has_many :user_tier_groups,through: :tiers,source: :user_tier_group
 
   # image
   has_one_attached :bg_images
@@ -92,6 +92,11 @@ class Product < ApplicationRecord
     self.bg_images2.attached? ? url_for(bg_images2) : nil
   end
 
+
+
+  scope :years_year, -> { includes(year_season_products: :year) }
+  scope :kisetsus_kisetsu, -> { includes(year_season_products: :kisetsu) }
+  scope :year_season_scope, -> { years_year.kisetsus_kisetsu}
 
 
   ransacker :likes_count do

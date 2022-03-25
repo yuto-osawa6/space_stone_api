@@ -1,7 +1,7 @@
 json.set! :product do 
   json.id @product.id
   json.title @product.title
-  json.image_url @product.image_url
+  json.image_url @product.bgimage_url
   json.arasuzi @product.description
   json.year @product.year
   json.duration @product.duration
@@ -14,6 +14,14 @@ json.set! :product do
   json.product_genres do
     json.array! @product.janls
   end
+
+  # json.product_year_season2 do
+  #   json.array! product.year_season_products do |a|
+  #     json.id a.id
+  #     json.year a.year
+  #     json.season a.kisetsu
+  #   end
+  # end 
   # json.product_reviews do
   #   json.array! @product.reviews.limit(4)
   # end

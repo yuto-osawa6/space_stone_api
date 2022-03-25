@@ -1,0 +1,2 @@
+class ErrorManage < ApplicationRecord
+end

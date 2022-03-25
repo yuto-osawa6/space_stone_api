@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_15_111655) do
+ActiveRecord::Schema.define(version: 2022_03_25_043736) do
 
   create_table "acsess_articles", charset: "utf8mb4", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -173,6 +173,13 @@ ActiveRecord::Schema.define(version: 2022_03_15_111655) do
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "release_date"
     t.index ["product_id"], name: "index_episords_on_product_id"
+  end
+
+  create_table "error_manages", charset: "utf8mb4", force: :cascade do |t|
+    t.string "controller"
+    t.text "error"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "images", charset: "utf8mb4", force: :cascade do |t|
@@ -375,6 +382,7 @@ ActiveRecord::Schema.define(version: 2022_03_15_111655) do
     t.text "comment", size: :long
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "reply", default: false
     t.index ["comment_review_id"], name: "index_return_comment_reviews_on_comment_review_id"
     t.index ["user_id"], name: "index_return_comment_reviews_on_user_id"
   end
@@ -385,6 +393,7 @@ ActiveRecord::Schema.define(version: 2022_03_15_111655) do
     t.text "comment", size: :long
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "reply", default: false
     t.index ["comment_thread_id"], name: "index_return_comment_threads_on_comment_thread_id"
     t.index ["user_id"], name: "index_return_comment_threads_on_user_id"
   end
@@ -550,9 +559,11 @@ ActiveRecord::Schema.define(version: 2022_03_15_111655) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "tier_group_id", null: false
+    t.bigint "user_tier_group_id", null: false
     t.index ["product_id"], name: "index_tiers_on_product_id"
     t.index ["tier_group_id"], name: "index_tiers_on_tier_group_id"
     t.index ["user_id"], name: "index_tiers_on_user_id"
+    t.index ["user_tier_group_id"], name: "index_tiers_on_user_tier_group_id"
   end
 
   create_table "toptens", charset: "utf8mb4", force: :cascade do |t|
@@ -568,6 +579,15 @@ ActiveRecord::Schema.define(version: 2022_03_15_111655) do
     t.boolean "netflix_japan", default: false, null: false
     t.index ["period_id"], name: "index_toptens_on_period_id"
     t.index ["product_id"], name: "index_toptens_on_product_id"
+  end
+
+  create_table "user_tier_groups", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "tier_group_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["tier_group_id"], name: "index_user_tier_groups_on_tier_group_id"
+    t.index ["user_id"], name: "index_user_tier_groups_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", force: :cascade do |t|

@@ -5,5 +5,5 @@ class Article < ApplicationRecord
   has_many :products, through: :article_products, source: :product
 
   # 
-  has_many :acsess_articles
+  has_many :acsess_articles, dependent: :destroy
 end

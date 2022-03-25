@@ -39,37 +39,42 @@ Rails.application.routes.draw do
         end
         resources :acsesses,only:[:create] do
         end
-        resources :reviews,only:[:create,:show,:update] do
+        resources :reviews,only:[:create,:show,:update,:destroy] do
           collection do
             get "sort"
+            get "second"
+          end
+          member do
+            patch "update2"
           end
           resources :like_reviews,only:[:create,:destroy] do
             collection do
               get "check"
             end
           end
-          resources :comment_reviews,only:[:create] do
+          resources :comment_reviews,only:[:create,:destroy] do
             # collection do
             #   get "check"
             # end
           end
         end
-        resources :thereds,only:[:create,:show] do
+        resources :thereds,only:[:create,:show,:destroy] do
           collection do
             get "sort"
+            get "second"
           end
           resources :like_threads,only:[:create,:destroy] do
             collection do
               get "check"
             end
           end
-          resources :comment_threads,only:[:create] do
+          resources :comment_threads,only:[:create,:destroy] do
           end
 
         end
       end
 
-      resources :users,only:[:show] do
+      resources :users,only:[:show,:destroy] do
         collection do
           patch "setting"
           patch "background"
@@ -143,7 +148,7 @@ Rails.application.routes.draw do
               get "check"
             end
         end
-        resources :return_comment_reviews,only:[:index,:create] do
+        resources :return_comment_reviews,only:[:index,:create,:destroy] do
           collection do
             post "returnreturn"
           end
@@ -157,7 +162,7 @@ Rails.application.routes.draw do
             get "check"
           end
         end
-        resources :return_comment_threads,only:[:index,:create] do
+        resources :return_comment_threads,only:[:index,:create,:destroy] do
           collection do
             post "returnreturn"
           end
@@ -169,7 +174,7 @@ Rails.application.routes.draw do
       end
 
       namespace :admin do
-        resources :articles,only:[:create,:destroy] do
+        resources :articles,only:[:create,:destroy,:update] do
           collection do
             post "uploadfile"
             get "productlist"
@@ -209,7 +214,21 @@ Rails.application.routes.draw do
             post "vote"
             post "create_tier"
             get "user_this_season_tier"
+            get "user_this_season_tier_user_page"
             get "get_user_tier_2"
+            get "update_tier_list"
+          end
+        end
+        resources :toptens,only:[:index] do
+          collection do
+            get "topten_l"
+            get "topten_lm"
+            get "topten_a"
+            get "topten_am"
+            get "topten_s"
+            get "topten_sm"
+            get "topten_r"
+            get "topten_rm"
           end
         end
       end

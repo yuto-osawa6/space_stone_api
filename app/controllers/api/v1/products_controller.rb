@@ -124,6 +124,7 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def show
+    begin
     @pss = {
       "10"=> 0,
       "20"=> 0,
@@ -209,6 +210,9 @@ class Api::V1::ProductsController < ApplicationController
 
 
     render :show,formats: :json
+    rescue
+      render json:{status:500}
+    end
   end 
 
 

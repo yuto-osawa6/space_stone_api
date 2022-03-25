@@ -1,3 +1,9 @@
+json.set! :status,200
+json.set! :message do
+  json.title "「#{@product.title}」のレビューを更新しました。"
+  json.select 1
+end
+
 json.set! :userReview do
 # json.userReviews do
   json.array! @userReview do |ue|

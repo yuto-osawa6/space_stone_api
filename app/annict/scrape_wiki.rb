@@ -78,34 +78,35 @@ class ScrapeWiki
   end
 
   def m_getInfo(link,id,tid)
-    @product = Product.find(id)
-    # puts link,id
-    agent = Mechanize.new
-    agent.request_headers = {
-      'accept-language' => 'ja',
-    }
-    page = agent.get(link)
-    begin
-      genres = page.at("//*[contains(text(), 'ジャンル')]/../td")
-      # genres = page.at("//*[contains(text(), 'ジャンル')]/../td").inner_text.split("、")
+    # doneyet-1(ジャンルが不規則で持ってこれない)
+    # @product = Product.find(id)
+    # # puts link,id
+    # agent = Mechanize.new
+    # agent.request_headers = {
+    #   'accept-language' => 'ja',
+    # }
+    # page = agent.get(link)
+    # begin
+    #   genres = page.at("//*[contains(text(), 'ジャンル')]/../td")
+    #   # genres = page.at("//*[contains(text(), 'ジャンル')]/../td").inner_text.split("、")
 
-      genres_array = []
-      genres.each do |g|
-        # puts "a"
-        puts g.inner_text
-        # puts "g"
-        # @genre = Janl.where(name:g).first_or_initialize
-        # @genre.save
-        genres_array << @genre
-      end
-    # @product.janls = genres_array
-    rescue => exception
-      puts exception
-    end
-
-    # if tid != nil
-    #   # getStudios(tid,id)
+    #   genres_array = []
+    #   genres.each do |g|
+    #     # puts "a"
+    #     puts g.inner_text
+    #     # puts "g"
+    #     # @genre = Janl.where(name:g).first_or_initialize
+    #     # @genre.save
+    #     genres_array << @genre
+    #   end
+    # # @product.janls = genres_array
+    # rescue => exception
+    #   puts exception
     # end
+
+    if tid != nil
+      getStudios(tid,id)
+    end
   end 
 
 

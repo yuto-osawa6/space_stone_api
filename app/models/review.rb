@@ -21,10 +21,11 @@ class Review < ApplicationRecord
   has_many :emotion_products,through: :review_emotions, source: :product
   has_many :emotion_episords,through: :review_emotions, source: :episord
   has_many :emotion_users,through: :review_emotions , source: :user
-  # has_many :reviews,through: :review_emotions , source: :review
+
 
 
 
   # validation
-  validates :episord_id, uniqueness: { scope: [:product_id, :user_id] },allow_nil: true
+  validates :episord_id, uniqueness: { scope: [:product_id, :user_id] }
+  # ,allow_nil: true
 end

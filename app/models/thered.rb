@@ -12,5 +12,5 @@ class Thered < ApplicationRecord
   has_many :comment_threads, dependent: :destroy
   has_many :comment_threads_users, through: :comment_threads, source: :user
 
-  has_many :acsess_threads
+  has_many :acsess_threads, dependent: :destroy
 end

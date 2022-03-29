@@ -198,6 +198,7 @@ class Annict
 
       # year
       @year = Year.where(year:"#{work["seasonYear"]}-01-01").first_or_initialize
+      @year.save
       @product.year_ids = @year.id
 
       # casts

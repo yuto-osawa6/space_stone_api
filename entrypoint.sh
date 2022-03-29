@@ -3,7 +3,7 @@ set -e
 
 # Remove a potentially pre-existing server.pid for Rails.
 # rm -f /goldfolten/tmp/pids/server.pid
-rm -f /goldfield/tmp/pids/server.pid
+rm -f /api/tmp/pids/server.pid
 
 
 # Then exec the container's main process (what's set as CMD in the Dockerfile).

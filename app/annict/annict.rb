@@ -142,7 +142,7 @@ class Annict
     season,year = season()
     puts season,year
 
-    use_season = "#{year[1]}-#{season[0]}"
+    use_season = "#{year[0]}-#{season[2]}"
     puts use_season
 
     @result = result(seasons:["#{use_season}"])
@@ -166,6 +166,7 @@ class Annict
       @product.image_url = work["image"]["recommendedImageUrl"]
       @product.image_url2 = work["image"]["facebookOgImageUrl"]
       @product.copyright = work["image"]["copyright"]
+      @product.finished = 1
       @product.save
 
       # style 
@@ -177,6 +178,7 @@ class Annict
         media = work["media"]
       end
       @style = Style.where(name:media).first_or_initialize
+      @style.save
       @product.style_ids = @style.id
 
       # season
@@ -185,9 +187,9 @@ class Annict
         @kisetsu = Kisetsu.find(5)
       when "SPRING" then
         @kisetsu = Kisetsu.find(2)
-      when "AUTUMN" then
-        @kisetsu = Kisetsu.find(3)
       when "SUMMER" then
+        @kisetsu = Kisetsu.find(3)
+      when "AUTUMN" then
         @kisetsu = Kisetsu.find(4)
       else
         @kisetsu = Kisetsu.where(name:work["seasonName"]).first_or_initialize

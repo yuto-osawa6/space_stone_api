@@ -28,14 +28,14 @@ class SocialAuthController < ApplicationController
         status:200,
         message: "user was successfully logged in through #{params[:provider]}",
         headers: login_token,
-        data:@user
+        # data:@user
       },
              status: :created
     else
       render json: {
         status: 'FAILURE',
         message: "There was a problem signing you in through #{params[:provider]}",
-        data: @user.errors
+        # data: @user.errors
       },
              status: :unprocessable_entity
     end

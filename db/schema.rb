@@ -102,6 +102,15 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "character_products", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "products_id"
+    t.bigint "characters_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["characters_id"], name: "index_character_products_on_characters_id"
+    t.index ["products_id"], name: "index_character_products_on_products_id"
+  end
+
   create_table "characters", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "image"

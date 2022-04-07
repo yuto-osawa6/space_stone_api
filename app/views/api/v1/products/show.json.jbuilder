@@ -6,7 +6,7 @@ json.set! :products do
   json.id @product.id
   json.title @product.title
   # json.image_url @product.image_url
-  json.image_url @product.bgimage_url
+  json.imageUrl @product.bgimage_url
   json.arasuzi @product.description
   json.list @product.list
   json.overview @product.overview
@@ -18,13 +18,13 @@ json.set! :products do
     end
   end
   # 追加
-  json.average_score @average_score
-  json.like_count @like_count
+  json.averageScore @average_score
+  json.likeCount @like_count
   # # json.products_style product.styles.name
-  json.product_styles do
+  json.productStyles do
     json.array! @product.styles
   end
-  json.product_genres do
+  json.productGenres do
     json.array! @product.janls
   end
   # json.product_reviews do
@@ -40,17 +40,17 @@ json.set! :products do
     json.array! @product.episords
   end
   # 2.0
-  json.product_studio do
+  json.productStudio do
     json.array! @product.studios
   end
-  json.product_character do
+  json.productCharacter do
     json.array! @character do |c|
       json.id c.id
       json.name c.name
-      json.cast_name c.cast
+      json.castName c.cast
     end
   end 
-  json.product_staff do
+  json.productStaff do
     json.array! @staff do |c|
       json.id c.id
       json.name c.name
@@ -58,7 +58,7 @@ json.set! :products do
     end
   end
 
-  json.product_yearSeason do
+  json.productYearSeason do
     json.array! @yearSeason do |ys|
       json.year ys.year
       # doneyet-1 n+1発生
@@ -70,7 +70,7 @@ json.set! :products do
     json.array! @userEpisord do |ue|
       json.id ue.id
       json.content ue.content
-      json.episord_id ue.episord_id
+      json.episordId ue.episord_id
       json.emotions ue.emotions
     end
   end

@@ -65,6 +65,10 @@ Rails.application.configure do
   config.action_cable.disable_request_forgery_protection = true
   config.action_cable.url = "ws:localhost:3001/cable"
 
-  Rails.application.routes.default_url_options[:host] = 'localhost'
-  Rails.application.routes.default_url_options[:port] = 3001
+  Rails.application.routes.default_url_options[:host] = 'api'
+  Rails.application.routes.default_url_options[:port] = 3000
+
+  config.hosts << "api"
+
+  # config.logger = Logger.new(STDOUT)
 end

@@ -1,3 +1,5 @@
+# json.set! :status,200
+
 json.set! :user_tier do
   json.array! @tier_group do |a|
     json.id a.id

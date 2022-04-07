@@ -413,7 +413,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
       @tier_p = tierGroup.products.with_attached_bg_images.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
       render :update_tier_list,formats: :json
     else
-     
+      render json:{tier:[],tierAverage:[]}
     end
 
   end

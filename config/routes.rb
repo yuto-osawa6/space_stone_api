@@ -28,6 +28,9 @@ Rails.application.routes.draw do
           get "product_review"
           get "product_thread"
         end
+        member do
+          get "seo"
+        end
         resources :chats, only:[:create]
 
         resources :likes, only: [:create, :destroy] do

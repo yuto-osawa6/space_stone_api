@@ -719,4 +719,17 @@ class Scra2
     @episord = Episord.where(release_date:from...to).includes(product: :styles).includes(product: {bg_images_attachment: :blob}).includes(product: :janls).includes(product: :scores).pluck(:product_id).uniq
     # @scores = Score.where(product_id:@episord.plunk[:product_id]).group("product_id").average_value
   end
+
+  def ota34
+    # to = Time.current
+    # from = to.ago(5.years)
+    # @product =  Product.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).year_season_scope.group("products.id").order(Arel.sql('count(products.id) DESC')).limit(100)
+    # puts "aaaaaaaaaaa"
+    # puts @product.ids
+    # @scores = Score.where(product_id:@product.pluck(:id)).group("product_id").average_value
+    to = Time.current
+    from = to.ago(5.years)
+    @product =  Product.left_outer_joins(:scores).includes(:styles,:janls,:scores,:likes).where(scores:{updated_at: from...to}).year_season_scope.group("products.id").order(Arel.sql('avg(scores.value) DESC')).limit(100)
+    @scores = Score.where(product_id:@product.ids).group("product_id").average_value
+  end
 end

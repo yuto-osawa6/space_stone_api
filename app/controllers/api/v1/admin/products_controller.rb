@@ -4,7 +4,7 @@ class Api::V1::Admin::ProductsController < ApplicationController
     # @seasons = Kisetsu.all
 
     @q = Product.ransack(params[:q])
-    @products = @q.result(distinct: true).includes(:styles,:janls,:scores).page(params[:page]).per(50)
+    @products = @q.result(distinct: true).includes(:styles,:janls,:scores).with_attached_bg_images.page(params[:page]).per(50)
     render :index,formats: :json
   end
 

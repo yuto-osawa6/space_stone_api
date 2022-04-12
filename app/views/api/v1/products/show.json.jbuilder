@@ -11,7 +11,7 @@ json.set! :products do
   json.list @product.list
   json.overview @product.overview
   if @episord.present?
-    json.product_episord do
+    json.productEpisord do
       json.arasuzi @episord[0].arasuzi
       json.episord @episord[0].episord
       json.release_date @episord[0].release_date
@@ -54,7 +54,7 @@ json.set! :products do
     json.array! @staff do |c|
       json.id c.id
       json.name c.name
-      json.staff_name c.staff
+      json.staffName c.staff
     end
   end
 
@@ -121,8 +121,8 @@ json.set! :stats do
   json.stats @stats_array
 end
 json.set! :acsesses do 
-  json.acsess_array @acsesses_array
-  json.month_array @month_array
+  json.acsessArray @acsesses_array
+  json.monthArray @month_array
 end
 
 # json.set! :questions do 

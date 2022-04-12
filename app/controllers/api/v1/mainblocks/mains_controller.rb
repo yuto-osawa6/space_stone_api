@@ -126,7 +126,9 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     now = Time.current 
     from = now.prev_year
     to = now.next_year
-    @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
+    # koko 
+    # @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
+    @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
     @scores = Score.where(product_id:@worldclass.ids.uniq).group("product_id").average_value
     render :worldclass,formats: :json
   end

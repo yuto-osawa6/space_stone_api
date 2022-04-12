@@ -51,8 +51,8 @@ json.set! :products2 do
 
 end
 
-json.set! :current_season, @current_season
-json.set! :current_season2, @current_season2
+json.set! :currentSeason, @current_season
+json.set! :currentSeason2, @current_season2
 
 
 json.set! :tier do

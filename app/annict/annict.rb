@@ -142,7 +142,7 @@ class Annict
     season,year = season()
     puts season,year
 
-    use_season = "#{year[0]}-#{season[2]}"
+    use_season = "#{year[0]}-#{season[1]}"
     puts use_season
 
     @result = result(seasons:["#{use_season}"])

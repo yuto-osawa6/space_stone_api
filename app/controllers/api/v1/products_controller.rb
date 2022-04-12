@@ -461,6 +461,11 @@ class Api::V1::ProductsController < ApplicationController
 
   # end
 
+  def seo
+    @product = Product.find(params[:id])
+    render :seo,formats: :json
+  end
+
   private
     def user_params
       params.require(:review).permit(:content).merge(product_id:11,user_id:3,title:"aaa")

@@ -1,13 +1,13 @@
 class Api::V1::ProductsController < ApplicationController
   # before_action :authenticate_api_v1_user!, only: :red
   def left
-    begin
+    # begin
       @styles = Style.all.includes(:products)
       @genres = Janl.all.includes(:products)
       render :left,formats: :json
-    rescue
-      render json: {status:500}
-    end
+    # rescue
+      # render json: {status:500}
+    # end
   end
 
 
@@ -121,7 +121,11 @@ class Api::V1::ProductsController < ApplicationController
     # render json: {year_season: @week}
 
     @products = Product.all
+    # binding.pry
+    # @product = Product.find(1)
     render json: {products: @products,message:"ae"}
+    # render json: {products: @products.ids,style: @product.styles,style_product:@product.style_products,message:"ae"}
+
   end
 
   def show

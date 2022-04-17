@@ -1,7 +1,24 @@
 FactoryBot.define do
   factory :user do
-    sequence(:name) { |n| "TEST_NAME#{n}"}
-    
+    provider
+    uid
+    # reset_password_token
+    # reset_password_sent_at
+    encrypted_password
+    allow_password_change {false}
+    # remember_created_at
+    # name
+    sequence(:nickname) { |n| "TEST_NICKNAME#{n}"}
+    image {""}
+    email {Faker::Internet.email}
+    sign_in_count {0}
+    # current_sign_in_at {}
+    tokens {"tokens"}
+    administrator_gold {false}
+  end
+
+  factory :admin_user, parent: :user  do
+    administrator_gold {true}
   end
 end
 
@@ -27,6 +44,3 @@ end
 # t.boolean "administrator_gold", default: false, null: false
 # t.text "overview", size: :long
 # t.text "background_image", size: :long
-# t.index ["email"], name: "index_users_on_email", unique: true
-# t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-# t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true

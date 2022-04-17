@@ -100,10 +100,7 @@ class Api::V1::MainsController < ApplicationController
         @products = @q.result(distinct: true).where(finished:1).with_attached_bg_images.includes(:styles,:janls).year_season_scope.left_outer_joins(:review_emotions).group("products.id").order(Arel.sql("sum(CASE WHEN emotion_id = #{params[:q][:sort_emotion_id]} THEN 1 ELSE 0 END)/count(emotion_id) desc")).order(created_at: :desc).page(params[:page]).per(50)
         @scores = Score.where(product_id:@products.ids).group("product_id").average_value
       end
-
-
     else
-
       if pushIdArrays.length > 1
         filteredIdArray = pushIdArrays.flatten.group_by{|e| e}.select{|k,v| v.size > 1}.map(&:first)
         @products = @q.result(distinct: true).where(id:filteredIdArray).with_attached_bg_images.where(finished:1).includes(:styles,:janls).year_season_scope.page(params[:page]).per(50)
@@ -115,7 +112,9 @@ class Api::V1::MainsController < ApplicationController
         @products = @q.result(distinct: true).where(finished:1).with_attached_bg_images.includes(:styles,:janls).year_season_scope.page(params[:page]).per(50)
         @scores = Score.where(product_id:@products.ids).group("product_id").average_value
       end
+      @pro = Product.all
     end
+    # binding.pry
 
     render :search,formats: :json
   end

@@ -5,7 +5,7 @@ FactoryBot.define do
     description {"description"}
     list {"list"}
     end_day {"end_day"}
-    finished {true}
+    finished {1}
     created_at {"20220410"}
     updated_at {"20220410"}
     year {"2022"}
@@ -45,11 +45,38 @@ FactoryBot.define do
   factory :product_left, parent: :product do
     image_url {"image_url2"}
     after(:create) do |product|
-      create_list(:style_product, 1, product: product, style: create(:style))
+      create(:style_product, product: product, style: create(:style))
+      create(:style_product, product: product, style: create(:style))
     end
     after(:create) do |product|
-      create_list(:janl_product, 1, product: product, janl: create(:janl))
+      create(:janl_product,product: product, janl: create(:janl))
+      create(:janl_product,product: product, janl: create(:janl))
     end
+  end
+
+  factory :product_alice, parent: :product do
+    after(:create) do |product|
+      create(:style_product, product: product, style: create(:style))
+    end
+    after(:create) do |product|
+      create(:janl_product, product: product, janl: create(:janl))
+    end
+
+    after(:create) do |product|
+      create(:year_product, product: product, year: create(:year))
+    end
+
+    after(:create) do |product|
+      create(:kisetsu_product, product: product, kisetsu: Kisetsu.find(1))
+    end
+
+    after(:create) do |product|
+      create(:year_season_product, product: product, kisetsu: Kisetsu.find(1),year:product.years[0])
+      create(:year_season_product, product: product, kisetsu: Kisetsu.find(2),year:product.years[0])
+    end
+
+
+
   end
 
 end

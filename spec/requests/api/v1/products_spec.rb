@@ -27,6 +27,7 @@ RSpec.describe 'Products/Left', type: :request do
     # let!(:janl) {create_list(:janl,3)}
     it 'ステータス 200' do
       subject
+      # binding.pry
       expect(response.status).to eq(200)
     end
   end

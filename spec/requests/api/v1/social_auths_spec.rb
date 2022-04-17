@@ -17,7 +17,6 @@ RSpec.describe 'SocialAuths', type: :request do
     subject { post '/social_auth/callback',params:params }
     it 'ステータス 200' do
       subject
-      binding.pry
       expect(json['status']).to eq(200)
     end
   end

@@ -83,6 +83,38 @@ FactoryBot.define do
       create(:review_emotion, product: product,user: User.all[0],episord:Episord.all[0],review:Review.all[0],emotion:Emotion.find(1))
       create(:review_emotion, product: product,user: User.all[1],episord:Episord.all[0],review:Review.all[0],emotion:Emotion.find(2))
     end
+
+    factory :product_alice_like, parent: :product_alice do
+      after(:create) do |product|
+        create(:like,product:product,user:User.all[0])
+      end
+    end
+
+    factory :product_alice_acsess, parent: :product_alice do
+      after(:create) do |product|
+        create(:acsess,product:product)
+      end
+    end
+
+    factory :product_alice_thered, parent: :product_alice do
+      after(:create) do |product|
+        create(:thered,product:product,user: User.all[0])
+      end
+    end
+
+    factory :product_alice_week, parent: :product_alice do
+      after(:create) do |product|
+        create(:weeklyranking,product:product,week:create(:week))
+      end
+    end
+    
+
+    factory :product_alice_tier, parent: :product_alice do
+      after(:create) do |product|
+        create(:tier_group,year:Year.first,kisetsu:Kisetsu.find(2))
+        create(:tier,product:product,user:User.first,tier_group:TierGroup.first,user_tier_group:create(:user_tier_group,user:User.first,tier_group:TierGroup.first))
+      end
+    end
     
   end
 end

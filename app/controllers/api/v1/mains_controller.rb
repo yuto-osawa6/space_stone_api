@@ -64,7 +64,6 @@ class Api::V1::MainsController < ApplicationController
     unless @categories.length < 2
       @matchAllCategories = JanlProduct.where(janl_id: @categories).select(:product_id).group(:product_id).having('count(product_id) = ?', @categories.length)
       categoryRestaurantIds = @matchAllCategories.map(&:product_id)
-      puts @matchAllCategories
       pushIdArrays.push(categoryRestaurantIds)
     end
     unless  @casts.length < 2
@@ -77,11 +76,8 @@ class Api::V1::MainsController < ApplicationController
       studiosIds = @matchAllStudios.map(&:product_id)
       pushIdArrays.push(studiosIds)
     end
-
     @tags = params[:q][:styles_id_eq]
     @style_names = Style.where(id:@tags)
-
-
     unless @tags.empty?
       # change-1  スタイル（フォーマット）でマルチサーチするなら変更する必要あり。
       matchAllTags = StyleProduct.where(style_id: @tags).select(:product_id).group(:product_id).having('count(product_id) = ?', 1)
@@ -115,19 +111,12 @@ class Api::V1::MainsController < ApplicationController
       end
       @pro = Product.all
     end
-    # puts @tags.length
-    # puts @studios.length
-    # puts matchAllTags
-    # binding.pry
-
     render :search,formats: :json
   end
 
   def genressearch
     genres_title = params[:data]
     @genres = Janl.where("name LIKE ?", "%#{genres_title}%")
-    # puts @genres
-
     render :genressearch,formats: :json
   end
 
@@ -155,44 +144,23 @@ class Api::V1::MainsController < ApplicationController
     render json:{cast:@cast}
   end 
 
+  # notest
   def grid
     if params[:grid] === ""
       if session[:grid_id]
         @grid = session[:grid_id]
-        # puts "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
-        # puts "ggggggggggggggggggggggggggggggggggggggggggggggggggg"
-
-        # redirect_to red_api_v1_products_path
-        #  puts "ggggggggggggggggggggggggggggggggggggggggggggggggggg"
       else
-        puts session[:grid_id]
-        puts session
         session[:grid_id] = "01"
         @grid = session[:grid_id]
-        puts session
-        puts session[:grid_id]
-        puts "hhggggggggggggggggggggggggggggggggggggggggggggggggggggggggggghhhhhhhh"
-
       end
-
     else
       session[:grid_id] = params[:grid]
       @grid = session[:grid_id]
-      # aaaaa(a)
-      # puts @instance
-      # puts @grid
-      # search()
-      # aaaaa($grid)
-      # render :grid,formats: :json
-      puts session
-      puts session[:grid_id]
-      puts "lllllllllllllllllllllllllllllllllllllllllllllllllllllll"
     end
     render :grid,formats: :json
-    # render json: @grid
-
   end
 
+  # notest
   def monthduring
     @month = MonthDuring.all.order(created_at: :desc).limit(12)
     render json:{month: @month}
@@ -201,7 +169,7 @@ class Api::V1::MainsController < ApplicationController
 
 
   def top100
-    # @month = 
+    # notest (params[month].present==trueのとき)
     case params[:genre]
     when "1" then
       if params[:month].present?
@@ -296,7 +264,6 @@ class Api::V1::MainsController < ApplicationController
     current_time = Time.current.ago(6.hours).prev_week(:monday).prev_week(:monday).since(1.hours)
     three_month_ago = current_time.ago(3.month).ago(1.hours)
     @week_all = Week.where(week:three_month_ago...current_time).includes(products: :episords).includes(products: :weeklyrankings)
-
     render :weekliy_main, formats: :json
   end
 
@@ -308,7 +275,6 @@ class Api::V1::MainsController < ApplicationController
   end
 
   def user_search
-    puts "00000000"
     @user = User.where("nickname LIKE ?", "%#{params[:text]}%").page(params[:page]).per(1)
     render :user_search,formats: :json
   end

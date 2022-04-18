@@ -83,7 +83,8 @@ class Api::V1::MainsController < ApplicationController
 
 
     unless @tags.empty?
-      matchAllTags = StyleProduct.where(style_id: @tags).select(:product_id).group(:product_id).having('count(product_id) = ?', @tags.length)
+      # change-1  スタイル（フォーマット）でマルチサーチするなら変更する必要あり。
+      matchAllTags = StyleProduct.where(style_id: @tags).select(:product_id).group(:product_id).having('count(product_id) = ?', 1)
       tagRestaurantIds = matchAllTags.map(&:product_id)
       pushIdArrays.push(tagRestaurantIds)
     end
@@ -114,6 +115,9 @@ class Api::V1::MainsController < ApplicationController
       end
       @pro = Product.all
     end
+    # puts @tags.length
+    # puts @studios.length
+    # puts matchAllTags
     # binding.pry
 
     render :search,formats: :json

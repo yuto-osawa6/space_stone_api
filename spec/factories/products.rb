@@ -34,12 +34,6 @@ FactoryBot.define do
     wiki {""}
     wikiEn {""}
     copyright {""}
-
-    # factory :alice do
-    #   name 'Alice'
-    #   admin true
-    # end
-
   end
 
   factory :product_left, parent: :product do
@@ -61,24 +55,36 @@ FactoryBot.define do
     after(:create) do |product|
       create(:janl_product, product: product, janl: create(:janl))
     end
-
     after(:create) do |product|
       create(:year_product, product: product, year: create(:year))
     end
-
     after(:create) do |product|
       create(:kisetsu_product, product: product, kisetsu: Kisetsu.find(1))
     end
-
     after(:create) do |product|
       create(:year_season_product, product: product, kisetsu: Kisetsu.find(1),year:product.years[0])
       create(:year_season_product, product: product, kisetsu: Kisetsu.find(2),year:product.years[0])
     end
+    after(:create) do |product|
+      create(:score, product: product,user: create(:user))
+      create(:score, product: product,user: create(:user),value:40)
+    end
 
+    after(:create) do |product|
+      create(:episord,product:product)
+      create(:episord, product: product)
+    end
+    after(:create) do |product|
+      create(:review, product: product,user: User.all[0],episord:Episord.all[0])
+      create(:review, product: product,user: User.all[1],episord:Episord.all[1])
+    end
 
-
+    after(:create) do |product|
+      create(:review_emotion, product: product,user: User.all[0],episord:Episord.all[0],review:Review.all[0],emotion:Emotion.find(1))
+      create(:review_emotion, product: product,user: User.all[1],episord:Episord.all[0],review:Review.all[0],emotion:Emotion.find(2))
+    end
+    
   end
-
 end
 
 

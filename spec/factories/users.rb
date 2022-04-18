@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :user do
-    provider
-    uid
+    provider {"google"}
+    sequence(:uid) { |n| "12345#{n}"}
     # reset_password_token
     # reset_password_sent_at
-    encrypted_password
+    # encrypted_password
     allow_password_change {false}
     # remember_created_at
     # name
@@ -13,7 +13,8 @@ FactoryBot.define do
     email {Faker::Internet.email}
     sign_in_count {0}
     # current_sign_in_at {}
-    tokens {"tokens"}
+    # tokens {"{"token":"aaaaaaaa"}"}
+    # {"8KJsthVCU1FOas6uJjWKbw":{"token":"$2a$10$2oNi2vRNMx4QXoX1JnRQ3uxYI4nYMc8AuedbD85U4v0qcTGNrc4Pe","expiry":1650620283,"updated_at":"2022-04-08T18:38:03+09:00"}}
     administrator_gold {false}
   end
 

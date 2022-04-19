@@ -30,6 +30,9 @@ season_list.each do |i|
   Kisetsu.create(name: i)
 end
 
+Style.create(name: "TV show")
+Style.create(name: "Movie")
+
 # emotions
 
 emotion_list = [
@@ -81,6 +84,8 @@ emotion_list = [
 emotion_list.each do |i|
   Emotion.create(emotion: i)
 end
+
+
 
 
 # 覚醒

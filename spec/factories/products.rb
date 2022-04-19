@@ -39,8 +39,8 @@ FactoryBot.define do
   factory :product_left, parent: :product do
     image_url {"image_url2"}
     after(:create) do |product|
-      create(:style_product, product: product, style: create(:style))
-      create(:style_product, product: product, style: create(:style))
+      create(:style_product, product: product, style: Style.find(2))
+      create(:style_product, product: product, style: Style.find(2))
     end
     after(:create) do |product|
       create(:janl_product,product: product, janl: create(:janl))
@@ -50,20 +50,23 @@ FactoryBot.define do
 
   factory :product_alice, parent: :product do
     after(:create) do |product|
-      create(:style_product, product: product, style: create(:style))
+      create(:style_product, product: product, style: Style.find(2))
     end
     after(:create) do |product|
       create(:janl_product, product: product, janl: create(:janl))
     end
     after(:create) do |product|
-      create(:year_product, product: product, year: create(:year))
+      # create(:year_product, product: product, year: create(:year))
+      create(:year_product, product: product, year: Year.exists?(year:"#{Time.current.year}-01-01")? Year.find_by(year:"#{Time.current.year}-01-01"): create(:year,year:"#{Time.current.year}-01-01"))
+      # create(:year_season_product, product: product, kisetsu: Kisetsu.find(eval.kisetsuId),year:Year.exists?(year:"#{Time.current.year}-01-01")? Year.find_by(year:"#{Time.current.year}-01-01"): create(:year,year:"#{Time.current.year}-01-01"))
+
     end
     after(:create) do |product|
       create(:kisetsu_product, product: product, kisetsu: Kisetsu.find(1))
     end
     after(:create) do |product|
       create(:year_season_product, product: product, kisetsu: Kisetsu.find(1),year:product.years[0])
-      create(:year_season_product, product: product, kisetsu: Kisetsu.find(2),year:product.years[0])
+      create(:year_season_product, product: product, kisetsu: Kisetsu.find(6),year:product.years[0])
     end
     after(:create) do |product|
       create(:score, product: product,user: create(:user))
@@ -71,8 +74,8 @@ FactoryBot.define do
     end
 
     after(:create) do |product|
-      create(:episord,product:product)
-      create(:episord, product: product)
+      create(:episord,product:product,release_date:Time.current.ago(1.hours))
+      create(:episord, product: product,release_date:Time.current.ago(1.hours))
     end
     after(:create) do |product|
       create(:review, product: product,user: User.all[0],episord:Episord.all[0])
@@ -82,6 +85,28 @@ FactoryBot.define do
     after(:create) do |product|
       create(:review_emotion, product: product,user: User.all[0],episord:Episord.all[0],review:Review.all[0],emotion:Emotion.find(1))
       create(:review_emotion, product: product,user: User.all[1],episord:Episord.all[0],review:Review.all[0],emotion:Emotion.find(2))
+    end
+
+    transient do
+      current = Time.current
+      case current.month
+        when 1,2,3 then
+          kisetsuId { 5 }
+          kisetsuId2 { 4 }
+          kisetsuId3 { 2 }
+        when 4,5,6 then
+          kisetsuId { 2 }
+          kisetsuId2 { 5 }
+          kisetsuId3 { 3 }
+        when 7,8,9 then
+          kisetsuId {3 }
+          kisetsuId2 { 2 }
+          kisetsuId3 { 4 }
+        when 10,11,12 then
+          kisetsuId { 4 }
+          kisetsuId2 { 3 }
+          kisetsuId3 { 5 }
+      end        
     end
 
     factory :product_alice_like, parent: :product_alice do
@@ -115,6 +140,37 @@ FactoryBot.define do
         create(:tier,product:product,user:User.first,tier_group:TierGroup.first,user_tier_group:create(:user_tier_group,user:User.first,tier_group:TierGroup.first))
       end
     end
+
+    # mainblock用--------------------------------------------------------
+
+    factory :product_alice_new_netflix,parent: :product_alice do
+      after(:create) do |product,eval|
+        create(:kisetsu_product, product: product, kisetsu: Kisetsu.find(eval.kisetsuId))
+      end
+      after(:create) do |product,eval|
+        create(:year_season_product, product: product, kisetsu: Kisetsu.find(eval.kisetsuId),year:Year.exists?(year:"#{Time.current.year}-01-01")? Year.find_by(year:"#{Time.current.year}-01-01"): create(:year,year:"#{Time.current.year}-01-01"))
+      end
+    end
+
+    factory :product_alice_pickup,parent: :product_alice do
+      after(:create) do |product,eval|
+        create(:kisetsu_product, product: product, kisetsu: Kisetsu.find(eval.kisetsuId2))
+        create(:kisetsu_product, product: product, kisetsu: Kisetsu.find(eval.kisetsuId3))
+      end
+      after(:create) do |product,eval|
+        create(:year_season_product, product: product, kisetsu: Kisetsu.find(eval.kisetsuId2),year:Year.exists?(year:"#{Time.current.ago(3.month).year}-01-01")? Year.find_by(year:"#{Time.current.ago(3.month).year}-01-01"): create(:year,year:"#{Time.current.ago(3.month).year}-01-01"))
+        create(:year_season_product, product: product, kisetsu: Kisetsu.find(eval.kisetsuId3),year:Year.exists?(year:"#{Time.current.ago(3.month).year}-01-01")? Year.find_by(year:"#{Time.current.since(3.month).year}-01-01"): create(:year,year:"#{Time.current.since(3.month).year}-01-01"))
+
+      end
+    end
+
+    factory :product_alice_ranking,parent: :product_alice do
+      after(:create) do |product,eval|
+        create(:episord, product: product,release_date:Time.current.prev_week(:monday).since(7.hours))
+        create(:weeklyranking,product:product,week:create(:week,week:Time.current.ago(6.hours).prev_week(:monday)),weekly:Time.current.ago(7.hours).prev_week(:monday))
+      end
+    end
+    
     
   end
 end

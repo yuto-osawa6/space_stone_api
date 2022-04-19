@@ -2,7 +2,6 @@ class Api::V1::Admin::ArticlesController < ApplicationController
 
 
   def create
-    puts params[:article][:user_id] 
     @article = Article.new(create_params)
     if @article.save
       render json: {status:200}
@@ -12,9 +11,7 @@ class Api::V1::Admin::ArticlesController < ApplicationController
   end
 
   def update
-    puts params
     @article = Article.find(params[:id])
-    puts "aaaaaaaa"
     if @article.update(create_params)
       render json: {status:200}
     else
@@ -23,36 +20,29 @@ class Api::V1::Admin::ArticlesController < ApplicationController
   end
 
   def destroy
-    puts params
     begin
       @article = Article.find(params[:id])
       @article.destroy
       render json: {status:200}
     rescue => e
-      puts e
       render json: {status:500}
     end
   end
 
   def uploadfile
-    puts params[:image]
+    # notest nouse (quillの画像処理)
     @image = Image.new(create_params2)
     if @image.save
       render json:@image,methods: [:image_url]
     else
-      puts "aaa"
     end
   end
 
   def productlist
+    # notest
     @products = Product.all
     render :productlist, formats: :json
   end
-
-  # def  sum
-  #   1 2
-
-  # end
 
   private
   def create_params

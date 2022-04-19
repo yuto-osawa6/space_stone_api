@@ -135,9 +135,11 @@ FactoryBot.define do
     
 
     factory :product_alice_tier, parent: :product_alice do
-      after(:create) do |product|
+      after(:create) do |product,eval|
+        create(:tier_group,year:Year.first,kisetsu:Kisetsu.find(eval.kisetsuId))
         create(:tier_group,year:Year.first,kisetsu:Kisetsu.find(2))
         create(:tier,product:product,user:User.first,tier_group:TierGroup.first,user_tier_group:create(:user_tier_group,user:User.first,tier_group:TierGroup.first))
+        create(:tier,product:product,user:User.first,tier_group:TierGroup.all[1],user_tier_group:create(:user_tier_group,user:User.first,tier_group:TierGroup.first))
       end
     end
 
@@ -168,6 +170,13 @@ FactoryBot.define do
       after(:create) do |product,eval|
         create(:episord, product: product,release_date:Time.current.prev_week(:monday).since(7.hours))
         create(:weeklyranking,product:product,week:create(:week,week:Time.current.ago(6.hours).prev_week(:monday)),weekly:Time.current.ago(7.hours).prev_week(:monday))
+      end
+    end
+
+    factory :product_alice_create_tier,parent: :product_alice do
+      after(:create) do |product,eval|
+        create(:kisetsu_product, product: product, kisetsu: Kisetsu.find(2))
+        create(:year_season_product, product: product, kisetsu: Kisetsu.find(2),year:product.years[0])
       end
     end
     

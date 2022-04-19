@@ -216,7 +216,6 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     rescue =>e
       @EM = ErrorManage.new(controller:"mainblocks/mains/vote",error:"#{e}".slice(0,200))
       @EM.save
-      # binding.pry
       render json:{status:500,message:{title:"予期しないエラーが発生しました。もう一度試すか、お問い合わせください。",select:0}}
     end
   end
@@ -263,7 +262,6 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
       @user_tier_group.tiers = tier_array
       @user_tier_group.save!
-
       render json:{status:200,message:{title:"#{year}年 #{kisetsu}シーズンのTierを更新しました。",select:1}}
     rescue => e
       @EM = ErrorManage.new(controller:"mainblocks/mains/create_tier",error:"#{e}".slice(0,200))
@@ -361,7 +359,6 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
 
   def update_tier_list
-    puts params
     if params[:current_number] == "1"
       @time = Time.current
     elsif params[:current_number] == "2"

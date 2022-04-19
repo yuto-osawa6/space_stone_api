@@ -50,6 +50,5 @@ class Api::V1::CommentThreadsController < ApplicationController
   private
   def commentReview_params
     params.require(:comment_thread).permit(:user_id,:thered_id,:comment)
-    # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
   end
 end

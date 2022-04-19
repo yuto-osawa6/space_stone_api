@@ -7,5 +7,7 @@ FactoryBot.define do
     association :product
     association :user
 
+    
+
   end
 end

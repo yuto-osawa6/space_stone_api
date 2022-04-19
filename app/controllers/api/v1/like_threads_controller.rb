@@ -38,7 +38,7 @@ class Api::V1::LikeThreadsController < ApplicationController
       render json: { status: 200, message: "削除されました"  ,score:@score,review_length:@review_length,review_good:@review_good } 
     rescue => e
       if Thered.exists?(id:params[:thered_id])
-        if LikeThread.exists?(id:params[:thered_id], user_id: @user.id)
+        if LikeThread.exists?(id:params[:thered_id], user_id: params[:user_id])
           @EM = ErrorManage.new(controller:"like_thread/delete",error:"#{e}".slice(0,200))
           @EM.save
           render json: {status:500}

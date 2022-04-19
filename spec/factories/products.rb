@@ -179,6 +179,32 @@ FactoryBot.define do
         create(:year_season_product, product: product, kisetsu: Kisetsu.find(2),year:product.years[0])
       end
     end
+
+    # review用
+    factory :product_alice_review_all,parent: :product_alice do
+      after(:create) do |product,eval|
+        create(:like_review,review:Review.first,user:User.first)
+        create(:comment_review,review:Review.first,user:User.first)
+        create(:like_comment_review,comment_review:CommentReview.first,user:User.first)
+        create(:return_comment_review,comment_review:CommentReview.first,user:User.first)
+        create(:return_comment_review,comment_review:CommentReview.first,user:User.first)
+        create(:like_return_comment_review,return_comment_review:ReturnCommentReview.first,user:User.first)
+        create(:return_return_comment_review,return_comment_review:ReturnCommentReview.all[1],return_return:ReturnCommentReview.first)
+      end
+    end
+
+    factory :product_alice_thread_all,parent: :product_alice do
+      after(:create) do |product,eval|
+        create(:thered,product:product,user: User.all[0])
+        create(:like_thread,thered:Thered.first,user:User.first)
+        create(:comment_thread,thered:Thered.first,user:User.first)
+        create(:like_comment_thread,comment_thread:CommentThread.first,user:User.first)
+        create(:return_comment_thread,comment_thread:CommentThread.first,user:User.first)
+        create(:return_comment_thread,comment_thread:CommentThread.first,user:User.first)
+        create(:like_return_comment_thread,return_comment_thread:ReturnCommentThread.first,user:User.first)
+        create(:return_return_comment_thread,return_comment_thread:ReturnCommentThread.all[1],return_return_thread:ReturnCommentThread.first)
+      end
+    end
     
     
   end

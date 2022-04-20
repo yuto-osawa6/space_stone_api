@@ -6,9 +6,6 @@ class Api::V1::ProductsController < ApplicationController
     render :left,formats: :json
   end
 
-
- 
-
   def index
     # ota
     @products = Product.all.where(finished:0).limit(30)
@@ -385,10 +382,7 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   private
-    def user_params
-      params.require(:review).permit(:content).merge(product_id:11,user_id:3,title:"aaa")
-    end
-    # def create_params
-    #   # params.require(:products).permit(:title,:image_url,:description,:list,)
-    # end
+  def user_params
+    params.require(:review).permit(:content).merge(product_id:11,user_id:3,title:"aaa")
+  end
 end

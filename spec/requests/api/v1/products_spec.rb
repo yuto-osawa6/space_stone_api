@@ -16,19 +16,63 @@ RSpec.describe 'ProductsReds', type: :request do
       expect(response.status).to eq(200)
     end
   end
-end
-# ----------------------------------------------------
 
-RSpec.describe 'Products/Left', type: :request do
   describe 'GET /left' do
     subject { get '/api/v1/products/left' }
     let!(:product_left) {create_list(:product_left,10)}
-    # let!(:style) {create_list(:style,3)}
-    # let!(:janl) {create_list(:janl,3)}
     it 'ステータス 200' do
       subject
-      # binding.pry
       expect(response.status).to eq(200)
     end
   end
+  describe 'GET /show' do
+    let!(:product) {create(:product_alice)}
+    subject { get "/api/v1/products/#{Product.first.id}" }
+    it 'ステータス 200' do
+      subject
+      binding.pry
+      expect(response.status).to eq(200)
+    end
+  end
+
+  describe 'GET /product_episords' do
+    let!(:product) {create(:product_alice)}
+    subject { get "/api/v1/products/product_episords",params:{product_id:Product.first.id}}
+    it 'ステータス 200' do
+      subject
+      binding.pry
+      expect(response.status).to eq(200)
+    end
+  end
+
+  describe 'GET /product_review' do
+    let!(:product) {create(:product_alice)}
+    subject { get "/api/v1/products/product_review",params:{product_id:Product.first.id,page:1}}
+    it 'ステータス 200' do
+      subject
+      binding.pry
+      expect(response.status).to eq(200)
+    end
+  end
+
+  describe 'GET /product_thread' do
+    let!(:product) {create(:product_alice)}
+    subject { get "/api/v1/products/product_thread",params:{product_id:Product.first.id,page:1} }
+    it 'ステータス 200' do
+      subject
+      binding.pry
+      expect(response.status).to eq(200)
+    end
+  end
+
+  describe 'GET /seo' do
+    let!(:product) {create(:product)}
+    subject { get "/api/v1/products/#{Product.first.id}/seo"}
+    it 'ステータス 200' do
+      subject
+      binding.pry
+      expect(response.status).to eq(200)
+    end
+  end
+
 end

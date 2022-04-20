@@ -12,25 +12,26 @@ class Api::V1::ScoresController < ApplicationController
       "90"=> 0,
       "100"=> 0,
     } 
-
     @user = User.find(params[:score][:user_id])
     @score = @user.scores.new(score_params)
     @product = Product.find(params[:score][:product_id])
     begin
-      @score.save
+      @score.save!
       @score_average = @product.scores.average(:value).round(1)
       @stats = @product.scores.group(:value).count
       @stats.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
       @stats_array = []
       @pss.map{|key,value|@stats_array.push(@pss[key])}
-
       @productScore = @product.scores
-
       render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array,productScores:@productScore,message:{title:"「#{@product.title}」のスコアを登録しました。",select:1}} 
     rescue =>e
-      @EM = ErrorManage.new(controller:"score/create",error:"#{e}".slice(0,200))
-      @EM.save
-      render json: { status: 500 }
+      if Score.exists?(user_id:params[:score][:user_id],product_id:params[:score][:product_id])
+        render json: { status: 500 }
+      else
+        @EM = ErrorManage.new(controller:"score/create",error:"#{e}".slice(0,200))
+        @EM.save
+        render json: { status: 500 }
+      end
     end
   end
 
@@ -50,9 +51,7 @@ class Api::V1::ScoresController < ApplicationController
 
     @user = User.find(params[:score][:user_id])
     @product = Product.find(params[:score][:product_id])
-    puts @value
     @score = Score.find(params[:id])
-    puts params
     begin
       @score.update(score_params)
       @score_average = @product.scores.average(:value).round(1)
@@ -63,9 +62,13 @@ class Api::V1::ScoresController < ApplicationController
       @productScore = @product.scores
       render json: { status: 200, score: @score,score_average:@score_average,stats_array:@stats_array,productScores:@productScore,message:{title:"「#{@product.title}」のスコアを更新しました。",select:1} } 
     rescue => e
-      @EM = ErrorManage.new(controller:"score/update",error:"#{e}".slice(0,200))
-      @EM.save
-      render json: { status: 500 }
+      if Score.exists?
+        @EM = ErrorManage.new(controller:"score/update",error:"#{e}".slice(0,200))
+        @EM.save
+        render json: { status: 500 }
+      else
+        render json: { status: 500 }
+      end
     end
   end
   private

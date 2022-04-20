@@ -9,7 +9,6 @@ class Api::V1::ReviewsController < ApplicationController
       emotionArray = []
       params[:review][:emotion_ids].each do |i|
         emotion = ReviewEmotion.new(review_id:review.id,product_id:params[:review][:product_id],review_id:params[:review][:review_id],episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id])
-        # emotion.save!
         emotionArray << emotion
       end
       review.review_emotions = emotionArray

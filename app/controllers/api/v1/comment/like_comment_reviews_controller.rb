@@ -4,18 +4,13 @@ class Api::V1::Comment::LikeCommentReviewsController < ApplicationController
       @LikeCommentReview = LikeCommentReview.where(user_id:params[:like_comment_review][:user_id],comment_review_id:params[:like_comment_review][:comment_review_id]).first_or_initialize
       @LikeCommentReview.goodbad = params[:like_comment_review][:goodbad]
       @LikeCommentReview.save!
-
-        @review_length = LikeCommentReview.where(comment_review_id:params[:like_comment_review][:comment_review_id]).length
-        @review_good = LikeCommentReview.where(comment_review_id:params[:like_comment_review][:comment_review_id],goodbad:1).length
-        @score = @review_good / @review_length.to_f * 100
-
-        render json: {status:200, like: @LikeCommentReview,score:@score,review_length:@review_length,review_good:@review_good}
-      # else
-      #   render json: {status:500}
-      # end
+      @review_length = LikeCommentReview.where(comment_review_id:params[:like_comment_review][:comment_review_id]).length
+      @review_good = LikeCommentReview.where(comment_review_id:params[:like_comment_review][:comment_review_id],goodbad:1).length
+      @score = @review_good / @review_length.to_f * 100
+      render json: {status:200, like: @LikeCommentReview,score:@score,review_length:@review_length,review_good:@review_good}
     rescue => e
       if Review.exists?(id:params[:review_id])
-        if CommentReview.exists?(id:params[:comment_review_id])
+        if CommentReview.exists?(id:params[:like_comment_review][:comment_review_id])
           @EM = ErrorManage.new(controller:"like_comment_review/create",error:"#{e}".slice(0,200))
           @EM.save
           render json: {status:500}
@@ -64,6 +59,7 @@ class Api::V1::Comment::LikeCommentReviewsController < ApplicationController
   end
 
   def check
+    # nouse notest
     @review_length = LikeCommentReview.where(comment_review_id:params[:comment_review_id]).length
     @review_good = LikeCommentReview.where(comment_review_id:params[:comment_review_id],goodbad:1).length
   

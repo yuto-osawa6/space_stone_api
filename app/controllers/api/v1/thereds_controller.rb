@@ -31,6 +31,7 @@ class Api::V1::TheredsController < ApplicationController
   end
 
   def second
+    # notest
     @product = Product.find(params[:product_id])
     render :second, formats: :json
   end
@@ -54,6 +55,7 @@ class Api::V1::TheredsController < ApplicationController
   end
 
   def sort
+    # notest
     begin
       @review = Thered.find(params[:thered_id])
       # puts params[:value]
@@ -82,6 +84,7 @@ class Api::V1::TheredsController < ApplicationController
 
   # ---------------------------------------------------------------------------------
   def index
+    # notest
     if params[:product_id].present?
       if params[:select_sort].present?
         case params[:select_sort]

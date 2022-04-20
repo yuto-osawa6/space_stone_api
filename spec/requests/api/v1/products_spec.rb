@@ -30,7 +30,6 @@ RSpec.describe 'ProductsReds', type: :request do
     subject { get "/api/v1/products/#{Product.first.id}" }
     it 'ステータス 200' do
       subject
-      binding.pry
       expect(response.status).to eq(200)
     end
   end
@@ -40,7 +39,6 @@ RSpec.describe 'ProductsReds', type: :request do
     subject { get "/api/v1/products/product_episords",params:{product_id:Product.first.id}}
     it 'ステータス 200' do
       subject
-      binding.pry
       expect(response.status).to eq(200)
     end
   end
@@ -50,7 +48,6 @@ RSpec.describe 'ProductsReds', type: :request do
     subject { get "/api/v1/products/product_review",params:{product_id:Product.first.id,page:1}}
     it 'ステータス 200' do
       subject
-      binding.pry
       expect(response.status).to eq(200)
     end
   end
@@ -60,7 +57,6 @@ RSpec.describe 'ProductsReds', type: :request do
     subject { get "/api/v1/products/product_thread",params:{product_id:Product.first.id,page:1} }
     it 'ステータス 200' do
       subject
-      binding.pry
       expect(response.status).to eq(200)
     end
   end
@@ -70,7 +66,6 @@ RSpec.describe 'ProductsReds', type: :request do
     subject { get "/api/v1/products/#{Product.first.id}/seo"}
     it 'ステータス 200' do
       subject
-      binding.pry
       expect(response.status).to eq(200)
     end
   end

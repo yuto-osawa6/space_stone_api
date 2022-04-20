@@ -63,7 +63,6 @@ RSpec.describe 'comment_reviews', type: :request do
       subject { post "/api/v1/comment/return_comment_reviews/returnreturn",params: {review_id:Review.first.id,return_comment_review: {user_id:User.first.id,comment_review_id:CommentReview.first.id,comment:"test"},return_return_comment_review:{return_return_id:ReturnCommentReview.first.id}}}
       it 'ステータス 200' do
         subject
-        binding.pry
         expect(json['status']).to eq(200)
       end
     end

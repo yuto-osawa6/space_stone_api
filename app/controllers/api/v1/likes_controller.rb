@@ -19,7 +19,6 @@ class Api::V1::LikesController < ApplicationController
   end
 
   def destroy
-    binding.pry
     begin
       @user = User.find(params[:like][:user_id])
       @product = Product.find(params[:product_id])

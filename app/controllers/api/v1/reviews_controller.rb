@@ -1,14 +1,14 @@
 class Api::V1::ReviewsController < ApplicationController
   def create 
     begin
-      content = params[:content]
       if params[:review][:episord_id]=="null"
         params[:review][:episord_id]=nil
       end
       review  = Review.new(reviews_params)
       emotionArray = []
       params[:review][:emotion_ids].each do |i|
-        emotion = ReviewEmotion.new(review_id:review.id,product_id:params[:review][:product_id],review_id:params[:review][:review_id],episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id])
+        # ,review_id:params[:review][:review_id] check-1消した
+        emotion = ReviewEmotion.new(review_id:review.id,product_id:params[:review][:product_id],episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id])
         emotionArray << emotion
       end
       review.review_emotions = emotionArray
@@ -34,7 +34,6 @@ class Api::V1::ReviewsController < ApplicationController
 
   def update
     begin
-      content = params[:content]
       if params[:review][:episord_id]=="null"
         params[:review][:episord_id]=nil
       end
@@ -73,7 +72,6 @@ class Api::V1::ReviewsController < ApplicationController
 
   def update2
     begin
-      content = params[:content]
       if params[:review][:episord_id]=="null"
         params[:review][:episord_id]=nil
       end
@@ -107,6 +105,7 @@ class Api::V1::ReviewsController < ApplicationController
   end
 
   def second
+    # notest
     @userReview = Review.where(product_id:params[:product_id],user_id:params[:user_id])
     @product = Product.find(params[:product_id])
     @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
@@ -150,6 +149,7 @@ class Api::V1::ReviewsController < ApplicationController
   end
 
   def sort
+    # notest
     begin
       @review = Review.find(params[:review_id])
       case params[:value]
@@ -175,6 +175,7 @@ class Api::V1::ReviewsController < ApplicationController
   end
   # ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
   def index
+    # notest
   if params[:emotion].present?
     emotion()
   else

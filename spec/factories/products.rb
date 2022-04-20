@@ -205,7 +205,13 @@ FactoryBot.define do
         create(:return_return_comment_thread,return_comment_thread:ReturnCommentThread.all[1],return_return_thread:ReturnCommentThread.first)
       end
     end
-    
+
+    # article
+    factory :product_alice_article,parent: :product_alice do
+      after(:create) do |product,eval|
+        create(:article_product,product:product,article: create(:article,weekormonth:1))
+      end
+    end
     
   end
 end

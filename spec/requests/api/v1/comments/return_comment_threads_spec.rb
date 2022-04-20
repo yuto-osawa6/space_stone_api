@@ -76,7 +76,7 @@ RSpec.describe 'return_comment_threads', type: :request do
         expect(json['status']).to eq(410)
       end
       it 'ステータス 430(ReturnCommentthread(return_return_id)が存在しない)' do
-        post "/api/v1/comment/return_comment_threadthreads/returnreturn",params: {thread_id:Thered.first.id,return_comment_thread: {user_id:User.first.id,comment_thread_id:CommentThreadThread.first.id,comment:"test"},return_return_comment_thread:{return_return_thread_id:0}}
+        post "/api/v1/comment/return_comment_threads/returnreturn",params: {thread_id:Thered.first.id,return_comment_thread: {user_id:User.first.id,comment_thread_id:CommentThread.first.id,comment:"test"},return_return_comment_thread:{return_return_thread_id:0}}
         expect(json['status']).to eq(430)
       end
     end

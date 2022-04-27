@@ -9,7 +9,7 @@ jobs:
       - checkout
       # - ruby/install-deps
       - ruby/install:
-        version: '2.7.0'
+          version: '2.7.0'
   test:
     parallelism: 1
     docker:
@@ -30,7 +30,7 @@ jobs:
     steps:
       - checkout
       - ruby/install:
-        version: '2.7.0'
+          version: '2.7.0'
       
       - run:
           name: DB の待機

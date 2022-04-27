@@ -1,10 +1,12 @@
 version: 2.1
 orbs:
   ruby: circleci/ruby@1.7.1
+  node: circleci/node@2
 jobs:
   build:
     docker:
       - image: cimg/ruby:2.7.0
+
     steps:
       - checkout
       - ruby/install-deps

@@ -70,7 +70,11 @@ class Api::V1::ProductsController < ApplicationController
   def red
     # ota
     @products = Product.all
-    render json: {products: @products,message:"ae"}
+    # render json: {products: @products,message:"ae"}
+    render json: {message:"aaa"}
+    # render json: {}
+
+
   end
 
   def show

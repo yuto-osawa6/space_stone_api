@@ -19,6 +19,5 @@ class SocialAuthController < ApplicationController
       },
              status: :unprocessable_entity
     end
-    binding.pry
   end
 end

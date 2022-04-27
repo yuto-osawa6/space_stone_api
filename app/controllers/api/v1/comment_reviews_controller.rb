@@ -15,11 +15,6 @@ class Api::V1::CommentReviewsController < ApplicationController
       end
         @commentReview.save!
         render :create,formats: :json
-      # else
-      #   @EM = ErrorManage.new(controller:"comment_review/create",error:"#{e}".slice(0,200))
-      #   @EM.save
-      #   render json: {status:500}
-      # end
     rescue => e
       if Review.exists?(id:params[:review_id])
         @EM = ErrorManage.new(controller:"comment_review/create",error:"#{e}".slice(0,200))

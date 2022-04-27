@@ -46,7 +46,7 @@ class Api::V1::Comment::LikeReturnCommentReviewsController < ApplicationControll
       if Review.exists?(id:params[:review_id])
         if CommentReview.exists?(id:params[:comment_review_id])
           if ReturnCommentReview.exists?(id:params[:return_comment_review_id])
-            if LikeReturnCommentReview.exists?(return_comment_review_id: params[:return_comment_review_id], user_id: @user.id)
+            if LikeReturnCommentReview.exists?(return_comment_review_id: params[:return_comment_review_id], user_id: params[:user_id])
               @EM = ErrorManage.new(controller:"like_return_comment_review/destroy",error:"#{e}".slice(0,200))
               @EM.save
               render json: {status:500}
@@ -66,6 +66,7 @@ class Api::V1::Comment::LikeReturnCommentReviewsController < ApplicationControll
   end
 
   def index
+    # nouse notest
     @review_length = LikeReturnCommentReview.where(return_comment_review_id:params[:return_comment_review_id]).length
     @review_good = LikeReturnCommentReview.where(return_comment_review_id:params[:return_comment_review_id],goodbad:1).length
   

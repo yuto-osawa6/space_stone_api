@@ -2,7 +2,7 @@ class Api::V1::UsersController < ApplicationController
   def setting
     @user = User.find(params[:user_id])
     if @user.update(update_params)
-      render json:{status:500,message:"nicknameを更新しました。",user:@user}
+      render json:{status:200,message:"nicknameを更新しました。",user:@user}
     else
       render json:{status:500}
     end
@@ -10,7 +10,6 @@ class Api::V1::UsersController < ApplicationController
 
   def background
     @user = User.find(params[:user_id])
-    # @user.bacgroundImg = params[:backgroundImage]
     if @user.update(background_params2)
       render json:{status:200,message:"背景画像を更新しました。",background:@user.image_url}
     else
@@ -26,16 +25,6 @@ class Api::V1::UsersController < ApplicationController
       render json:{status:500}
     end
   end
-
-  # def background
-  #   @user = User.find(params[:user_id])
-  #   # @user.bacgroundImg = params[:backgroundImage]
-  #   if @user.update(background_params)
-
-  #   else
-
-  #   end
-  # end
 
   def show
     @pss = {
@@ -109,29 +98,24 @@ class Api::V1::UsersController < ApplicationController
     else
 
     end
-    # add
-    # @current_season = "#{@time.year} #{@kisetsu.name}"
-    # @new_netflix = Product.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls,:tags,:scores).where(year_season_years:{year:"#{@time.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(count) DESC'))
   end
 
   def likes
     @user = User.find(params[:user_id])
     @product = @user.liked_products.includes(:styles,:janls).page(params[:page]).per(2)
     @length = @user.liked_products.count
-    # render json:{product: @product,length: @length}
     render :likes,formats: :json
   end
 
   def likeGenres
     @user = User.find(params[:user_id])
-
     il = @user.liked_products.joins(:janl_products).group(:janl_id).order("count(janl_id) desc").count.keys
-    # Product.janls
     @genres = Janl.where(id:il).order([Arel.sql('field(id, ?)'), il])
     render json:{genres:@genres}
   end
 
   def scores
+    # notest
     @index = params[:score_index]
     @user = User.find(params[:user_id])
     case @index
@@ -162,6 +146,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def reviews
+    # notest
     @user = User.find(params[:user_id])
     if params[:product_id].present?
       if params[:emotion].present?
@@ -228,6 +213,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def threads
+    # notest
     @user = User.find(params[:user_id])
     if params[:product_id].present?
         if params[:select_sort].present?
@@ -271,6 +257,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def change_score_arrayies
+    # notest
     @user = User.find(params[:user_id])
     @pss = {
       "10"=> 0,
@@ -308,8 +295,6 @@ class Api::V1::UsersController < ApplicationController
       @score = @user.scores.group(:character).count
       @score.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
     end
-    puts @pss
-    puts @pss.map{|key,value|value}
     render json:{score_arrayies:@pss.map{|key,value|value}}
   end
 

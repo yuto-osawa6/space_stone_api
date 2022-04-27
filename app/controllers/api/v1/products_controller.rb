@@ -1,25 +1,14 @@
 class Api::V1::ProductsController < ApplicationController
   # before_action :authenticate_api_v1_user!, only: :red
   def left
-    begin
-      @styles = Style.all.includes(:products)
-      @genres = Janl.all.includes(:products)
-      render :left,formats: :json
-    rescue
-      render json: {status:500}
-    end
+    @styles = Style.all.includes(:products)
+    @genres = Janl.all.includes(:products)
+    render :left,formats: :json
   end
 
-
- 
-
   def index
+    # ota
     @products = Product.all.where(finished:0).limit(30)
-
-    # @q = Product.ransack(params[:q])
-    # @products = @q.result.where(finished:0).limit(30)
-  
-    # render :index,formats: :json
     @pss = {
       "10"=> 0,
       "20"=> 0,
@@ -32,7 +21,6 @@ class Api::V1::ProductsController < ApplicationController
       "90"=> 0,
       "100"=> 0,
     } 
-    # @aaa = [1,2,3,5,0,-1]
     @aaa = {
       "10"=> 1,
       "20"=> 2,
@@ -44,27 +32,8 @@ class Api::V1::ProductsController < ApplicationController
       "80"=> 1,
       "90"=> 0,
       "100"=> 1,
-      # "baba"
     }
-    # aaaa = []
-    # @aaa["10"]=100
-    # @aaa["20"]=100
-
-    # # @aaa.map{|item|aaaa.push(@aaa[item])}
-    # @aaa.map{|key,item|aaaa.push(@aaa[key])}
-
-    # # @qp= @pp.map(|key,value|pss[key],value)
-    # @pp = Product.find(11).scores.group(:value).count
-    # @pp.map{|key,value|@pss["#{key}"]=value
-    #   # @pss.map{|key,value|array.append(@pss[key])}
-    # }
-    # array = []
-    # @pss.length
-    # @pss.map{|key,value|array.push(@pss[key])}
-    # # @qp= @pp.map{|key,value|[key,value]}
-    # render json: {product: @pp,qp:@qp,pss:@pss,ar:array,aaa:@aaa,aaaa:aaaa}
-    
-
+  
     to = Time.current.at_beginning_of_day
     d = Date.today
     dm = d.month
@@ -78,35 +47,20 @@ class Api::V1::ProductsController < ApplicationController
         month_array.push(i)
         month_hash[i] = 0
       end
-    # to = Time.current.all_month
 
     from  = (to - 1.year).next_month.beginning_of_month
     @acsesses = Product.find(11).acsesses.where(date: from...to).group(:date).sum(:count)
-    # @acsesses.map{|key,value|month_hash[key.month]=value}
-
-    # @acsesses_array = []
-    # month_hash.map{|key,value|@acsesses_array.push(month_hash[key])}
-    # @acsesses.map{|key,value|@pss2["#{key}"]=value}
-
-    # 
     oei= Product.find(11).scores.average(:value)
 
     render json: {
-      # product: @acsesses,
       dm:dm,
       month_array:month_array,
       month_hash:month_hash,
       from:from,
       to:to,
       acsess:@acsesses,
-
       a:oei
-
-      # kk:@acsesses_array
     }
-
-    
-
   end
 
   def search()
@@ -114,14 +68,13 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def red
-    # content = params[:content]
-    # review  = Review.create({title:params[:text],discribe:params[:discribe],content:content,user_id:3,product_id:11})
-    # @YearSeason = YearSeasonProduct.group(:product_id)
-    # @week = WeekEpisord.joins(:week).group(:week_id)
-    # render json: {year_season: @week}
-
+    # ota
     @products = Product.all
-    render json: {products: @products,message:"ae"}
+    # render json: {products: @products,message:"ae"}
+    render json: {message:"aaa"}
+    # render json: {}
+
+
   end
 
   def show
@@ -139,7 +92,6 @@ class Api::V1::ProductsController < ApplicationController
       "100"=> 0,
     } 
 
-    # puts current_user.id
     if current_user
       @liked = current_user.already_liked?(params[:id])
       @scored = current_user.scores.exists?(product_id: params[:id])
@@ -158,9 +110,6 @@ class Api::V1::ProductsController < ApplicationController
     @stats.map {|key,value|@pss["#{((key/10).floor+1)*10}"] = @pss["#{((key/10).floor+1)*10}"].to_i + value}
     @stats_array = []
     @pss.map{|key,value|@stats_array.push(@pss[key])}
-    puts "aaaaaaaa"
-    puts @stats_array
-    puts @stats
 
     to = Time.current.at_beginning_of_day
     to2 = Time.current.end_of_day
@@ -180,7 +129,6 @@ class Api::V1::ProductsController < ApplicationController
     from  = (to - 1.year).next_month.beginning_of_month
     @acsesses = Product.find(params[:id]).acsesses.where(date: from...to2).group(:date).sum(:count)
     @acsesses.map{|key,value|@month_hash[key.month]=value}
-
     @acsesses_array = []
     @month_hash.map{|key,value|@acsesses_array.push(@month_hash[key])}
 
@@ -218,9 +166,6 @@ class Api::V1::ProductsController < ApplicationController
 
 
   def create
-    puts params
-#     {"product"=>{"title"=>"無職転生", "image_url"=>"https://mushokutensei.jp/wp-content/themes/mushoku_re/img/index/img_hero06.jpg", "description"=>"<p>現代日本に暮らす20年近く引きこもる34歳無職の主人公は、親が死去したのに伴い兄弟に見限られて家を追い出されてしまう。家を出た後、トラックに轢かれかけた高校生3人を助けようとして事故死してしまう。</p><p>ところが目が覚めた時、彼は赤ん坊になっていた。そして剣や魔法を目の当たりにし、異世界に転生したことに気づく。<strong>ルーデウス・グレイラット</strong>に転生した主人公は前世での後悔を振り返り、魔法を覚え、家族を大事にし、懸命に生きて、前世のトラウマを乗り越えて成長していく。</p>", "list"=>"https://mushokutensei.jp/", "year"=>2021, "kisetsu"=>["5"], "delivery_start"=>"2022-02-10T07:17:57.000Z", "delivery_end"=>"2022-02-17T07:20:52.000Z"}, "genres_array"=>[2], "formats_array"=>[1, 1, 1], "character_middle_data"=>[{"cast_id"=>6, "character_name"=>"ルーデウスグレイラット", "character_image"=>"https://s4.anilist.co/file/anilistcdn/character/large/b88348-bIe5XnXdRpmX.png"}], "studios_array"=>[1], "staff_middle"=>[{"cast_id"=>1, "character_name"=>"監督"}, {"cast_id"=>3, "character_name"=>"絵コンテンツ"}], "episord"=>[{"episord_number"=>1, "episord_tittle"=>"無職転", "episord_arasuzi"=>"<p><strong style=\"color: rgb(0, 0, 0);\">34歳・童貞・無職の引きこもりだった男は車に撥ねられ、その一生を終える……はずだった。しかし、男が次に目を覚ましたとき、そこは剣と魔法の異世界であった。少年・ルーデウスとして転生した男は考える、この世界ならば、自分も本気で生きていくことができるかもしれない……と。</strong></p>", "episord_image_url"=>"https://mushokutensei.jp/wp-content/uploads/2021/01/%E3%83%A1%E3%82%A4%E3%83%B3.jpg", "episord_time"=>"2022-02-19T15:17:20.000Z", "episord_release_date"=>"2022-02-09T18:31:00.000Z"}]}
-# web_1  | {"product"=>{"title"=>"無職転生", "image_url"=>"https://mushokutensei.jp/wp-content/themes/mushoku_re/img/index/img_hero06.jpg", "description"=>"<p>現代日本に暮らす20年近く引きこもる34歳無職の主人公は、親が死去したのに伴い兄弟に見限られて家を追い出されてしまう。家を出た後、トラックに轢かれかけた高校生3人を助けようとして事故死してしまう。</p><p>ところが目が覚めた時、彼は赤ん坊になっていた。そして剣や魔法を目の当たりにし、異世界に転生したことに気づく。<strong>ルーデウス・グレイラット</strong>に転生した主人公は前世での後悔を振り返り、魔法を覚え、家族を大事にし、懸命に生きて、前世のトラウマを乗り越えて成長していく。</p>", "list"=>"https://mushokutensei.jp/", "year"=>2021, "kisetsu"=>["5"], "delivery_start"=>"2022-02-10T07:17:57.000Z", "delivery_end"=>"2022-02-17T07:20:52.000Z"}, "genres_array"=>[2], "formats_array"=>[1, 1, 1], "character_middle_data"=>[{"cast_id"=>6, "character_name"=>"ルーデウスグレイラット", "character_image"=>"https://s4.anilist.co/file/anilistcdn/character/large/b88348-bIe5XnXdRpmX.png"}], "studios_array"=>[1], "staff_middle"=>[{"cast_id"=>1, "character_name"=>"監督"}, {"cast_id"=>3, "character_name"=>"絵コンテンツ"}], "episord"=>[{"episord_number"=>1, "episord_tittle"=>"無職転", "episord_arasuzi"=>"<p><strong style=\"color: rgb(0, 0, 0);\">34歳・童貞・無職の引きこもりだった男は車に撥ねられ、その一生を終える……はずだった。しかし、男が次に目を覚ましたとき、そこは剣と魔法の異世界であった。少年・ルーデウスとして転生した男は考える、この世界ならば、自分も本気で生きていくことができるかもしれない……と。</strong></p>", "episord_image_url"=>"https://mushokutensei.jp/wp-content/uploads/2021/01/%E3%83%A1%E3%82%A4%E3%83%B3.jpg", "episord_time"=>"2022-02-19T15:17:20.000Z", "episord_release_date"=>"2022-02-09T18:31:00.000Z"}], "controller"=>"api/v1/products", "action"=>"create"}
     @product = Product.where(title:params[:product][:title]).first_or_initialize
       @product.image_url = params[:product][:image_url]
       @product.description = params[:product][:description]
@@ -246,8 +191,6 @@ class Api::V1::ProductsController < ApplicationController
       @product.kisetsu_ids = params[:product][:kisetsu]
       @product.studio_ids = params[:studios_array]
       @product.style_ids = params[:formats_array]
-
-   
 
     # doneyet-1 (下@product.saveと同時に)
     params[:episord].each do |i|
@@ -297,14 +240,9 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def edit1
-    # puts params
     @product = Product.find(params[:id])
-    # @yearSeason = YearSeasonProduct.where(product_id:@product.id).includes(:year_season_years)
     @year = Year.left_outer_joins(:year_season_products).includes(:year_season_seasons).where(year_season_products:{product_id:@product.id}).order(year: :asc).distinct
     @yearSeason = YearSeasonProduct.where(product_id:@product.id)
-    # render json:{
-    #   # products:@product
-    # }
     render :edit1,formats: :json
   end
 
@@ -316,10 +254,6 @@ class Api::V1::ProductsController < ApplicationController
       years<<year.id
     end
 
-    puts years
-    # aaaaaaaaaaaaa
-    puts params
-    # aaaaaa
     @product = Product.where(id:params[:id]).first_or_initialize
     @product.title = params[:product][:title]
     @product.image_url = params[:product][:image_url]
@@ -383,39 +317,28 @@ class Api::V1::ProductsController < ApplicationController
         @character.save
       end
       character << @character
-      puts character.inspect
 
     end
     @product.characters = character
 
     yearSeason = []  
     params[:product][:year_season].each do |y|
-      puts y
       year_id = Year.where(year:"#{y[:year]}-01-01")[0].id
      
       y[:season].each do |s|
-        puts year_id,s,@product_id
         @yearSeason = YearSeasonProduct.where(product_id:@product.id,kisetsu_id:s,year_id:year_id).first_or_initialize
-        puts @yearSeason.inspect
         yearSeason << @yearSeason
       end
     end
-    puts yearSeason
 
     @product.year_season_products = yearSeason
 
-    # image activestorage
     begin
       if params[:product][:image_url].present?
         file = open(params[:product][:image_url])
         puts file.base_uri
         @product.bg_images.attach(io: file, filename: "gorld_field/#{@product.id}")
       end
-      # if params[:product][:image_url2].present?
-      #   file = open(params[:product][:image_url2])
-      #   puts file.base_uri
-      #   @product.bg_images2.attach(io: file, filename: "gorld_field/#{@product.id}")
-      # end
     rescue => exception
         
     else
@@ -457,22 +380,13 @@ class Api::V1::ProductsController < ApplicationController
     render :product_thread ,formats: :json
   end
 
-  # def product_statistics
-
-  # end
-
   def seo
     @product = Product.find(params[:id])
     render :seo,formats: :json
   end
 
   private
-    def user_params
-      params.require(:review).permit(:content).merge(product_id:11,user_id:3,title:"aaa")
-    end
-
-    def create_params
-      # params.require(:products).permit(:title,:image_url,:description,:list,)
-    end
-
+  def user_params
+    params.require(:review).permit(:content).merge(product_id:11,user_id:3,title:"aaa")
+  end
 end

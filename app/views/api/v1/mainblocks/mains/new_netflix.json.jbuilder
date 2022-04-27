@@ -39,19 +39,19 @@ json.set! :currentSeason, @current_season
 #   end
 # end
 
-json.set! :tier do
-  json.array! @tier_p do |a|
-    json.id a.id
-    json.image_url a.bgimage_url
-    json.arasuzi a.description
-    json.list a.list
-    json.title a.title
-  end
-end
+# json.set! :tier do
+#   json.array! @tier_p do |a|
+#     json.id a.id
+#     json.image_url a.bgimage_url
+#     json.arasuzi a.description
+#     json.list a.list
+#     json.title a.title
+#   end
+# end
 
-json.set! :tierAverage do
-  json.tierAvg @tier
-end
+# json.set! :tierAverage do
+#   json.tierAvg @tier
+# end
 
 
 json.set! :scores do

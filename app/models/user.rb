@@ -98,8 +98,6 @@ class User < ActiveRecord::Base
 
   include DeviseTokenAuth::Concerns::User
 
-  # has_many :likes, dependent: :destroy
-  # has_many :liked_products, through: :likes, source: :product
 
   def image_url
     # 紐づいている画像のURLを取得する
@@ -107,17 +105,9 @@ class User < ActiveRecord::Base
   end
 
   def self.signin_or_create_from_provider(provider_data)
-    puts"vvvvvvvvvvvfffffffffffffffffffffffffffffff"
-    puts provider_data
-    puts "aaaaaaaaaaaa"
-    puts provider_data[:provider]
-    puts provider_data[:body][:provider]
-    puts provider_data[:body][:info][:email]
-
     where(provider: provider_data[:body][:provider], uid: provider_data[:body][:uid]).first_or_create do |user|
       user.email = provider_data[:body][:info][:email]
       user.password = Devise.friendly_token[0, 20]
-      # doneyet (確認していない)
       user.nickname =  provider_data[:body][:info][:name]
       user.image = provider_data[:body][:info][:image]
       # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmation

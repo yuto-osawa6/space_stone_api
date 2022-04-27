@@ -1,5 +1,4 @@
 class Api::V1::CastsController < ApplicationController
-
   def index
     @janls = Cast.all
     render :index, formats: :json
@@ -12,7 +11,5 @@ class Api::V1::CastsController < ApplicationController
     else
       render json:{status:500,message:'ジャンルの保存に失敗しました。'}
     end
-
   end
-
 end

@@ -32,7 +32,6 @@ class Api::V1::Mainblocks::ToptensController < ApplicationController
     @acsess_topten_month = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).year_season_scope.where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
     @acsess = Acsess.where(product_id:@acsess_topten_month.ids,updated_at: Time.current.prev_month.beginning_of_month...to).group("product_id").sum(:count)
     @scores = Score.where(product_id:@acsess_topten_month.ids).group("product_id").average_value
-
     render :topten_am  ,formats: :json
   end
   def topten_s

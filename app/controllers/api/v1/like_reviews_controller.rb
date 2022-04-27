@@ -29,26 +29,15 @@ class Api::V1::LikeReviewsController < ApplicationController
       @like.destroy!
       @review_length = LikeReview.where(review_id:params[:review_id]).length
       @review_good = LikeReview.where(review_id:params[:review_id],goodbad:1).length
-      # puts 0 / 0 * 100
       if  @review_length==0 && @review_good==0
       @score = 0
       else
       @score = @review_good / @review_length.to_f * 100
       end
       render json: { status: 200, message: "削除されました"  ,score:@score,review_length:@review_length,review_good:@review_good } 
-    # rescue NoMethodError
-    #   if Review.exists?(id:params[:review_id])
-    #     render json: { status: 500 } 
-    #     @EM = ErrorManage.new(controller:"like_review/delete#",error:"#{e}".slice(0,200))
-    #     @EM.save
-    #   else
-
-    #     render json: { status: 400 } 
-    #   end
     rescue => e
-      # puts e
       if Review.exists?(id:params[:review_id])
-        if LikeReview.exists?(id:params[:review_id], user_id: @user.id)
+        if LikeReview.exists?(id:params[:review_id], user_id: params[:user_id])
           @EM = ErrorManage.new(controller:"like_review/delete",error:"#{e}".slice(0,200))
           @EM.save
           render json: {status:500}
@@ -62,6 +51,7 @@ class Api::V1::LikeReviewsController < ApplicationController
   end
 
   def check
+    # nouse 
     @review_length = LikeReview.where(review_id:params[:review_id]).length
     @review_good = LikeReview.where(review_id:params[:review_id],goodbad:1).length
     if  @review_length==0 && @review_good==0

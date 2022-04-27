@@ -1,7 +1,6 @@
 class Api::V1::Mainblocks::MainsController < ApplicationController
   def new_netflix
     current = Time.current
-    puts current.month
 
     case current.month
       when 1,2,3 then
@@ -21,18 +20,18 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
     @new_netflix = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
     @scores = Score.where(product_id:@new_netflix.ids).group("product_id").average_value
-    # tier
+
     year = Year.find_by(year:"#{current.year}-01-01")
     season = Kisetsu.find_by(name:@kisetsu_name)
 
-    tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
-    # doneyet-3 (orderがfrontに送られたときにid順になる問題)
-    if tierGroup.present?
-      @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
-      @tier_p = tierGroup.products.with_attached_bg_images.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
-    else
+    # tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
+    # # doneyet-3 (orderがfrontに送られたときにid順になる問題)
+    # if tierGroup.present?
+    #   @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+    #   @tier_p = tierGroup.products.with_attached_bg_images.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+    # else
      
-    end
+    # end
    
     render :new_netflix,formats: :json
   end
@@ -80,13 +79,13 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     year = Year.find_by(year:"#{current.year}-01-01")
     season = Kisetsu.find_by(name:@kisetsu_name)
 
-    tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
-    if tierGroup.present?
-      @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
-      @tier_p = tierGroup.products.with_attached_bg_images.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
-    else
+    # tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
+    # if tierGroup.present?
+    #   @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+    #   @tier_p = tierGroup.products.with_attached_bg_images.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+    # else
      
-    end
+    # end
     
     
 
@@ -134,17 +133,10 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   end
 
   def toptens
-     # top10
+     # nouse toptencontrollerに移した。notest 2022 4/19
      now = Time.current 
      from = now.prev_month
      to = now
-    #  @like_topten_month =  Like.where(updated_at: from...to).group(:product_id).order("count_all DESC").limit(10).count
-    #  @like_topten_all =  Like.group(:product_id).order("count_all DESC").limit(10).count
-    #  @score_topten_month = Score.where(updated_at: from...to).group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
-    #  @score_topten_all = Score.group(:product_id).having('count(*) > ?', 0).order('average_value DESC').limit(10).average(:value)
-    #  @acsess_topten_month = Acsess.where(date: Time.current.prev_month.beginning_of_month...to).group(:product_id).order("sum_count DESC").limit(10).sum(:count)
-    #  @acsess_topten_all = Acsess.group(:product_id).order('sum_count DESC').limit(10).sum(:count)
-
      @like_topten_month =  Product.with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
      @like_topten_all =  Product.with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where.not(likes:{id:nil}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
      @score_topten_month = Product.with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10)
@@ -159,7 +151,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   end
 
   def populur_rt
-    # doneyet_3 正確な月間ではない
+    # doneyet_3 正確な月間ではない nouse notest
     to = Time.current 
     from = to.prev_month
 
@@ -214,12 +206,13 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
         @weekly_vote = true
         @from = current_time.since(6.hours)   
         @to = @from.next_week.since(6.hours)
-        # @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
+        @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
         @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
         render :vote, formats: :json
       else
         render json:{status:500,message:{title:"予期しないエラーが発生しました。もう一度試すか、お問い合わせください。",select:0}}
       end
+      
     rescue =>e
       @EM = ErrorManage.new(controller:"mainblocks/mains/vote",error:"#{e}".slice(0,200))
       @EM.save
@@ -236,10 +229,6 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
       @kisetsu = Kisetsu.find_by(name:kisetsu)
       @tier_group = TierGroup.where(year_id:@year.id,kisetsu_id:@kisetsu.id).first_or_initialize
       @tier_group.save!
-      # else
-      #   render json:{status:500}
-      #   return
-      # end
       @user_tier_group = UserTierGroup.where(user_id:params[:user_id],tier_group:@tier_group.id).first_or_initialize
       @user_tier_group.save!
 
@@ -270,30 +259,9 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
           end
         end
       end
-  #     belongs_to :user
-  # belongs_to :tier_group
-  @user_tier_group.tiers = tier_array
-  # has_many :tiers,dependent: :destroy
-  # has_many :users,through: :tiers,source: :user
-  # has_many :products,through: :tiers,source: :product
-  # has_many :tier_groups,through: :tiers,source: :tier_group
-      # @user = User.find(params[:user_id])
-      # # @user.tiers.includes(:tier_group).where(tier_group:{id:@tier_group.id}) =  tier_array
-      # puts @user.tiers.where(tier_group_id:@tier_group.id)
-      # # @user.group_tiers = tier_array
-      # # ab = tier_array
-      # puts "aaaaaaaa"
-      # puts @user.tiers
-      # puts "aaagggggggg"
-      # # puts @user.tiers.where(tier_group_id:@tier_group.id) = tier_array
-      # puts @user.group_tiers
-      # @user.group_tiers = tier_array
 
-      # puts "ggggggggg"
-      # puts tier_array
-
+      @user_tier_group.tiers = tier_array
       @user_tier_group.save!
-
       render json:{status:200,message:{title:"#{year}年 #{kisetsu}シーズンのTierを更新しました。",select:1}}
     rescue => e
       @EM = ErrorManage.new(controller:"mainblocks/mains/create_tier",error:"#{e}".slice(0,200))
@@ -391,7 +359,6 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
 
   def update_tier_list
-    puts params
     if params[:current_number] == "1"
       @time = Time.current
     elsif params[:current_number] == "2"

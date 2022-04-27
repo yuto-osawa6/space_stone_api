@@ -45,7 +45,7 @@ class Api::V1::Comment::LikeReturnCommentThreadsController < ApplicationControll
       if Thered.exists?(id:params[:thread_id])
         if CommentThread.exists?(id:params[:comment_thread_id])
           if ReturnCommentThread.exists?(id:params[:return_comment_thread_id])
-            if LikeReturnCommentThread.exists?(return_comment_thread_id: params[:return_comment_thread_id], user_id: @user.id)
+            if LikeReturnCommentThread.exists?(return_comment_thread_id: params[:return_comment_thread_id], user_id: params[:user_id])
               @EM = ErrorManage.new(controller:"like_return_comment_review/destroy",error:"#{e}".slice(0,200))
               @EM.save
               render json: {status:500}

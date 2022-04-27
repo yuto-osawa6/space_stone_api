@@ -1,9 +1,6 @@
 class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
   def index
-    params[:comment_thread_id]
     @returncomment = ReturnCommentThread.includes(:like_return_comment_threads,:user,return_returns: :user).where(comment_thread_id:params[:comment_thread_id]).page(params[:page]).per(3)
-    # @returnUser= @returncomment.return_returns.ids
-    # render json: {status:200 ,returncomment: @returncomment}
     render :index,formats: :json
   end
 
@@ -78,17 +75,10 @@ class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
   private
   def create_params
     params.require(:return_comment_thread).permit(:user_id,:comment_thread_id,:comment)
-    # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
   end
   def create_params2
     params.require(:return_comment_thread).permit(:user_id,:comment_thread_id,:comment).merge(reply:true)
-    # params.require(:like).permit(:product_id,:user_id,:review_id,:content)
   end
-
-  # def return_create_params
-  #   params.require(:return_return_comment_thread).permit(:return_comment_thread_id)
-  # end
-  
 end
 
 

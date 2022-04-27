@@ -6,7 +6,6 @@ class Api::V1::StaffsController < ApplicationController
   end
 
   def create
-    puts params[:staffs][:name]
     @style = Staff.where(name:params[:staffs][:name]).first_or_initialize
     if @style.save
       render json:{status:200,staff:@style}

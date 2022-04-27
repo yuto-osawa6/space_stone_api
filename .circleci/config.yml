@@ -7,9 +7,9 @@ jobs:
       - image: cimg/ruby:2.7.0
     steps:
       - checkout
-      # - ruby/install-deps
-      - ruby/install:
-          version: '2.7.0'
+      - ruby/install-deps
+      # - ruby/install:
+      #     version: '2.7.0'
   test:
     parallelism: 1
     docker:
@@ -29,8 +29,9 @@ jobs:
       RAILS_ENV: test
     steps:
       - checkout
-      - ruby/install:
-          version: '2.7.0'
+      - ruby/install-deps
+      # - ruby/install:
+      #     version: '2.7.0'
       
       - run:
           name: DB の待機

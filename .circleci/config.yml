@@ -7,6 +7,7 @@ jobs:
       - image: cimg/ruby:2.7.0
     steps:
       - checkout
+      - gem install mysql2 -v '0.5.3'
       - ruby/install-deps
       # - ruby/install:
       #     version: '2.7.0'

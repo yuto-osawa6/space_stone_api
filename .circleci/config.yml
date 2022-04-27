@@ -54,6 +54,10 @@
       #     requires:
       #       - build
 
+
+
+
+
 # version: '2.1'
 # orbs:
 #   ruby: circleci/ruby@1.7.1
@@ -67,68 +71,158 @@
 #           version: '2.7.0'
 #       - run: echo "Ruby 2.7.0 has been installed"
 # workflows: null
-version: 2.1
 
-executors:
-  default:
-    working_directory: ~/hix_mysql
-    docker:
-      - image: circleci/ruby:2.7.0
-        environment:
-          BUNDLE_JOBS: 3
-          BUNDLE_PATH: vendor/bundle
-          BUNDLE_RETRY: 3
-          BUNDLER_VERSION: 2.0.1
-          RAILS_ENV: test
-          DB_HOST: 127.0.0.1
-          DB_USERNAME: root
-          DB_PASSWORD: ''
-      - image: circleci/mysql:8.0.18
-        command: [--default-authentication-plugin=mysql_native_password]
-        environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-          MYSQL_ROOT_HOST: '%'
 
-commands:
-  configure_bundler:
-    description: Configure bundler
-    steps:
-      - run:
-          name: Configure bundler
-          command: |
-            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
-            source $BASH_ENV
-            gem install bundler
+
+
+
+
+# version: 2.1
+# executors:
+#   default:
+#     working_directory: ~/hix_mysql
+#     docker:
+#       - image: circleci/ruby:2.7.0
+#         environment:
+#           BUNDLE_JOBS: 3
+#           BUNDLE_PATH: vendor/bundle
+#           BUNDLE_RETRY: 3
+#           BUNDLER_VERSION: 2.0.1
+#           RAILS_ENV: test
+#           DB_HOST: 127.0.0.1
+#           DB_USERNAME: root
+#           DB_PASSWORD: ''
+#       - image: circleci/mysql:8.0
+#         command: [--default-authentication-plugin=mysql_native_password]
+#         environment:
+#           MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+#           MYSQL_ROOT_HOST: '%'
+
+# commands:
+#   configure_bundler:
+#     description: Configure bundler
+#     steps:
+#       - run:
+#           name: Configure bundler
+#           command: |
+#             echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+#             source $BASH_ENV
+#             gem install bundler
+# jobs:
+#   build:
+#     executor: default
+#     steps:
+#       - checkout
+#       - restore_cache:
+#           keys:
+#             - hix_mysql-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+#             - hix_mysql-
+#       - configure_bundler
+#       - run:
+#           name: Install bundle
+#           command: bundle install
+#       - run:
+#           name: Wait for DB
+#           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
+#       - run:
+#           name: Setup DB
+#           command: bundle exec rails db:create db:schema:load --trace
+#       - save_cache:
+#           key: hix_mysql-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+#           paths:
+#             - vendor/bundle
+#       - persist_to_workspace:
+#           root: ~/
+#           paths:
+#             - ./hix_mysql
+
+# workflows:
+#   version: 2
+#   integration:
+#     jobs:
+      # - build
+
+
+
+version: 2.1 # 2.1 を使うと Orb や他の機能を使用することができます。 
+
+# 設定で使用する Orb を宣言します。
+# Orb に関する詳細は、https://circleci.com/docs/ja/2.0/orb-intro/をご覧ください。
+orbs:
+  ruby: circleci/ruby@1.0
+  node: circleci/node@2
+
 jobs:
-  build:
-    executor: default
+  build: #  "build"という名前の最初のジョブです。
+    docker:
+      - image: cimg/ruby:2.7-node # カスタマイズされた CircleCI Docker イメージを使用します。
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # コンテキスト/ プロジェクト UI の環境変数を参照します。
+    steps:
+      - checkout # Git コードをプルダウンします。
+      - ruby/install-deps # Ruby Orb を使って依存関係をインストールします。
+      # Node Orb を使ってパッケージをインストールします。
+      # Yarn の使用および 依存関係のキャッシュに yarn.lock の使用を指定します。
+      # 詳細は、 https://circleci.com/docs/2.0/caching/　を参照してください。
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: "yarn.lock"
+
+  test:  # "test"という名前の２つ目のジョブです。
+    # テストを高速化するために「並列ジョブコンテナ」を実行します。
+    # これによりテストが複数のコンテナに分割されます。
+    parallelism: 3
+    # ここでは、2 つの Docker イメージを設定します。
+    docker:
+      - image: cimg/ruby:2.7-node # プライマリ Docker イメージです。ここでステップコマンドが実行されます。
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+      - image: cimg/postgres:14.0
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        environment: # add POSTGRES environment variables.
+          POSTGRES_USER: circleci-demo-ruby
+          POSTGRES_DB: rails_blog_test
+          POSTGRES_PASSWORD: ""
+    # Ruby/Rails 固有の環境変数をプライマリコンテナに適用します。
+    environment:
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      PGHOST: 127.0.0.1
+      PGUSER: circleci-demo-ruby
+      PGPASSWORD: ""
+      RAILS_ENV: test
+    # 実行する一連のステップです。「ビルド」のステップと似たステップもあります。
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - hix_mysql-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-            - hix_mysql-
-      - configure_bundler
-      - run:
-          name: Install bundle
-          command: bundle install
-      - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
-      - run:
-          name: Setup DB
-          command: bundle exec rails db:create db:schema:load --trace
-      - save_cache:
-          key: hix_mysql-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - ./hix_mysql
+      - ruby/install-deps
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: "yarn.lock"
+      # ここでは、データベース上で実行する前に
+      # セカンダリコンテナが起動することを確認します。
+      
+  - run:
+      name: DB の待機
+      command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+  - run:
+      name: データベースのセットアップ
+      command: bundle exec rails db:schema:load --trace
+      # RSpec を並列実行します。
+      - ruby/rspec-test
+
+# ワークフローを使って上記で宣言したジョブをオーケストレーションします。
 
 workflows:
   version: 2
-  integration:
-    jobs:
-      - build
+  build_and_test:     # ワークフローの名前は "build_and_test" です。
+    jobs:             # このワークフローの一部として実行するジョブのリストです。
+      - build         # まず、ビルドを実行します。
+
+      - test:         # 次に、テストを実行します。
+          requires:   # テストを実行するにはビルドを渡す必要があります。
+            - build 

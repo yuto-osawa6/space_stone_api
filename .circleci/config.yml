@@ -9,7 +9,7 @@ jobs:
       - checkout
       - ruby/install-deps
   test:
-    parallelism: 3
+    parallelism: 1
     docker:
       - image: cimg/ruby:2.7.0
       - image: cimg/mysql:8.0

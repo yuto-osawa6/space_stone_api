@@ -1,48 +1,23 @@
-version: 2.1 # 2.1 を使うと Orb や他の機能を使用することができます。 
-
-# 設定で使用する Orb を宣言します。
-# Orb に関する詳細は、https://circleci.com/docs/ja/2.0/orb-intro/をご覧ください。
+version: 2.1
 orbs:
   ruby: circleci/ruby@1.7.1
-  # node: circleci/node@2
-
 jobs:
   build:
     docker:
-      - image: cimg/ruby:2.7 # カスタマイズされた CircleCI Docker イメージを使用します。
-        # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD  # コンテキスト/ プロジェクト UI の環境変数を参照します。
+      - image: cimg/ruby:2.7
     steps:
-      - checkout # Git コードをプルダウンします。
-      - ruby/install-deps # Ruby Orb を使って依存関係をインストールします。
-      # Node Orb を使ってパッケージをインストールします。
-      # Yarn の使用および 依存関係のキャッシュに yarn.lock の使用を指定します。
-      # 詳細は、 https://circleci.com/docs/2.0/caching/　を参照してください。
-      # - node/install-packages:
-      #     pkg-manager: yarn
-      #     cache-key: "yarn.lock"
-
-  test:  # "test"という名前の２つ目のジョブです。
-    # テストを高速化するために「並列ジョブコンテナ」を実行します。
-    # これによりテストが複数のコンテナに分割されます。
+      - checkout
+      - ruby/install-deps
+  test:
     parallelism: 3
-    # ここでは、2 つの Docker イメージを設定します。
     docker:
-      - image: cimg/ruby:2.7 # プライマリ Docker イメージです。ここでステップコマンドが実行されます。
-        # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+      - image: cimg/ruby:2.7
       - image: cimg/mysql:8.0
-        # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
         environment:
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: space_stone_test
           MYSQL_USER: root
-          MYSQL_PASSWORD: passw0rd
-    # Ruby/Rails 固有の環境変数をプライマリコンテナに適用します。
+          MYSQL_PASSWORD: password
     environment:
       BUNDLE_JOBS: "3"
       BUNDLE_RETRY: "3"
@@ -50,27 +25,18 @@ jobs:
       PGUSER: circleci-demo-ruby
       PGPASSWORD: ""
       RAILS_ENV: test
-    # 実行する一連のステップです。「ビルド」のステップと似たステップもあります。
     steps:
       - checkout
       - ruby/install-deps
-      # - node/install-packages:
-      #     pkg-manager: yarn
-      #     cache-key: "yarn.lock"
-      # ここでは、データベース上で実行する前に
-      # セカンダリコンテナが起動することを確認します。
-      
-  - run:
-      name: DB の待機
-      command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: DB の待機
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
 
-  - run:
-      name: データベースのセットアップ
-      command: bundle exec rails db:schema:load --trace
-      # RSpec を並列実行します。
-  - ruby/rspec-test
-
-# ワークフローを使って上記で宣言したジョブをオーケストレーションします。
+      - run:
+          name: データベースのセットアップ
+          command: bundle exec rails db:schema:load --trace
+          # RSpec を並列実行します。
+      - ruby/rspec-test
 
 workflows:
   version: 2

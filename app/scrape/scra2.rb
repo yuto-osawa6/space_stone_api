@@ -725,7 +725,7 @@ class Scra2
     # from = to.ago(5.years)
     # @product =  Product.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).year_season_scope.group("products.id").order(Arel.sql('count(products.id) DESC')).limit(100)
     # puts "aaaaaaaaaaa"
-    # puts @product.ids
+    # puts @product.idsa
     # @scores = Score.where(product_id:@product.pluck(:id)).group("product_id").average_value
     to = Time.current
     from = to.ago(5.years)

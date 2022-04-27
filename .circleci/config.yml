@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@1.1.2
+  ruby: circleci/ruby@1.7.1
 jobs:
   build:
     docker:
@@ -10,48 +10,48 @@ jobs:
       - ruby/install-deps
       # - ruby/install:
       #     version: '2.7.0'
-  test:
-    parallelism: 1
-    docker:
-      - image: cimg/ruby:2.7.0
-      - image: cimg/mysql:8.0
-        command: mysqld --default-authentication-plugin=mysql_native_password
-        environment:
-          MYSQL_DATABASE: space_stone_test
-          MYSQL_USER: root
-          MYSQL_PASSWORD: password
-    environment:
-      BUNDLE_JOBS: "3"
-      BUNDLE_RETRY: "3"
-      PGHOST: 127.0.0.1
-      PGUSER: circleci-demo-ruby
-      PGPASSWORD: ""
-      RAILS_ENV: test
-    steps:
-      - checkout
-      - ruby/install-deps
-      # - ruby/install:
-      #     version: '2.7.0'
+  # test:
+  #   parallelism: 1
+  #   docker:
+  #     - image: cimg/ruby:2.7.0
+  #     - image: cimg/mysql:8.0
+  #       command: mysqld --default-authentication-plugin=mysql_native_password
+  #       environment:
+  #         MYSQL_DATABASE: space_stone_test
+  #         MYSQL_USER: root
+  #         MYSQL_PASSWORD: password
+  #   environment:
+  #     BUNDLE_JOBS: "3"
+  #     BUNDLE_RETRY: "3"
+  #     PGHOST: 127.0.0.1
+  #     PGUSER: circleci-demo-ruby
+  #     PGPASSWORD: ""
+  #     RAILS_ENV: test
+  #   steps:
+  #     - checkout
+  #     - ruby/install-deps
+  #     # - ruby/install:
+  #     #     version: '2.7.0'
       
-      - run:
-          name: DB の待機
-          command: dockerize -wait tcp://db:3306 -timeout 1m
-          # command: dockerize -wait tcp://localhost:5432 -timeout 1m
+  #     - run:
+  #         name: DB の待機
+  #         command: dockerize -wait tcp://db:3306 -timeout 1m
+  #         # command: dockerize -wait tcp://localhost:5432 -timeout 1m
 
-      - run:
-          name: データベースのセットアップ
-          command: bundle exec rails db:schema:load --trace
-          # RSpec を並列実行します。
-      - ruby/rspec-test
+  #     - run:
+  #         name: データベースのセットアップ
+  #         command: bundle exec rails db:schema:load --trace
+  #         # RSpec を並列実行します。
+  #     - ruby/rspec-test
 
 workflows:
   version: 2
   build_and_test2:
     jobs:
       - build
-      - test:
-          requires:
-            - build
+      # - test:
+      #     requires:
+      #       - build
 
 # version: '2.1'
 # orbs:

@@ -160,15 +160,15 @@ executors:
     # working_directory: ~/hix_mysql
     docker:
       - image: circleci/ruby:2.7.0
-        # environment:
-        #   BUNDLE_JOBS: 3
-        #   BUNDLE_PATH: vendor/bundle
-        #   BUNDLE_RETRY: 3
-        #   BUNDLER_VERSION: 2.0.1
-          # RAILS_ENV: test
-          # DB_HOST: 127.0.0.1
-          # DB_USERNAME: root
-          # DB_PASSWORD: ''
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_PATH: vendor/bundle
+          BUNDLE_RETRY: 3
+          BUNDLER_VERSION: 2.0.1
+          RAILS_ENV: test
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: root
+          DB_PASSWORD: ''
       - image: circleci/mysql:8.0.18
         command: [--default-authentication-plugin=mysql_native_password]
         environment:

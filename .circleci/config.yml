@@ -47,10 +47,10 @@ workflows:
   version: 2
   build_and_test:     # ワークフローの名前は "build_and_test" です。
     jobs:             # このワークフローの一部として実行するジョブのリストです。
-      - build         # まず、ビルドを実行します。
+      - build:         # まず、ビルドを実行します。
       - test:         # 次に、テストを実行します。
           requires:   # テストを実行するにはビルドを渡す必要があります。
-            - build  
+            - build:  
 
 # version: '2.1'
 # orbs:

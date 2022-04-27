@@ -142,60 +142,11 @@
 #     jobs:
       # - build
 
-
-
-version: 2.1 # 2.1 を使うと Orb や他の機能を使用することができます。 
-
-orbs:
-  ruby: circleci/ruby@1.0
+version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/ruby:2.7.0
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD
+      - image: cimg/ruby:3.1.2
     steps:
       - checkout
-      - ruby/install-deps
-  test:
-    parallelism: 3
-    docker:
-      - image: cimg/ruby:2.7.0
-        # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD
-      - image: circleci/mysql:8.0
-        command: [--default-authentication-plugin=mysql_native_password]
-        environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-          MYSQL_ROOT_HOST: '%'
-    environment:
-      BUNDLE_JOBS: "3"
-      BUNDLE_RETRY: "3"
-      PGHOST: 127.0.0.1
-      PGUSER: circleci-demo-ruby
-      PGPASSWORD: ""
-      RAILS_ENV: test
-    steps:
-      - checkout
-      - ruby/install-deps
-      - node/install-packages:
-          pkg-manager: yarn
-          cache-key: "yarn.lock"
-  - run:
-      name: DB の待機
-      command: dockerize -wait tcp://localhost:5432 -timeout 1m
-  - run:
-      name: データベースのセットアップ
-      command: bundle exec rails db:schema:load --trace
-      - ruby/rspec-test
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-
-      - test:
-          requires:
-            - build 
+      - run: ruby --version

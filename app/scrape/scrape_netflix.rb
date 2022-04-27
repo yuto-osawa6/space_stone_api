@@ -5,7 +5,7 @@ require 'time'
 
 
 class ScrapeNetflix
-  # a
+  
   #世界ランキング
   def period
     chrome_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome()

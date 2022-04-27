@@ -4,11 +4,9 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/ruby:2.7.0
+      - image: cimg/ruby:2.7
     steps:
       - checkout
-      - run:
-        gem install mysql2 -v '0.5.3' --source 'https://rubygems.org/'
       - ruby/install-deps
       # - ruby/install:
       #     version: '2.7.0'

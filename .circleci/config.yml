@@ -26,14 +26,15 @@ jobs:
       PGPASSWORD: ""
       RAILS_ENV: test
     steps:
-      - checkout
-      - ruby/install-deps
       - run:
           name: default mysql client install
           command: |
             sudo apt update
             sudo apt-get install default-mysql-client
             sudo apt-get install libmysqlclient-dev
+      - checkout
+      - ruby/install-deps
+      
       - run:
           name: DB の待機
           command: dockerize -wait tcp://localhost:5432 -timeout 1m

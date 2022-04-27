@@ -251,3 +251,11 @@ jobs:
           destination: test-results
       - store_artifacts:
           path: /home/circleci/repo/tmp/screenshots
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test_backend:
+          filters:
+            branches:
+              ignore: main

@@ -324,20 +324,20 @@ jobs:
       #       bundle exec rspec $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings) \
       #         || (printf "====== RETRYING...\n\n\n"; bundle exec rspec --only-failures)
       #     working_directory: ~/space_stone_api
-# workflows:
-#   version: 2
-#   test:
-#     jobs:
-#       - test:
-#           filters:
-#             branches:
-#               ignore: main
-
 workflows:
   version: 2
   test:
     jobs:
-      - build
       - test:
-          requires:
-            - build
+          filters:
+            branches:
+              ignore: main
+
+# workflows:
+#   version: 2
+#   test:
+#     jobs:
+#       - build
+#       - test:
+#           requires:
+#             - build

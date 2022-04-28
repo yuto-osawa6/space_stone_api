@@ -84,14 +84,14 @@ orbs:
   # node: circleci/node@2
 
 jobs:
-  build:
-    docker:
-      - image: cimg/ruby:2.7.0
-      - image: circleci/mysql:8.0
-    # working_directory: ~/space_stone_api
-    # steps:
-    #   - checkout
-    #   - ruby/install-deps
+  # build:
+  #   docker:
+  #     - image: cimg/ruby:2.7.0
+  #     - image: circleci/mysql:8.0
+  #   # working_directory: ~/space_stone_api
+  #   steps:
+  #     - checkout
+  #     - ruby/install-deps
   test:
     parallelism: 3
     docker:
@@ -125,7 +125,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
+      # - build
       - test:
           requires:
             - build

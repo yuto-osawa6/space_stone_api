@@ -1,201 +1,14 @@
 # version: 2.1
 # orbs:
 #   ruby: circleci/ruby@1.7.1
+
 # jobs:
-#   build:
-#     docker:
-#       - image: cimg/ruby:2.7.0
-
-#     steps:
-#       - checkout
-#       - ruby/install-deps
-      # - ruby/install:
-      #     version: '2.7.0'
-  # test:
-  #   parallelism: 1
-  #   docker:
-  #     - image: cimg/ruby:2.7.0
-  #     - image: cimg/mysql:8.0
-  #       command: mysqld --default-authentication-plugin=mysql_native_password
-  #       environment:
-  #         MYSQL_DATABASE: space_stone_test
-  #         MYSQL_USER: root
-  #         MYSQL_PASSWORD: password
-  #   environment:
-  #     BUNDLE_JOBS: "3"
-  #     BUNDLE_RETRY: "3"
-  #     PGHOST: 127.0.0.1
-  #     PGUSER: circleci-demo-ruby
-  #     PGPASSWORD: ""
-  #     RAILS_ENV: test
-  #   steps:
-  #     - checkout
-  #     - ruby/install-deps
-  #     # - ruby/install:
-  #     #     version: '2.7.0'
-      
-  #     - run:
-  #         name: DB の待機
-  #         command: dockerize -wait tcp://db:3306 -timeout 1m
-  #         # command: dockerize -wait tcp://localhost:5432 -timeout 1m
-
-  #     - run:
-  #         name: データベースのセットアップ
-  #         command: bundle exec rails db:schema:load --trace
-  #         # RSpec を並列実行します。
-  #     - ruby/rspec-test
-
-# workflows:
-#   version: 2
-#   build_and_test2:
-#     jobs:
-#       - build
-      # - test:
-      #     requires:
-      #       - build
-
-
-
-
-
-# version: '2.1'
-# orbs:
-#   ruby: circleci/ruby@1.7.1
-# jobs:
-#   build:
-#     docker:
-#       - image: 'cimg/base:stable'
-#     steps:
-#       - checkout
-#       - ruby/install:
-#           version: '2.7.0'
-#       - run: echo "Ruby 2.7.0 has been installed"
-# workflows: null
-
-
-
-
-
-
-# version: 2.1
-# executors:
-#   default:
-#     working_directory: ~/hix_mysql
+#   test:
 #     docker:
 #       - image: circleci/ruby:2.7.0
-#         environment:
-#           BUNDLE_JOBS: 3
-#           BUNDLE_PATH: vendor/bundle
-#           BUNDLE_RETRY: 3
-#           BUNDLER_VERSION: 2.0.1
-#           RAILS_ENV: test
-#           DB_HOST: 127.0.0.1
-#           DB_USERNAME: root
-#           DB_PASSWORD: ''
-#       - image: circleci/mysql:8.0
-#         command: [--default-authentication-plugin=mysql_native_password]
-#         environment:
-#           MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-#           MYSQL_ROOT_HOST: '%'
-
-# commands:
-#   configure_bundler:
-#     description: Configure bundler
-#     steps:
-#       - run:
-#           name: Configure bundler
-#           command: |
-#             echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
-#             source $BASH_ENV
-#             gem install bundler
-# jobs:
-#   build:
-#     executor: default
-#     steps:
-#       - checkout
-#       - restore_cache:
-#           keys:
-#             - hix_mysql-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-#             - hix_mysql-
-#       - configure_bundler
-#       - run:
-#           name: Install bundle
-#           command: bundle install
-#       - run:
-#           name: Wait for DB
-#           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
-#       - run:
-#           name: Setup DB
-#           command: bundle exec rails db:create db:schema:load --trace
-#       - save_cache:
-#           key: hix_mysql-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-#           paths:
-#             - vendor/bundle
-#       - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - ./hix_mysql
-
-# workflows:
-#   version: 2
-#   integration:
-#     jobs:
-      # - build
-
-# version: 2.1
-# jobs:
-#   build:
-#     docker:
-#       - image: cimg/ruby:2.7.0
-#     steps:
-#       - checkout
-#       - ruby/install-deps
-
-# version: 2.1
-# orbs:
-#   ruby: circleci/ruby@1.7.1
-
-# executors:
-#   default:
-#     # working_directory: ~/hix_mysql
-#     docker:
-#       - image: circleci/ruby:2.7.0
-#         environment:
-#           BUNDLE_JOBS: 3
-#           BUNDLE_PATH: vendor/bundle
-#           BUNDLE_RETRY: 3
-#           BUNDLER_VERSION: 2.0.1
-#           RAILS_ENV: test
-#           DB_HOST: 127.0.0.1
-#           DB_USERNAME: root
-#           DB_PASSWORD: ''
-#       - image: circleci/mysql:8.0.18
-#         command: [--default-authentication-plugin=mysql_native_password]
-#         environment:
-#           MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-#           MYSQL_ROOT_HOST: '%'
-
-# jobs:
-#   build:
-#     docker:
-#       - image: cimg/ruby:2.7.0
-
-#     steps:
-#       - checkout
-#       - ruby/install-deps
-
-
-# version: 2.1
-# orbs:
-#   ruby: circleci/ruby@1.7.1
-
-# jobs:
-#   test_backend:
-#     docker:
-#       - image: circleci/ruby:2.7.0
-#         environment:
-#           RAILS_ENV: test
-#           DB_HOST: 127.0.0.1
+#         # environment:
+#         #   RAILS_ENV: test
+#         #   DB_HOST: 127.0.0.1
 #       - image: circleci/mysql:8.0
 
 #     working_directory: ~/space_stone_api
@@ -245,153 +58,74 @@
 #             bundle exec rspec $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings) \
 #               || (printf "====== RETRYING...\n\n\n"; bundle exec rspec --only-failures)
 #           working_directory: ~/space_stone_api
-
-#       # collect reports
-#       # - store_test_results:
-#       #     path: /tmp/test-results
-#       # - store_artifacts:
-#       #     path: /tmp/test-results
-#       #     destination: test-results
-#       # - store_artifacts:
-#       #     path: /home/circleci/space_stone_api/tmp/screenshots
 # workflows:
 #   version: 2
 #   test:
 #     jobs:
-#       - test_backend:
+#       - test:
 #           filters:
 #             branches:
 #               ignore: main
 
+# workflows:
+#   version: 2
+#   test:
+#     jobs:
+#       - build
+#       - test:
+#           requires:
+#             - build
+
 
 version: 2.1
+
 orbs:
   ruby: circleci/ruby@1.7.1
+  # node: circleci/node@2
 
 jobs:
-  test:
+  build:
     docker:
-      - image: circleci/ruby:2.7.0
-        # environment:
-        #   RAILS_ENV: test
-        #   DB_HOST: 127.0.0.1
+      - image: cimg/ruby:2.7.0
       - image: circleci/mysql:8.0
-
-    working_directory: ~/space_stone_api
-
+    # working_directory: ~/space_stone_api
+    # steps:
+    #   - checkout
+    #   - ruby/install-deps
+  test:
+    parallelism: 3
+    docker:
+      - image: cimg/ruby:2.7-node
+      - image: circleci/mysql:8.0
+        # environment:
+        #   POSTGRES_USER: circleci-demo-ruby
+        #   POSTGRES_DB: rails_blog_test
+        #   POSTGRES_PASSWORD: ""
+    # environment:
+    #   BUNDLE_JOBS: "3"
+    #   BUNDLE_RETRY: "3"
+    #   PGHOST: 127.0.0.1
+    #   PGUSER: circleci-demo-ruby
+    #   PGPASSWORD: ""
+    #   RAILS_ENV: test
     steps:
       - checkout
       - ruby/install-deps
-
-      # restore gem from cache
-      # - restore_cache:
-      #     keys:
-      #       - gem-cache-v1-{{ checksum "~/space_stone_api/Gemfile.lock" }}
-      #       - gem-cache-v1-
-      #     working_directory: ~/space_stone_api
-
-      # gem install
       # - run:
-      #     command: |
-      #       gem install bundler
-      #       bundle config set path 'vendor/bundle'
-      #       bundle install --jobs=4 --retry=3
-      #     working_directory: ~/space_stone_api
-
-      # - save_cache:
-      #     key: gem-cache-v1-{{ checksum "~/space_stone_api/Gemfile.lock" }}
-      #     paths:
-      #       - ~/space_stone_api/vendor/bundle
-      #     working_directory: ~/space_stone_api
-
-      # Database setup
+      #     name: Wait for DB
+      #     command: dockerize -wait tcp://localhost:5432 -timeout 1m
       # - run:
-      #     command: bundle exec rails db:create
-      #     working_directory: ~/space_stone_api
-      # - run:
-      #     command: bundle exec rails db:migrate
-      #     working_directory: ~/space_stone_api
+      #     name: Database setup
+      #     command: bundle exec rails db:schema:load --trace
+      # Run rspec in parallel
+      - ruby/rspec-test
+      # - ruby/rubocop-check
 
-      # - run:
-      #     name: create directory to store test results
-      #     command: mkdir /tmp/test-results
-      #     working_directory: ~/space_stone_api
-
-      # run tests
-      - run:
-          name: RSpec
-          command: |
-            bundle exec rspec $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings) \
-              || (printf "====== RETRYING...\n\n\n"; bundle exec rspec --only-failures)
-          working_directory: ~/space_stone_api
 workflows:
   version: 2
-  test:
+  build_and_test:
     jobs:
+      - build
       - test:
-          filters:
-            branches:
-              ignore: main
-
-# workflows:
-#   version: 2
-#   test:
-#     jobs:
-#       - build
-#       - test:
-#           requires:
-#             - build
-
-
-# version: 2.1
-
-# orbs:
-#   ruby: circleci/ruby@1.7.1
-#   # node: circleci/node@2
-
-# jobs:
-#   build:
-#     docker:
-#       - image: cimg/ruby:2.7.0
-#       - image: circleci/mysql:8.0
-#     # working_directory: ~/space_stone_api
-#     steps:
-#       - checkout
-#       - ruby/install-deps
-#   test:
-#     parallelism: 3
-#     docker:
-#       - image: cimg/ruby:2.7-node
-#       - image: circleci/mysql:8.0
-#         # environment:
-#         #   POSTGRES_USER: circleci-demo-ruby
-#         #   POSTGRES_DB: rails_blog_test
-#         #   POSTGRES_PASSWORD: ""
-#     # environment:
-#     #   BUNDLE_JOBS: "3"
-#     #   BUNDLE_RETRY: "3"
-#     #   PGHOST: 127.0.0.1
-#     #   PGUSER: circleci-demo-ruby
-#     #   PGPASSWORD: ""
-#     #   RAILS_ENV: test
-#     steps:
-#       - checkout
-#       - ruby/install-deps
-#       # - run:
-#       #     name: Wait for DB
-#       #     command: dockerize -wait tcp://localhost:5432 -timeout 1m
-#       # - run:
-#       #     name: Database setup
-#       #     command: bundle exec rails db:schema:load --trace
-#       # Run rspec in parallel
-#       - ruby/rspec-test
-#       # - ruby/rubocop-check
-
-# workflows:
-#   version: 2
-#   build_and_test:
-#     jobs:
-#       - build
-#       - test:
-#           requires:
-#             - build
+          requires:
+            - build

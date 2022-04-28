@@ -89,8 +89,8 @@ jobs:
       - image: cimg/ruby:2.7.0
       - image: circleci/mysql:8.0
   #   # working_directory: ~/space_stone_api
-  #   steps:
-  #     - checkout
+    steps:
+      - checkout
   #     - ruby/install-deps
   test:
     parallelism: 3

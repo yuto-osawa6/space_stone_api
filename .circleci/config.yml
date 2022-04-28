@@ -52,12 +52,13 @@ jobs:
       #     working_directory: ~/space_stone_api
 
       # run tests
-      - run:
-          name: RSpec
-          command: |
-            bundle exec rspec $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings) \
-              || (printf "====== RETRYING...\n\n\n"; bundle exec rspec --only-failures)
-          working_directory: ~/space_stone_api
+      # - run:
+      #     name: RSpec
+      #     command: |
+      #       bundle exec rspec $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings) \
+      #         || (printf "====== RETRYING...\n\n\n"; bundle exec rspec --only-failures)
+      #     working_directory: ~/space_stone_api
+      - ruby/rspec-test
 workflows:
   version: 2
   test:

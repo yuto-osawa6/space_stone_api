@@ -185,12 +185,91 @@
 #       - ruby/install-deps
 
 
+# version: 2.1
+# orbs:
+#   ruby: circleci/ruby@1.7.1
+
+# jobs:
+#   test_backend:
+#     docker:
+#       - image: circleci/ruby:2.7.0
+#         environment:
+#           RAILS_ENV: test
+#           DB_HOST: 127.0.0.1
+#       - image: circleci/mysql:8.0
+
+#     working_directory: ~/space_stone_api
+
+#     steps:
+#       - checkout
+#       - ruby/install-deps
+
+#       # restore gem from cache
+#       # - restore_cache:
+#       #     keys:
+#       #       - gem-cache-v1-{{ checksum "~/space_stone_api/Gemfile.lock" }}
+#       #       - gem-cache-v1-
+#       #     working_directory: ~/space_stone_api
+
+#       # gem install
+#       # - run:
+#       #     command: |
+#       #       gem install bundler
+#       #       bundle config set path 'vendor/bundle'
+#       #       bundle install --jobs=4 --retry=3
+#       #     working_directory: ~/space_stone_api
+
+#       # - save_cache:
+#       #     key: gem-cache-v1-{{ checksum "~/space_stone_api/Gemfile.lock" }}
+#       #     paths:
+#       #       - ~/space_stone_api/vendor/bundle
+#       #     working_directory: ~/space_stone_api
+
+#       # Database setup
+#       # - run:
+#       #     command: bundle exec rails db:create
+#       #     working_directory: ~/space_stone_api
+#       # - run:
+#       #     command: bundle exec rails db:migrate
+#       #     working_directory: ~/space_stone_api
+
+#       # - run:
+#       #     name: create directory to store test results
+#       #     command: mkdir /tmp/test-results
+#       #     working_directory: ~/space_stone_api
+
+#       # run tests
+#       - run:
+#           name: RSpec
+#           command: |
+#             bundle exec rspec $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings) \
+#               || (printf "====== RETRYING...\n\n\n"; bundle exec rspec --only-failures)
+#           working_directory: ~/space_stone_api
+
+#       # collect reports
+#       # - store_test_results:
+#       #     path: /tmp/test-results
+#       # - store_artifacts:
+#       #     path: /tmp/test-results
+#       #     destination: test-results
+#       # - store_artifacts:
+#       #     path: /home/circleci/space_stone_api/tmp/screenshots
+# workflows:
+#   version: 2
+#   test:
+#     jobs:
+#       - test_backend:
+#           filters:
+#             branches:
+#               ignore: main
+
+
 version: 2.1
 orbs:
   ruby: circleci/ruby@1.7.1
 
 jobs:
-  test_backend:
+  test:
     docker:
       - image: circleci/ruby:2.7.0
         environment:
@@ -205,38 +284,38 @@ jobs:
       - ruby/install-deps
 
       # restore gem from cache
-      - restore_cache:
-          keys:
-            - gem-cache-v1-{{ checksum "~/space_stone_api/Gemfile.lock" }}
-            - gem-cache-v1-
-          working_directory: ~/space_stone_api
+      # - restore_cache:
+      #     keys:
+      #       - gem-cache-v1-{{ checksum "~/space_stone_api/Gemfile.lock" }}
+      #       - gem-cache-v1-
+      #     working_directory: ~/space_stone_api
 
       # gem install
-      - run:
-          command: |
-            gem install bundler
-            bundle config set path 'vendor/bundle'
-            bundle install --jobs=4 --retry=3
-          working_directory: ~/space_stone_api
+      # - run:
+      #     command: |
+      #       gem install bundler
+      #       bundle config set path 'vendor/bundle'
+      #       bundle install --jobs=4 --retry=3
+      #     working_directory: ~/space_stone_api
 
-      - save_cache:
-          key: gem-cache-v1-{{ checksum "~/space_stone_api/Gemfile.lock" }}
-          paths:
-            - ~/space_stone_api/vendor/bundle
-          working_directory: ~/space_stone_api
+      # - save_cache:
+      #     key: gem-cache-v1-{{ checksum "~/space_stone_api/Gemfile.lock" }}
+      #     paths:
+      #       - ~/space_stone_api/vendor/bundle
+      #     working_directory: ~/space_stone_api
 
       # Database setup
-      - run:
-          command: bundle exec rails db:create
-          working_directory: ~/space_stone_api
-      - run:
-          command: bundle exec rails db:migrate
-          working_directory: ~/space_stone_api
+      # - run:
+      #     command: bundle exec rails db:create
+      #     working_directory: ~/space_stone_api
+      # - run:
+      #     command: bundle exec rails db:migrate
+      #     working_directory: ~/space_stone_api
 
-      - run:
-          name: create directory to store test results
-          command: mkdir /tmp/test-results
-          working_directory: ~/space_stone_api
+      # - run:
+      #     name: create directory to store test results
+      #     command: mkdir /tmp/test-results
+      #     working_directory: ~/space_stone_api
 
       # run tests
       - run:
@@ -245,20 +324,11 @@ jobs:
             bundle exec rspec $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings) \
               || (printf "====== RETRYING...\n\n\n"; bundle exec rspec --only-failures)
           working_directory: ~/space_stone_api
-
-      # collect reports
-      - store_test_results:
-          path: /tmp/test-results
-      - store_artifacts:
-          path: /tmp/test-results
-          destination: test-results
-      - store_artifacts:
-          path: /home/circleci/space_stone_api/tmp/screenshots
 workflows:
   version: 2
   test:
     jobs:
-      - test_backend:
+      - test:
           filters:
             branches:
               ignore: main

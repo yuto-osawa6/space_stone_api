@@ -371,7 +371,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/ruby:2.7-node
+      - image: cimg/ruby:2.7.0
       - image: circleci/mysql:8.0
     steps:
       - checkout

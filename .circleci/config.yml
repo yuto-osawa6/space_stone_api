@@ -272,9 +272,9 @@ jobs:
   test:
     docker:
       - image: circleci/ruby:2.7.0
-        environment:
-          RAILS_ENV: test
-          DB_HOST: 127.0.0.1
+        # environment:
+        #   RAILS_ENV: test
+        #   DB_HOST: 127.0.0.1
       - image: circleci/mysql:8.0
 
     working_directory: ~/space_stone_api

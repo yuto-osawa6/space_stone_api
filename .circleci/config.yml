@@ -84,7 +84,7 @@ orbs:
   # node: circleci/node@2
 
 jobs:
-  # build:
+  build:
   #   docker:
   #     - image: cimg/ruby:2.7.0
   #     - image: circleci/mysql:8.0
@@ -126,6 +126,6 @@ workflows:
   build_and_test:
     jobs:
       # - build
-      test:
-          # requires:
-          #   - build
+      - test:
+          requires:
+            - build

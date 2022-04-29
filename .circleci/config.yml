@@ -194,6 +194,9 @@ jobs:
             sudo apt update -qq
             sudo apt-get install -y default-mysql-client
             sudo apt-get install -y libmysqlclient-dev
+      - run:
+          name: RUN apt install tzdata
+          command: sudo apt-get install -y tzdata
       - ruby/install-deps
       - ruby/rspec-test
       # - node/install-packages:

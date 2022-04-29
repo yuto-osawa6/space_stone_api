@@ -164,10 +164,11 @@ jobs:
       - image: cimg/ruby:2.7.0
         environment:
           - RAILS_ENV: 'test'
-          - MYSQL_HOST: 'db' # <- 127.0.0.1から変更
+          - MYSQL_HOST: 'db'
           - MYSQL_PASSWORD: 'password'
           - MYSQL_PORT: 4306
       - image: cimg/mysql:8.0
+        command: mysqld --default-authentication-plugin=mysql_native_password
     parallelism: 3
     steps:
       - checkout

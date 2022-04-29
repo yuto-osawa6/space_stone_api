@@ -166,8 +166,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install mysql2
-          command: gem install mysql2 -v '0.5.3' --source 'https://rubygems.org/'
+          name: default mysql client install
+          command: |
+            sudo apt update
+            sudo apt-get install default-mysql-client
+            sudo apt-get install libmysqlclient-dev
+      # - run:
+      #     name: Install mysql2
+      #     command: gem install mysql2 -v '0.5.3' --source 'https://rubygems.org/'
       - ruby/install-deps
       # - ruby/rubocop-check:
       #     format: progress

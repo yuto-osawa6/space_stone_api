@@ -162,6 +162,11 @@ jobs:
   test:
     docker:
       - image: cimg/ruby:2.7.0
+        environment:
+          - RAILS_ENV: 'test'
+          - MYSQL_HOST: 'db' # <- 127.0.0.1から変更
+          - MYSQL_PASSWORD: 'password'
+          - MYSQL_PORT: 4306
       - image: cimg/mysql:8.0
     parallelism: 3
     steps:

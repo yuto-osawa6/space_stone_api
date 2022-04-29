@@ -189,11 +189,11 @@ jobs:
     steps:
       - checkout
       - run:
-        name: default mysql client install
-        command: |
-          sudo apt update -qq
-          sudo apt-get install -y default-mysql-client
-          sudo apt-get install -y libmysqlclient-dev
+          name: default mysql client install
+          command: |
+            sudo apt update -qq
+            sudo apt-get install -y default-mysql-client
+            sudo apt-get install -y libmysqlclient-dev
       - ruby/install-deps
       - ruby/rspec-test
       # - node/install-packages:

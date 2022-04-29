@@ -165,6 +165,9 @@ jobs:
       - image: cimg/mysql:8.0
     steps:
       - checkout
+      - run:
+          name: Install mysql2
+          command: gem install mysql2 -v '0.5.3' --source 'https://rubygems.org/'
       - ruby/install-deps
       # - ruby/rubocop-check:
       #     format: progress

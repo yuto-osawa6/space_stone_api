@@ -147,12 +147,12 @@ jobs:
       - image: cimg/mysql:8.0
     steps:
       - checkout
-      - run:
-          name: default mysql client install
-          command: |
-            sudo apt update
-            sudo apt-get install default-mysql-client
-            sudo apt-get install libmysqlclient-dev
+      # - run:
+      #     name: default mysql client install
+      #     command: |
+      #       sudo apt update
+      #       sudo apt-get install default-mysql-client
+      #       sudo apt-get install libmysqlclient-dev
       # - run: ruby --version
       - ruby/install-deps
       # - node/install-packages:

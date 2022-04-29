@@ -9,7 +9,6 @@ jobs:
         environment:
           MYSQL_ROOT_HOST: '%'
           MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-          # MYSQL_HOST: 'db'
         command: mysqld --default-authentication-plugin=mysql_native_password
     steps:
       - checkout
@@ -30,13 +29,10 @@ jobs:
           DB_PASSWORD: ''
       - image: cimg/mysql:8.0
         environment:
-          # MYSQL_DATABASE: space_stone_test
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_ROOT_HOST: '%'
-          # MYSQL_USER: root
-          # MYSQL_PORT: 3306
         command: mysqld --default-authentication-plugin=mysql_native_password
-    parallelism: 3
+    parallelism: 1
     steps:
       - checkout
       - run: mv config/database.yml.ci config/database.yml

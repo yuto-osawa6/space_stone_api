@@ -163,6 +163,7 @@ jobs:
       - image: cimg/ruby:2.7.0
       # - run: ruby --version
       - image: cimg/mysql:8.0
+        command: mysqld --default-authentication-plugin=mysql_native_password
     steps:
       - checkout
       - run:

@@ -147,7 +147,7 @@ jobs:
       - image: cimg/mysql:8.0
     steps:
       - checkout
-      - run: ruby --version
+      # - run: ruby --version
       - ruby/install-deps
       # - node/install-packages:
       #     cache-key: yarn.lock
@@ -155,7 +155,7 @@ jobs:
   checking:
     docker:
       - image: cimg/ruby:2.7.0
-      - run: ruby --version
+      # - run: ruby --version
       - image: cimg/mysql:8.0
     steps:
       - checkout

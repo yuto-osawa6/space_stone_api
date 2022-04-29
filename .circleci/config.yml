@@ -164,14 +164,15 @@ jobs:
       - image: cimg/ruby:2.7.0
         environment:
           - RAILS_ENV: 'test'
-          - MYSQL_HOST: 'db'
+          # - MYSQL_HOST: 'db'
           - MYSQL_PASSWORD: 'password'
-          - MYSQL_PORT: 4306
+          - MYSQL_PORT: 3306
       - image: cimg/mysql:8.0
         command: mysqld --default-authentication-plugin=mysql_native_password
     parallelism: 3
     steps:
       - checkout
+      - run: mv config/database.yml.ci config/database.yml
       - run:
           name: default mysql client install
           command: |

@@ -154,38 +154,21 @@ jobs:
             sudo apt update -qq
             sudo apt-get install -y default-mysql-client
             sudo apt-get install -y libmysqlclient-dev
-      # - run: ruby --version
       - ruby/install-deps
-      # - node/install-packages:
-      #     cache-key: yarn.lock
-      #     pkg-manager: yarn
-  checking:
-    docker:
-      - image: cimg/ruby:2.7.0
-      # - run: ruby --version
-      - image: cimg/mysql:8.0
-        command: mysqld --default-authentication-plugin=mysql_native_password
-        environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-    environment:
-      BUNDLE_JOBS: "4"
-      BUNDLE_RETRY: "3"
-      BUNDLE_PATH: vendor/bundle
-    steps:
-      - checkout
-      # - run:
-      #     name: default mysql client install
-      #     command: |
-      #       sudo apt update -qq
-      #       sudo apt-get install default-mysql-client
-
-      # - run:
-      #     name: Install mysql2
-      #     command: gem install mysql2 -v '0.5.3' --source 'https://rubygems.org/'
-      - ruby/install-deps
-      # - ruby/rubocop-check:
-      #     format: progress
-      #     label: Inspecting with Rubocop
+  # checking:
+  #   docker:
+  #     - image: cimg/ruby:2.7.0
+  #     - image: cimg/mysql:8.0
+  #       command: mysqld --default-authentication-plugin=mysql_native_password
+  #       environment:
+  #         MYSQL_ALLOW_EMPTY_PASSWORD: true
+  #   environment:
+  #     BUNDLE_JOBS: "4"
+  #     BUNDLE_RETRY: "3"
+  #     BUNDLE_PATH: vendor/bundle
+  #   steps:
+  #     - checkout
+  #     - ruby/install-deps
   test:
     docker:
       - image: cimg/ruby:2.7.0
@@ -206,17 +189,18 @@ jobs:
     steps:
       - checkout
       - ruby/install-deps
+      - ruby/rspec-test
       # - node/install-packages:
       #     cache-key: yarn.lock
       #     pkg-manager: yarn
-      - run:
-          command: 'dockerize -wait tcp://localhost:5432 -timeout 1m'
-          name: Wait for DB
-      - run:
-          command: 'bundle exec rails db:schema:load --trace'
-          name: Database setup
-      - ruby/rspec-test:
-          include: spec/**/*_spec.rb
+      # - run:
+      #     command: 'dockerize -wait tcp://localhost:5432 -timeout 1m'
+      #     name: Wait for DB
+      # - run:
+      #     command: 'bundle exec rails db:schema:load --trace'
+      #     name: Database setup
+      # - ruby/rspec-test:
+      #     include: spec/**/*_spec.rb
 workflows:
   build_and_test:
     jobs:

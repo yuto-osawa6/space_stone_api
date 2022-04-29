@@ -153,7 +153,7 @@ jobs:
           command: |
             sudo apt update -qq
             sudo apt-get install -y default-mysql-client
-            # sudo apt-get install -y libmysqlclient-dev
+            sudo apt-get install -y libmysqlclient-dev
       # - run: ruby --version
       - ruby/install-deps
       # - node/install-packages:

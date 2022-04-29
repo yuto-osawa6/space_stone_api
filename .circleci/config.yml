@@ -146,10 +146,8 @@ jobs:
       - image: cimg/ruby:2.7.0
       - image: cimg/mysql:8.0
         environment:
-          MYSQL_USER: 'root'
-          # MYSQL_ROOT_PASSWORD: 'password'
-          MYSQL_PASSWORD: 'password'
-          MYSQL_DATABASE: 'webapp_test'
+          MYSQL_ROOT_HOST: '%'
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
           # MYSQL_HOST: 'db'
         command: mysqld --default-authentication-plugin=mysql_native_password
     steps:

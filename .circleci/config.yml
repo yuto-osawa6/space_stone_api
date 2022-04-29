@@ -63,10 +63,12 @@ workflows:
   version: 2
   test:
     jobs:
-      - test:
-          filters:
+        - test:
+          # filters:
             # branches:
             #   ignore: main
+
+            # cannot load such file -- rspec_junit_formatter
 
 # workflows:
 #   version: 2

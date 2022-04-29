@@ -64,9 +64,9 @@ workflows:
   test:
     jobs:
       - test:
-        filters:
-          #   branches:
-          #     ignore: main
+          filters:
+            branches:
+              ignore: main
 
 # workflows:
 #   version: 2

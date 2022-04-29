@@ -205,7 +205,7 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - checking
+      # - checking
       - test:
           requires:
             - build

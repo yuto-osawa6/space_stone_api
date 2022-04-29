@@ -141,7 +141,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/mysql:8.0
+      - image: cimg/mysql:8.0
       - image: 'cimg/ruby:2.7.0'
     steps:
       - checkout
@@ -151,7 +151,7 @@ jobs:
       #     pkg-manager: yarn
   checking:
     docker:
-      - image: circleci/mysql:8.0
+      - image: cimg/mysql:8.0
       - image: 'cimg/ruby:2.7.0'
     steps:
       - checkout

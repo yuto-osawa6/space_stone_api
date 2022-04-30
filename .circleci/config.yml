@@ -22,6 +22,7 @@ jobs:
           name: RUN apt install tzdata
           command: sudo apt-get install -y tzdata
       - ruby/install-deps
+      - run: mv config/database.yml.ci config/database.yml
       - run: bundle exec rails db:create
       - run: bundle exec rails db:schema:load
   test:
@@ -41,7 +42,7 @@ jobs:
     # parallelism: 1
     steps:
       - checkout
-      - run: mv config/database.yml.ci config/database.yml
+      # - run: mv config/database.yml.ci config/database.yml
       # - run:
       #     name: default mysql client install
       #     command: |

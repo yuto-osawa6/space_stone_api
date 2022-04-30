@@ -18,7 +18,12 @@ jobs:
             sudo apt update -qq
             sudo apt-get install -y default-mysql-client
             sudo apt-get install -y libmysqlclient-dev
+      - run:
+          name: RUN apt install tzdata
+          command: sudo apt-get install -y tzdata
       - ruby/install-deps
+      - run: bundle exec rails db:create
+      - run: bundle exec rails db:schema:load
   test:
     parallelism: 1
     docker:
@@ -37,18 +42,18 @@ jobs:
     steps:
       - checkout
       - run: mv config/database.yml.ci config/database.yml
-      - run:
-          name: default mysql client install
-          command: |
-            sudo apt update -qq
-            sudo apt-get install -y default-mysql-client
-            sudo apt-get install -y libmysqlclient-dev
-      - run:
-          name: RUN apt install tzdata
-          command: sudo apt-get install -y tzdata
+      # - run:
+      #     name: default mysql client install
+      #     command: |
+      #       sudo apt update -qq
+      #       sudo apt-get install -y default-mysql-client
+      #       sudo apt-get install -y libmysqlclient-dev
+      # - run:
+      #     name: RUN apt install tzdata
+      #     command: sudo apt-get install -y tzdata
       - ruby/install-deps
-      - run: bundle exec rails db:create
-      - run: bundle exec rails db:schema:load
+      # - run: bundle exec rails db:create
+      # - run: bundle exec rails db:schema:load
       - ruby/rspec-test
 workflows:
   build_and_test:

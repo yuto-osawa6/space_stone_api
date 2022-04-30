@@ -46,8 +46,8 @@ jobs:
           name: RUN apt install tzdata
           command: sudo apt-get install -y tzdata
       - ruby/install-deps
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
+      - run: bundle exec rails db:create
+      - run: bundle exec rails db:schema:load
       - ruby/rspec-test
 workflows:
   build_and_test:

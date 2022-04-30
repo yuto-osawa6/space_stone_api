@@ -312,6 +312,8 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.11.0)
+    rspec_junit_formatter (0.5.1)
+      rspec-core (>= 2, < 4, != 2.12.0)
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
@@ -379,6 +381,7 @@ DEPENDENCIES
   rails (~> 6.1.4, >= 6.1.4.1)
   ransack
   rspec-rails
+  rspec_junit_formatter
   selenium-webdriver
   spring
   syobocal

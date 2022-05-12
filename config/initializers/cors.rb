@@ -21,9 +21,9 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
 
   allow do
 
-    origins "localhost:3000" # React側はポート番号3000で作るので「localhost:3000」を指定
+    # origins "localhost:3000" # React側はポート番号3000で作るので「localhost:3000」を指定
+    origins ['http://meruplanet.com', 'http://localhost:3000']
     # origins "http://192.168.3.5:3000"
-    # origins "*"
 
     resource "*",
 

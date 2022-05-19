@@ -1,8 +1,8 @@
 #!/bin/bash
+
 # set -e
 
 # # Remove a potentially pre-existing server.pid for Rails.
-# # rm -f /goldfolten/tmp/pids/server.pid
 # rm -f /api/tmp/pids/server.pid
 
 
@@ -11,7 +11,7 @@
 
 
 sudo service nginx start
-# cd /api
-cd /app
+cd /api
+# cd /app
 bin/setup
 bundle exec pumactl start

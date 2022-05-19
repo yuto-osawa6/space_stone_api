@@ -17,12 +17,11 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
         @kisetsu_name = "秋"
     end
 
-    @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @new_netflix = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
-    @scores = Score.where(product_id:@new_netflix.ids).group("product_id").average_value
-
     year = Year.find_by(year:"#{current.year}-01-01")
     season = Kisetsu.find_by(name:@kisetsu_name)
+    @current_season = "#{current.year} #{season.name}"
+    @new_netflix = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:season.id}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
+    @scores = Score.where(product_id:@new_netflix.ids).group("product_id").average_value
 
     # tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
     # # doneyet-3 (orderがfrontに送られたときにid順になる問題)
@@ -58,26 +57,32 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     case current2.month
     when 1,2,3 then
       @kisetsu2 = 5
+      @kisetsu_name2 = "冬"
     when 4,5,6 then
       @kisetsu2 = 2
+      @kisetsu_name2 = "春"
     when 7,8,9 then
       @kisetsu2 = 3
+      @kisetsu_name2 = "夏"
     when 10,11,12 then
       @kisetsu2 = 4
+      @kisetsu_name2 = "秋"
   end
+    year = Year.find_by(year:"#{current.year}-01-01")
+    season = Kisetsu.find_by(name:@kisetsu_name)
+    season2 = Kisetsu.find_by(name:@kisetsu_name2)
 
     @current_season = "#{current.year} #{Kisetsu.find(@kisetsu).name}"
-    @pickup = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:@kisetsu}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
+    @pickup = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current.year}-01-01"}).where(year_season_seasons:{id:season.id}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
     @scores = Score.where(product_id:@pickup.ids).group("product_id").average_value
 
     @current_season2 = "#{current2.year} #{Kisetsu.find(@kisetsu2).name}"
-    @pickup2 = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current2.year}-01-01"}).where(year_season_seasons:{id:@kisetsu2}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
+    @pickup2 = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years).includes(:styles,:janls).year_season_scope.where(year_season_years:{year:"#{current2.year}-01-01"}).where(year_season_seasons:{id:season2.id}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC'))
     @scores2 = Score.where(product_id:@pickup2.ids).group("product_id").average_value
 
     # 
     # tier
-    year = Year.find_by(year:"#{current.year}-01-01")
-    season = Kisetsu.find_by(name:@kisetsu_name)
+    
 
     # tierGroup = TierGroup.find_by(year_id:year.id,kisetsu_id:season.id)
     # if tierGroup.present?
@@ -375,6 +380,10 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
       @kisetsu_name = "秋"
     end
     @year = Year.find_by(year:"#{@time.year}-01-01")
+    if @year.present?
+    else
+      Year.create(year:"#{@time.year}-01-01")
+    end
     @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
     tierGroup = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
     if tierGroup.present?

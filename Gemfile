@@ -73,3 +73,4 @@ gem 'kaminari'
 gem 'carrierwave'
 gem 'graphql-client'
 gem 'syobocal'
+gem 'aws-sdk-s3', require: false

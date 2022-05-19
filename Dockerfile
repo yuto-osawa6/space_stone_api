@@ -34,17 +34,21 @@
 # CMD ["/api/entrypoint.sh"]
 
 FROM ruby:2.7.0
+
+  # && gem install bundler:2.0.1
+
+RUN mkdir /api
+WORKDIR /api
+COPY Gemfile /api/Gemfile
+COPY Gemfile.lock /api/Gemfile.lock
+
 RUN apt-get update -qq && apt-get install -y default-mysql-client vim \
     sudo \
     nginx 
-  # && gem install bundler:2.0.1
+    # gem install bundler:2.1.2
 
-RUN mkdir /app
-WORKDIR /app
-COPY Gemfile /app/Gemfile
-COPY Gemfile.lock /app/Gemfile.lock
 RUN bundle install
-COPY . /app
+COPY . /api
 
 # COPY entrypoint.sh /usr/bin/
 # RUN chmod +x /usr/bin/entrypoint.sh
@@ -64,6 +68,6 @@ ADD nginx/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /api/entrypoint.sh
 
-CMD ["/app/entrypoint.sh"]
+CMD ["/api/entrypoint.sh"]

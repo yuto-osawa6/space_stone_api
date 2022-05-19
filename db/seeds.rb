@@ -6,15 +6,11 @@
   # movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
   # Character.create(name: 'Luke', movie: movies.first)
 
-
-
-  
-
-
-# 実行済み２
 Question.destroy_all
+Style.destroy_all
+Kisetsu.destroy_all
+Emotion.destroy_all
 
-# 実行済み
 question_list = [
   "印象に残ったシーンは？","好きなシーンは？","好きなキャラクターは？","あなたの全体的な評価は？"
 ]
@@ -26,8 +22,8 @@ end
 season_list = [
   "All","春","夏","秋","冬","不定期"
 ]
-season_list.each do |i|
-  Kisetsu.create(name: i)
+season_list.each_with_index do |i,c|
+  Kisetsu.create(name: i,id:c+1)
 end
 
 Style.create(name: "TV show")

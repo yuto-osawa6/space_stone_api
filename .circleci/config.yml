@@ -69,4 +69,4 @@ workflows:
           family: 'meruplanet-api-service'
           requires:
             - aws-ecr/build-and-push-image
-            # - aws-ecr/build-and-push-imag
+            # - aws-ecr/build-and-push-ima

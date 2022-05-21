@@ -6,7 +6,7 @@
 # # 順番 products_movie products_tvshow setup_janl_links oo1 product_end
 # # 1~5 月ごと  5は時々。
 
-# class Scraping
+class Scraping
 
 #   def self.war
 #     puts("waaaaaaaaaaa")
@@ -595,4 +595,4 @@
 #   # def work_params
 #   #   params.require(:product).permit(:title,image, :description,  { cast_ids: [] })
 #   # end
-# end
+end

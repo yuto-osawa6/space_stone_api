@@ -35,16 +35,16 @@
 
 FROM ruby:2.7.0
 
-  # && gem install bundler:2.0.1
+RUN apt-get update -qq && apt-get install -y apt-utils default-mysql-client vim \
+    sudo \
+    nginx 
 
 RUN mkdir /api
 WORKDIR /api
 COPY Gemfile /api/Gemfile
 COPY Gemfile.lock /api/Gemfile.lock
 
-RUN apt-get update -qq && apt-get install -y apt-utils default-mysql-client vim \
-    sudo \
-    nginx 
+
     # gem install bundler:2.1.2
 
 RUN bundle install

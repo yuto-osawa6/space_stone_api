@@ -63,6 +63,8 @@ workflows:
           region: AWS_REGION
           repo: 'meruplanet-api'
           tag: '${CIRCLE_SHA1}'
+          requires:
+            - test
       - aws-ecs/deploy-service-update:
           cluster-name: 'meruplanet-cluster'
           container-image-name-updates: 'container=meruplanet-api-container,tag=${CIRCLE_SHA1}'

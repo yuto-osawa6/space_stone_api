@@ -1,7 +1,7 @@
 version: '2.1'
 orbs:
   ruby: circleci/ruby@1.7.1
-  aws-ecr: circleci/aws-ecr@8.1.2
+  aws-ecr: circleci/aws-ecr@6.15
   aws-ecs: circleci/aws-ecs@2.0.0
 jobs:
   build:
@@ -59,8 +59,8 @@ workflows:
           requires:
             - build
       - aws-ecr/build-and-push-image:
-          # account-url: AWS_ACCOUNT_URL
-          # region: AWS_REGION
+          account-url: AWS_ACCOUNT_URL
+          region: AWS_REGION
           repo: 'meruplanet-api'
           tag: '${CIRCLE_SHA1}'
           requires:

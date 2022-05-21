@@ -63,6 +63,7 @@ workflows:
           region: AWS_REGION
           repo: 'meruplanet-api'
           tag: '${CIRCLE_SHA1}'
+          extra-build-args: '--build-arg RAILS_MASTER_KEY=${RAILS_MASTER_KEY}'
           requires:
             - test
       - aws-ecs/deploy-service-update:

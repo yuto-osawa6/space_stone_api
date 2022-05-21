@@ -65,11 +65,11 @@ workflows:
           tag: '${CIRCLE_SHA1}'
           requires:
             - test
-      - aws-ecs/deploy-service-update:
-          cluster-name: 'meruplanet-cluster'
-          container-image-name-updates: 'container=meruplanet-api-container,tag=${CIRCLE_SHA1}'
-          family: 'meruplanet-api-task'
-          service-name: "meruplanet-api-service"
-          requires:
-            - aws-ecr/build-and-push-image
+      # - aws-ecs/deploy-service-update:
+      #     cluster-name: 'meruplanet-cluster'
+      #     container-image-name-updates: 'container=meruplanet-api-container,tag=${CIRCLE_SHA1}'
+      #     family: 'meruplanet-api-task'
+      #     service-name: "meruplanet-api-service"
+      #     requires:
+      #       - aws-ecr/build-and-push-image
             # - aws-ecr/build-and-push-im

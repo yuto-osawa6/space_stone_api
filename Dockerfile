@@ -42,7 +42,7 @@ WORKDIR /api
 COPY Gemfile /api/Gemfile
 COPY Gemfile.lock /api/Gemfile.lock
 
-RUN apt-get update -qq && apt-get install -y default-mysql-client vim \
+RUN apt-get update -qq && apt-get install -y apt-utils default-mysql-client vim \
     sudo \
     nginx 
     # gem install bundler:2.1.2

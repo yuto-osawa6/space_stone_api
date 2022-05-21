@@ -1,7 +1,7 @@
 version: '2.1'
 orbs:
   ruby: circleci/ruby@1.7.1
-  aws-ecr: circleci/aws-ecr@6.15
+  aws-ecr: circleci/aws-ecr@6.12.2
   aws-ecs: circleci/aws-ecs@2.0.0
 jobs:
   build:
@@ -65,11 +65,11 @@ workflows:
           tag: '${CIRCLE_SHA1}'
           requires:
             - test
-      # - aws-ecs/deploy-service-update:
-      #     cluster-name: 'meruplanet-cluster'
-      #     container-image-name-updates: 'container=meruplanet-api-container,tag=${CIRCLE_SHA1}'
-      #     family: 'meruplanet-api-task'
-      #     service-name: "meruplanet-api-service"
-      #     requires:
-      #       - aws-ecr/build-and-push-image
+      - aws-ecs/deploy-service-update:
+          cluster-name: 'meruplanet-cluster'
+          container-image-name-updates: 'container=meruplanet-api-container,tag=${CIRCLE_SHA1}'
+          family: 'meruplanet-api-task'
+          service-name: "meruplanet-api-service"
+          requires:
+            - aws-ecr/build-and-push-image
             # - aws-ecr/build-and-push-im

@@ -51,7 +51,7 @@ COPY Gemfile.lock /api/Gemfile.lock
     # gem install bundler:2.1.2
 
 RUN bundle install
-COPY . /api
+# COPY . /api
 
 # COPY entrypoint.sh /usr/bin/
 # RUN chmod +x /usr/bin/entrypoint.sh
@@ -60,9 +60,9 @@ COPY . /api
 # EXPOSE 3000
 # CMD ["rails", "server", "-b", "0.0.0.0"]
 
-# ADD . /api
-# RUN mkdir -p tmp/sockets
-# RUN mkdir tmp/pids
+ADD . /api
+RUN mkdir -p tmp/sockets
+RUN mkdir tmp/pids
 
 # nginx
 RUN groupadd nginx

@@ -77,4 +77,4 @@ workflows:
           service-name: "meruplanet-api-service"
           requires:
             - aws-ecr/build-and-push-image
-            # - aws-ecr/build-and-push-ima
+            # - aws-ecr/build-and-push-imaa

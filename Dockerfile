@@ -67,7 +67,7 @@ RUN mkdir -p tmp/sockets
 # ADD . /api
 # RUN mkdir -p tmp/sockets
 # RUN mkdir tmp/pids
-VOLUME /api/tmp
+# VOLUME /api/tmp
 
 # nginx
 RUN groupadd nginx

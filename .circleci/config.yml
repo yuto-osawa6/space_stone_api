@@ -64,7 +64,7 @@ workflows:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           registry-id: AWS_ECR_REGISTRY_ID
-          create-repo: true
+          # create-repo: true
           repo: 'meruplanet-api'
           tag: '${CIRCLE_SHA1}'
           # extra-build-args: '--build-arg RAILS_MASTER_KEY=${RAILS_MASTER_KEY}'

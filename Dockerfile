@@ -34,6 +34,7 @@
 # CMD ["/api/entrypoint.sh"]
 
 FROM ruby:2.7.0
+ENV RAILS_ENV=production
 
 RUN apt-get update -qq && apt-get install -y apt-utils default-mysql-client vim \
     build-essential \
@@ -63,6 +64,7 @@ COPY . /api
 # ADD . /api
 # RUN mkdir -p tmp/sockets
 # RUN mkdir tmp/pids
+VOLUME /api/tmp
 
 # nginx
 RUN groupadd nginx

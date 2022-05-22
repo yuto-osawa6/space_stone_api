@@ -55,7 +55,7 @@ RUN bundle install
 # COPY . /api
 ADD . /api
 RUN mkdir -p tmp/sockets
-RUN mkdir tmp/pids
+# RUN mkdir tmp/pids
 
 # COPY entrypoint.sh /usr/bin/
 # RUN chmod +x /usr/bin/entrypoint.sh

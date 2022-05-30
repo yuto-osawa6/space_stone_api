@@ -110,7 +110,8 @@ class User < ActiveRecord::Base
       user.password = Devise.friendly_token[0, 20]
       user.nickname =  provider_data[:body][:info][:name]
       user.image = provider_data[:body][:info][:image]
-      # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmation
+      
+      # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmatio
     end
   end
 

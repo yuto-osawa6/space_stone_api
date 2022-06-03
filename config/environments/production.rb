@@ -135,3 +135,5 @@ Rails.application.configure do
     provider :google_oauth2, ENV['GOOGLE_KEY'],   ENV['GOOGLE_SECRET']
   end
 end
+
+# OmniAuth.config.full_host = 'https://api.meruplanet.com'

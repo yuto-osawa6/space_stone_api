@@ -125,4 +125,13 @@ Rails.application.configure do
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
   # OmniAuth.config.full_host = "https://api.meruplanet.com"
+  Rails.application.config.middleware.use OmniAuth::Builder do
+    OmniAuth.config.allowed_request_methods = [:post, :get]
+    configure do |config|
+      config.full_host = "https://api.meruplanet.com"
+    end
+  
+    #ここにOmniAuthの設定
+    provider :google_oauth2, ENV['GOOGLE_KEY'],   ENV['GOOGLE_SECRET']
+  end
 end

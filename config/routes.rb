@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
 
 
-  mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks]
+  # mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks]
+  mount_devise_token_auth_for 'User', at: 'auth', controllers: { omniauth_callbacks: "api/v1/auth/omniauth_callbacks" }
   post 'social_auth/callback', to: 'social_auth#authenticate_social_auth_user' # this is th
   # mount_devise_token_auth_for 'User', at: 'auth'
   #  mount_devise_token_auth_for 'User', at: 'auth', controllers: {

@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::API
-  include ActionController::RequestForgeryProtection
+  # include ActionController::RequestForgeryProtection
   # protect_from_forgery with: :exception
   include DeviseTokenAuth::Concerns::SetUserByToken
   include ActionController::Cookies # 追加
-  protect_from_forgery
+  # protect_from_forgery
 
   # skip_before_action :verify_authenticity_token
   # helper_method :current_api_v1_user, :api_v1_user_signed_in?

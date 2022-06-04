@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::API
   # include ActionController::RequestForgeryProtection
+  include ActionController::RequestForgeryProtection
+  protect_from_forgery with: :exception
   # protect_from_forgery with: :exception
   include DeviseTokenAuth::Concerns::SetUserByToken
   include ActionController::Cookies # 追加
@@ -30,4 +32,7 @@ class ApplicationController < ActionController::API
   #   # render json: { status: 201, message: "Hello World!",styles: @styles}
 
   # end
+  def set_csrf_token_header
+    response.set_header("X-CSRF-Token", form_authenticity_token)
+  end
 end

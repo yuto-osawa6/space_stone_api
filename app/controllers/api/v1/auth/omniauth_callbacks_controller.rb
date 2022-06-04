@@ -1,4 +1,5 @@
 class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksController
+  skip_before_action :set_user_by_token, raise: false
   # protect_from_forgery
   def redirect_callbacks
     super

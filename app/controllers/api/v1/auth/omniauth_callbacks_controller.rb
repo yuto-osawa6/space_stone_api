@@ -1,4 +1,5 @@
 class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksController
+  protect_from_forgery
   def redirect_callbacks
     super
   end

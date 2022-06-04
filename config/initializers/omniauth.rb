@@ -1,8 +1,15 @@
 # config/initializers/omniauth.rb
 Rails.application.config.middleware.use OmniAuth::Builder do
-  OmniAuth.config.full_host = 'https://api.meruplanet.com'
-  OmniAuth.config.allowed_request_methods = [:post, :get]
-
+  if Rails.env.production?
+    # OmniAuth.config.full_host = 'https://api.meruplanet.com'
+  else
+    # OmniAuth.config.path_prefix = '/omniauth'
+    configure do |config|
+      config.allowed_request_methods = [:get,:post]
+    end
+  end
+  
+  # OmniAuth.config.allowed_request_methods = [:post]
   # provider :github,        ENV['GITHUB_KEY'],   ENV['GITHUB_SECRET'],   scope: 'email,profile'
   # provider :facebook,      ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET']
   provider :google_oauth2, ENV['GOOGLE_KEY'],   ENV['GOOGLE_SECRET']
@@ -14,4 +21,4 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   # }
   
 end
-OmniAuth.config.full_host = 'https://api.meruplanet.com'
+# OmniAuth.config.full_host = 'https://api.meruplanet.com'

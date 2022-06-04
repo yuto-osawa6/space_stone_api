@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::API
+  protect_from_forgery
   include DeviseTokenAuth::Concerns::SetUserByToken
   include ActionController::Cookies # 追加
 

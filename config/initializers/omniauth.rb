@@ -1,13 +1,15 @@
 # config/initializers/omniauth.rb
 Rails.application.config.middleware.use OmniAuth::Builder do
-  if Rails.env.production?
-    # OmniAuth.config.full_host = 'https://api.meruplanet.com'
-  else
-    # OmniAuth.config.path_prefix = '/omniauth'
-    configure do |config|
-      config.allowed_request_methods = [:get,:post]
-    end
-  end
+  # if Rails.env.production?
+  #   # OmniAuth.config.full_host = 'https://api.meruplanet.com'
+  # else
+  #   # OmniAuth.config.path_prefix = '/omniauth'
+  #   configure do |config|
+  #     config.allowed_request_methods = [:get,:post]
+  #   end
+  # end
+  config.allowed_request_methods = [:get,:post]
+
   
   # OmniAuth.config.allowed_request_methods = [:post]
   # provider :github,        ENV['GITHUB_KEY'],   ENV['GITHUB_SECRET'],   scope: 'email,profile'

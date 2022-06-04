@@ -87,14 +87,15 @@ class User < ActiveRecord::Base
   has_many :tier_groups,through: :user_tier_groups,source: :tier_group
 
 
-  devise  :database_authenticatable, 
-          :registerable,
-          :recoverable, 
-          :rememberable, 
-          :trackable,
-          :validatable,
-          :omniauthable,
-          omniauth_providers: [:google_oauth2]
+  # devise  :database_authenticatable, 
+  #         :registerable,
+  #         :recoverable, 
+  #         :rememberable, 
+  #         :trackable,
+  #         :validatable,
+  #         :omniauthable,
+  #         omniauth_providers: [:google_oauth2]
+  devise  :rememberable, :omniauthable
 
   include DeviseTokenAuth::Concerns::User
 
@@ -110,7 +111,7 @@ class User < ActiveRecord::Base
       user.password = Devise.friendly_token[0, 20]
       user.nickname =  provider_data[:body][:info][:name]
       user.image = provider_data[:body][:info][:image]
-      
+
       # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmatio
     end
   end

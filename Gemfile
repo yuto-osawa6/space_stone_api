@@ -56,17 +56,12 @@ gem 'mechanize'
 gem "pry-rails"
 gem "pry-byebug"
 gem "selenium-webdriver" 
-gem 'devise-i18n'
 gem 'rack-cors'
 gem 'ransack'
-gem "devise"
 gem 'devise_token_auth'
-gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
-gem 'omniauth-apple'
-gem 'omniauth-line'
-gem 'omniauth-twitter'
 gem 'omniauth-rails_csrf_protection'
+
 gem 'dotenv-rails'
 
 gem 'kaminari'
@@ -77,3 +72,8 @@ gem 'syobocal'
 gem 'aws-sdk-s3', require: false
 
 gem "lograge"
+
+# gem 'omniauth-facebook'
+# gem 'omniauth-apple'
+# gem 'omniauth-line'
+# gem 'omniauth-twitter'

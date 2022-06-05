@@ -25,6 +25,7 @@ Bundler.require(*Rails.groups)
 module Goldfolten
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
+    # config.action_controller.allow_forgery_protection = false 
     config.load_defaults 6.1
 
     config.time_zone = 'Tokyo'
@@ -52,8 +53,9 @@ module Goldfolten
     # config.middleware.use ActionDispatch::Cookies
     # config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
 
+    config.session_store :cookie_store, key: '_interslice_session'
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore
+    config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
     config.middleware.use ActionDispatch::ContentSecurityPolicy::Middleware
 
     # HTTP = GraphQL::Client::HTTP.new("https://api.annict.com/graphql") do

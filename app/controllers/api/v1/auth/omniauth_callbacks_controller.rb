@@ -2,7 +2,7 @@ class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCall
   # skip_before_action :set_user_by_token, raise: false
   # protect_from_forgery
   def redirect_callbacks
-    # super
+    super
   end
 
   def omniauth_success

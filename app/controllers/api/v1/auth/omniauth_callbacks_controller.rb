@@ -65,7 +65,7 @@ class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCall
 
 
     def render_data_or_redirect(message, data, user_data = {})
-      if Rails.env.production?
+      # if Rails.env.production?
         # if ['inAppBrowser', 'newWindow'].include?(omniauth_window_type)
         #   render_data(message, user_data.merge(data))
         # elsif auth_origin_url
@@ -73,13 +73,13 @@ class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCall
         # else
         #   fallback_render data[:error] || 'An error occurred'
         # end
-      else
+      # else
         if auth_origin_url
           redirect_to DeviseTokenAuth::Url.generate(ENV['API_URL_AUTH'], data.merge(aa: auth_origin_url))
         else
           redirect_to DeviseTokenAuth::Url.generate(ENV['API_URL_AUTH'], data.merge(aa: ENV['API_URL']))
         end
-      end
+      # end
     end
 end
 

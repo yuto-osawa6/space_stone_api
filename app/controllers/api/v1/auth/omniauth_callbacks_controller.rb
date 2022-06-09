@@ -29,10 +29,16 @@ class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCall
   protected
 
   def get_resource_from_auth_hash
-    @resource = resource_class.where({
-      uid:      auth_hash['uid'],
-      provider: auth_hash['provider']
-    }).first_or_initialize
+    if resource_class.exists?(email: auth_hash['email'])
+      @resource = resource_class.where({
+        email:      auth_hash['email'],
+      }).first
+    else 
+      @resource = resource_class.where({
+        uid:      auth_hash['uid'],
+        provider: auth_hash['provider']
+      }).first_or_initialize
+    end
 
     if @resource.new_record?
       @oauth_registration = true

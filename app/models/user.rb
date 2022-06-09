@@ -97,7 +97,7 @@ class User < ActiveRecord::Base
   #         omniauth_providers: [:google_oauth2]
   extend Devise::Models
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable, :omniauthable
   # devise  :database_authenticatable,:rememberable, :omniauthable
   include DeviseTokenAuth::Concerns::User
 

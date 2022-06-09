@@ -76,7 +76,7 @@ gem 'aws-sdk-s3', require: false
 
 gem "lograge"
 
-# gem 'omniauth-facebook'
+gem 'omniauth-facebook'
 # gem 'omniauth-apple'
-# gem 'omniauth-line'
+gem 'omniauth-line'
 # gem 'omniauth-twitter'

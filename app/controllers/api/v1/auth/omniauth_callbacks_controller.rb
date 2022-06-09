@@ -36,16 +36,16 @@ class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCall
     # puts auth_hash['info']['email']
     # puts auth_origin_url
     # puts resource_class.exists?(email: auth_hash['info']['email'])
-    if resource_class.exists?(email: auth_hash['info']['email'])
-      @resource = resource_class.where({
-        email:      auth_hash['info']['email'],
-      }).first
-    else 
+    # if resource_class.exists?(email: auth_hash['info']['email'])
+    #   @resource = resource_class.where({
+    #     email:      auth_hash['info']['email'],
+    #   }).first
+    # else 
       @resource = resource_class.where({
         uid:      auth_hash['uid'],
         provider: auth_hash['provider']
       }).first_or_initialize
-    end
+    # end
 
 
     if @resource.new_record?

@@ -29,9 +29,16 @@ class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCall
   protected
 
   def get_resource_from_auth_hash
-    if resource_class.exists?(email: auth_hash['email'])
+    # puts auth_hash
+    # puts 2334
+    # puts  auth_hash['info']
+    # puts auth_hash['uid']
+    # puts auth_hash['info']['email']
+    # puts auth_origin_url
+    # puts resource_class.exists?(email: auth_hash['info']['email'])
+    if resource_class.exists?(email: auth_hash['info']['email'])
       @resource = resource_class.where({
-        email:      auth_hash['email'],
+        email:      auth_hash['info']['email'],
       }).first
     else 
       @resource = resource_class.where({
@@ -40,23 +47,36 @@ class Api::V1::Auth::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCall
       }).first_or_initialize
     end
 
+
     if @resource.new_record?
       @oauth_registration = true
+      assign_provider_attrs(@resource, auth_hash)
+      extra_params = whitelisted_params
+      @resource.assign_attributes(extra_params) if extra_params
     end
-    assign_provider_attrs(@resource, auth_hash)
-    extra_params = whitelisted_params
-    @resource.assign_attributes(extra_params) if extra_params
+    
 
     @resource
   end
 
   def assign_provider_attrs(user, auth_hash)
-    if @resource.new_record? == false
-      super
-      return
-    end
+    # if @resource.new_record? == false
+    #   # super
+    #   return
+    # end
     case auth_hash['provider']
+      when 'facebook'
+        user.assign_attributes({
+          nickname: auth_hash['info']['name'],
+          image: auth_hash['info']['image'],
+          email: auth_hash['info']['email']
+        })
       when 'twitter'
+        user.assign_attributes({
+          nickname: auth_hash['info']['name'],
+          image: auth_hash['info']['image'],
+          email: auth_hash['info']['email']
+        })
       when 'google_oauth2'
         user.assign_attributes({
           nickname: auth_hash['info']['name'],

@@ -32,6 +32,6 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     config.allowed_request_methods = [:get]
   end
   provider :google_oauth2, ENV['GOOGLE_KEY'],   ENV['GOOGLE_SECRET']
-  provider :twitter,ENV['TWIITER_KEY'],ENV['TWITTER_SECRET']
+  provider :twitter,ENV['TWITTER_KEY'],ENV['TWITTER_SECRET']
   OmniAuth.config.logger = Rails.logger
 end

@@ -50,9 +50,9 @@ jobs:
       - run:
           name: RUN apt install tzdata
           command: sudo apt-get install -y tzdata
-      # - run:
-      #     name: Run bundle install
-      #     command: bundle install
+      - run:
+          name: Run bundle install
+          command: bundle install
       - ruby/install-deps
       - run: bundle exec rails db:create
       - run: bundle exec rails db:schema:load

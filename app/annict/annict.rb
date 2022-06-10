@@ -39,7 +39,7 @@ class Annict
       searchWorks(
         seasons: $seasons
         orderBy: { field:  WATCHERS_COUNT, direction: DESC },
-        first: 10
+        # first: 10
       ) {
         edges {
           node {
@@ -156,10 +156,10 @@ class Annict
 
     puts "このシーズンのアニメの情報を追加します[y/n]"
     yn = gets.chomp
-  if yn = "n"
+  if yn == "n"
     puts "キャンセルされました。"
     return
-  else
+  elsif yn != "y"
     puts "予期しない文字が入力されたため、キャンセルしました。"
     return
   end
@@ -279,23 +279,25 @@ class Annict
 
       # image activestorage
       begin
-        if work["image"]["recommendedImageUrl"].present?
-          file = open(work["image"]["recommendedImageUrl"])
-          puts file.base_uri
-          @product.bg_images.attach(io: file, filename: "gorld_field/#{}")
+        if !@products.bg_images.attached?
+          if work["image"]["recommendedImageUrl"].present?
+            file = open(work["image"]["recommendedImageUrl"])
+            puts file.base_uri
+            @product.bg_images.attach(io: file, filename: "meruplanet/#{}")
+          end
         end
-        if work["image"]["facebookOgImageUrl"].present?
-          file = open(work["image"]["facebookOgImageUrl"])
-          puts file.base_uri
-          @product.bg_images2.attach(io: file, filename: "gorld_field/#{}")
+        if !@products.bg_images.attached?
+          if work["image"]["facebookOgImageUrl"].present?
+            file = open(work["image"]["facebookOgImageUrl"])
+            puts file.base_uri
+            @product.bg_images2.attach(io: file, filename: "meruplanet/#{}")
+          end
         end
       rescue => exception
           
       else
         
       end
-     
-
       @product.save
     end
   end

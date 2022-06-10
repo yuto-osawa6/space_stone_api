@@ -182,11 +182,12 @@ class Annict
       @product.wiki = work["wikipediaUrl"]
       @product.wikiEn = work["wikipediaUrlEn"]
       @product.shoboiTid = work["syobocalTid"]
-      @product.image_url = work["image"]["recommendedImageUrl"]
-      @product.image_url2 = work["image"]["facebookOgImageUrl"]
-      @product.copyright = work["image"]["copyright"]
+      @product.image_url = work["image"]["recommendedImageUrl"] if !work["image"].nil?
+      @product.image_url2 = work["image"]["facebookOgImageUrl"] if !work["image"].nil?
+      @product.copyright = work["image"]["copyright"] if !work["image"].nil?
       @product.finished = 1
       @product.save
+      # binding.pry
 
       # style 
       if work["media"] == "TV"
@@ -276,17 +277,17 @@ class Annict
       yearSeason << @yearSeason
       puts yearSeason
       @product.year_season_products = yearSeason
-
+      
       # image activestorage
       begin
-        if !@products.bg_images.attached?
+        if !@product.bg_images.attached?
           if work["image"]["recommendedImageUrl"].present?
             file = open(work["image"]["recommendedImageUrl"])
             puts file.base_uri
             @product.bg_images.attach(io: file, filename: "meruplanet/#{}")
           end
         end
-        if !@products.bg_images.attached?
+        if !@product.bg_images.attached?
           if work["image"]["facebookOgImageUrl"].present?
             file = open(work["image"]["facebookOgImageUrl"])
             puts file.base_uri

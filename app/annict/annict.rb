@@ -140,10 +140,29 @@ class Annict
 
   def setup
     season,year = season()
-    puts season,year
-
-    use_season = "#{year[0]}-#{season[1]}"
+    season.each_with_index do |a,i|
+      puts "#{[i]}#{a}"
+    end
+    year.each_with_index do |a,i|
+      puts "#{[i]}#{a}"
+    end
+    puts "追加したいSEASONの番目を入力してください。"
+    input2 = gets.to_i
+    puts "追加したいYEARの番目を入力してください。"
+    input = gets.to_i
+    
+    use_season = "#{year[input]}-#{season[input2]}"
     puts use_season
+
+    puts "このシーズンのアニメの情報を追加します[y/n]"
+    yn = gets.chomp
+  if yn = "n"
+    puts "キャンセルされました。"
+    return
+  else
+    puts "予期しない文字が入力されたため、キャンセルしました。"
+    return
+  end
 
     @result = result(seasons:["#{use_season}"])
 

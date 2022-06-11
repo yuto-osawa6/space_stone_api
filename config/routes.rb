@@ -87,6 +87,7 @@ Rails.application.routes.draw do
         collection do
           patch "setting"
           patch "background"
+          patch "topimage"
           patch "overview"
           get "likes"
           get "scores"

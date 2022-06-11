@@ -17,6 +17,16 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  # 追加6/22 notest
+  def topimage
+    @user = User.find(params[:user_id])
+    if @user.update(topimage_params2)
+      render json:{status:200,message:"画像を更新しました。",background:@user.image_url}
+    else
+      render json:{status:500}
+    end
+  end
+
   def overview
     @user = User.find(params[:user_id])
     if @user.update(overview_params)
@@ -323,6 +333,10 @@ class Api::V1::UsersController < ApplicationController
 
   def background_params2
     params.permit(:bg_img)
+  end
+
+  def topimage_params2
+    params.permit(:tp_img)
   end
 
   def overview_params

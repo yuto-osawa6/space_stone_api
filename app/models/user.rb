@@ -59,6 +59,7 @@ class User < ActiveRecord::Base
   # bacground image
   # doneyet base64方式に変更
   has_one_attached :bg_img
+  has_one_attached :tp_img
 
   # emotion
   has_many :review_emotions,dependent: :destroy
@@ -105,6 +106,10 @@ class User < ActiveRecord::Base
   def image_url
     # 紐づいている画像のURLを取得する
     self.bg_img.attached? ? url_for(bg_img) : nil
+  end
+
+  def topimage_url
+    self.tp_img.attached? ? url_for(tp_img) : self.image
   end
 
   def self.signin_or_create_from_provider(provider_data)

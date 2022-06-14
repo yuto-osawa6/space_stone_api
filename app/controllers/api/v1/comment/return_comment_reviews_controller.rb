@@ -2,7 +2,7 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
   def index
     # params[:comment_review_id]
     # userは対１関係なため、includesに含めない。
-    @returncomment = ReturnCommentReview.includes(:like_return_comment_reviews,:user,return_returns: :user).where(comment_review_id:params[:comment_review_id]).page(params[:page]).per(3)
+    @returncomment = ReturnCommentReview.includes(:like_return_comment_reviews,:user,return_returns: :user).include_tp_img.where(comment_review_id:params[:comment_review_id]).page(params[:page]).per(3)
     render :index,formats: :json
   end
 

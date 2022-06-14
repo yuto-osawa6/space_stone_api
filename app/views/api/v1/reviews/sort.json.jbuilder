@@ -39,7 +39,12 @@ json.set! :review_comments do
     # json.return_comment comment.return_comment_reviews
     json.return_jugde comment.return_comment_reviews.present?
     json.updated_at comment.updated_at.strftime("%Y/%-m/%-d")
-    json.user comment.user
+    # json.user comment.user
+    json.user do
+      json.id comment.user.id
+      json.nickname comment.user.nickname
+      json.image comment.user.topimage_url
+    end
     
   end
 end

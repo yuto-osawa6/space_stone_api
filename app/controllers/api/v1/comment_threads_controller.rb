@@ -5,13 +5,13 @@ class Api::V1::CommentThreadsController < ApplicationController
       @review = Thered.find(params[:thered_id])
       case params[:value]
       when 0 then
-        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
+        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).include_tp_img.order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
       when 1 then
-        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(created_at:"desc").page(params[:page]).per(5)
+        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).include_tp_img.order(created_at:"desc").page(params[:page]).per(5)
       when 2 then
-        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(created_at:"asc").page(params[:page]).per(5)
+        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).include_tp_img.order(created_at:"asc").page(params[:page]).per(5)
       else
-        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
+        @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).include_tp_img.order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
       end
 
       @commentReview.save!

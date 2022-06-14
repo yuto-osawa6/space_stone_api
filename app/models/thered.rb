@@ -13,4 +13,7 @@ class Thered < ApplicationRecord
   has_many :comment_threads_users, through: :comment_threads, source: :user
 
   has_many :acsess_threads, dependent: :destroy
+
+  scope :include_bg_images, -> { includes(product: {bg_images_attachment: :blob}) }
+  scope :include_tp_img, -> { includes(user: {tp_img_attachment: :blob}) }
 end

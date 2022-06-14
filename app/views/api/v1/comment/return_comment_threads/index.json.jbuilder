@@ -23,7 +23,11 @@ json.set! :returncomment do
     json.comment_review_id returncomment.comment_thread_id
 
     json.like_return_comment_reviews returncomment.like_return_comment_threads
-    json.user returncomment.user
+    json.user do
+      json.id returncomment.user.id
+      json.nickname returncomment.user.nickname
+      json.image returncomment.user.topimage_url
+    end
     json.updated_at returncomment.updated_at.strftime("%Y/%-m/%-d")
 
     if returncomment.return_returns[0].present?

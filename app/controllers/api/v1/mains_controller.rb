@@ -275,7 +275,7 @@ class Api::V1::MainsController < ApplicationController
   end
 
   def user_search
-    @user = User.where("nickname LIKE ?", "%#{params[:text]}%").page(params[:page]).per(1)
+    @user = User.with_attached_tp_img.where("nickname LIKE ?", "%#{params[:text]}%").page(params[:page]).per(2)
     render :user_search,formats: :json
   end
 

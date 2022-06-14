@@ -12,6 +12,7 @@ class ReturnCommentReview < ApplicationRecord
   has_many :rereturn_returns,through: :reverse_of_return_return_comment_reviews,source: :return_comment_review,dependent: :destroy
   
 
+  scope :include_tp_img, -> { includes(user: {tp_img_attachment: :blob}) }
   # has_many :return_return_comment_threads,dependent: :destroy
   # has_many :return_return_threads,through: :return_return_comment_threads,source: :return_return_thread,dependent: :destroy
   # has_many :reverse_of_return_return_comment_threads,class_name:'ReturnReturnCommentThread',foreign_key:'return_return_thread_id'

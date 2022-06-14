@@ -27,5 +27,9 @@ class Review < ApplicationRecord
 
   # validation
   validates :episord_id, uniqueness: { scope: [:product_id, :user_id] }
-  # ,allow_nil: true
+
+  scope :include_bg_images, -> { includes(product: {bg_images_attachment: :blob}) }
+  scope :include_tp_img, -> { includes(user: {tp_img_attachment: :blob}) }
+
+  
 end

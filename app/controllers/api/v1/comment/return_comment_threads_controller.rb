@@ -1,6 +1,6 @@
 class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
   def index
-    @returncomment = ReturnCommentThread.includes(:like_return_comment_threads,:user,return_returns: :user).where(comment_thread_id:params[:comment_thread_id]).page(params[:page]).per(3)
+    @returncomment = ReturnCommentThread.includes(:like_return_comment_threads,:user,return_returns: :user).include_tp_img.where(comment_thread_id:params[:comment_thread_id]).page(params[:page]).per(3)
     render :index,formats: :json
   end
 

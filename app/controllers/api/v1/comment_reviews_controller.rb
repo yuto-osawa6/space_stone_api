@@ -5,13 +5,13 @@ class Api::V1::CommentReviewsController < ApplicationController
       @review = Review.find(params[:review_id])
       case params[:select_sort]
       when 0 then
-        @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(1).per(5)
+        @review_comments = @review.comment_reviews.include_tp_img.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(1).per(5)
       when 1 then
-        @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"desc").page(1).per(5)
+        @review_comments = @review.comment_reviews.include_tp_img.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"desc").page(1).per(5)
       when 2 then
-        @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"asc").page(1).per(5)
+        @review_comments = @review.comment_reviews.include_tp_img.includes(:like_comment_reviews,:return_comment_reviews,:user).order(created_at:"asc").page(1).per(5)
       else
-        @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(1).per(5)
+        @review_comments = @review.comment_reviews.include_tp_img.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(1).per(5)
       end
         @commentReview.save!
         render :create,formats: :json

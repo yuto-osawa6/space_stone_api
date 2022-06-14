@@ -8,12 +8,4 @@ json.image current_user.topimage_url
 json.overview current_user.overview
 # json.background_image current_user.image_url
 json.provider current_user.provider
-
-
-# id: 4
-# image: "https://lh3.googleusercontent.com/a/AATXAJwcHc90SahiMA40vGsHFRH7LIq2aj10or9aigZG=s96-c"
-# nickname: "poohすぬー"
-# overview: null
-# provider: "google_oauth2"
-
 end

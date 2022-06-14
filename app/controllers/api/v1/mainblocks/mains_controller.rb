@@ -130,9 +130,26 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     now = Time.current 
     from = now.prev_year
     to = now.next_year
+
+    case now.month
+    when 1,2,3 then
+      @kisetsu = 5
+      @kisetsu_name = "冬"
+    when 4,5,6 then
+      @kisetsu = 2
+      @kisetsu_name = "春"
+    when 7,8,9 then
+      @kisetsu = 3
+      @kisetsu_name = "夏"
+    when 10,11,12 then
+      @kisetsu = 4
+      @kisetsu_name = "秋"
+  end
     # koko 
+    style = Style.find_by(name:"Movie")
+    season = Kisetsu.find_by(name:@kisetsu_name)
     # @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
-    @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
+    @worldclass = Product.left_outer_joins(:year_season_seasons,:year_season_years).with_attached_bg_images.where(finished:1).where(year_season_years:{year:"#{now.year}-01-01"}).where(year_season_seasons:{id:season.id}).left_outer_joins(:styles).where(styles:{id:style.id}).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
     @scores = Score.where(product_id:@worldclass.ids.uniq).group("product_id").average_value
     render :worldclass,formats: :json
   end
@@ -382,7 +399,9 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @year = Year.find_by(year:"#{@time.year}-01-01")
     if @year.present?
     else
-      Year.create(year:"#{@time.year}-01-01")
+      # Year.create(year:"#{@time.year}-01-01")
+      year = Year.where(year:"#{@time.year}-01-01").first_or_initialize
+      year.save
     end
     @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
     tierGroup = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)

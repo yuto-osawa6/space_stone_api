@@ -47,18 +47,18 @@ class Api::V1::TheredsController < ApplicationController
 
       # 追加
       if user_signed_in?
-        @user_like_review = LikeReview.find_by(review_id:params[:id],user_id:current_user.id)
+        @user_like_review = LikeThread.find_by(thered_id:params[:id],user_id:current_user.id)
       end
       @review_length = LikeThread.where(thered_id:params[:id]).length
       @review_good = LikeThread.where(thered_id:params[:id],goodbad:1).length
-      @score = @review_good / @review_length * 100
+      @score = @review_good / @review_length.to_f * 100
 
       render :show,formats: :json
     rescue => e
       if Thered.exists?(id:params[:id])
         @EM = ErrorManage.new(controller:"thered/show",error:"#{e}".slice(0,200))
         @EM.save
-        render json:{status:500}
+        render json:{status:500,e:e}
       else
         render json:{status:400}
       end

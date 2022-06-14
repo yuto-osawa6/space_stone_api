@@ -39,8 +39,19 @@ class Api::V1::TheredsController < ApplicationController
   def show
     begin
       @review = Thered.find(params[:id])
+      if @review.product_id.to_s != params[:product_id]
+        return render json:{status:404}
+      end
       @product = @review.product
       @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
+
+      # 追加
+      if user_signed_in?
+        @user_like_review = LikeReview.find_by(review_id:params[:id],user_id:current_user.id)
+      end
+      @review_length = LikeThread.where(thered_id:params[:thered_id]).length
+      @review_good = LikeThread.where(thered_id:params[:thered_id],goodbad:1).length
+      @score = @review_good / @review_length * 100
 
       render :show,formats: :json
     rescue 

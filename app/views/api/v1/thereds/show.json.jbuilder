@@ -1,3 +1,4 @@
+json.key_format! camelize: :lower
 json.set! :status,200
 
 json.set! :product do 
@@ -15,6 +16,11 @@ json.set! :review do
   json.user @review.user
   json.updated_at @review.updated_at.strftime("%Y/%-m/%-d")
   json.questions @review.questions
+
+  json.user_like_review @user_like_review
+  json.like_review_length @review_length
+  json.like_review_good @review_good
+  json.score @score
 
 end
 json.set! :review_comments do

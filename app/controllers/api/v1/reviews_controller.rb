@@ -1,4 +1,6 @@
 class Api::V1::ReviewsController < ApplicationController
+  # before_action :authenticate_user!, only:[:show]
+  # before_action :authenticate_user!
   def create 
     begin
       if params[:review][:episord_id]=="null"
@@ -132,12 +134,22 @@ class Api::V1::ReviewsController < ApplicationController
   def show
     begin
       @review = Review.includes(:like_reviews,:emotions).find(params[:id])
+      if @review.product_id.to_s != params[:product_id]
+        return render json:{status:404}
+      end
       @product = @review.product
       @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
+
+      # 追加
+      if user_signed_in?
+        @user_like_review = LikeReview.find_by(review_id:params[:id],user_id:current_user.id)
+      end
+      @review_length = LikeReview.where(review_id:params[:id]).length
+      @review_good = LikeReview.where(review_id:params[:id],goodbad:1).length
+      @score = @review_good / @review_length.to_f * 100
+
       render :show,formats: :json
     rescue 
-      puts params
-      puts params[:id]
       if Review.exists?(id:params[:id])
         @EM = ErrorManage.new(controller:"review/show",error:"#{e}".slice(0,200))
         @EM.save

@@ -131,8 +131,9 @@ RSpec.describe 'Mains', type: :request do
     end
     it 'データーが返却されること' do
       subject
-      expect(json["tier_main"][0]["avg"].size).to eq(2)
-      expect(json["tier_main"][0]["products"].size).to eq(2)
+      # binding.pry
+      expect(json["tierMain"][0]["avg"].size).to eq(2)
+      expect(json["tierMain"][0]["products"].size).to eq(2)
       # expect(json["tierGroupLength"]).to eq(4)
     end
   end

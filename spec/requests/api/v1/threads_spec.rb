@@ -58,6 +58,7 @@ RSpec.describe 'thered', type: :request do
     let!(:product) {create(:product_alice_thread_all)}
     it 'ステータス 200' do
       get "/api/v1/products/#{Product.first.id}/thereds/#{Thered.first.id}"
+      
       expect(json['status']).to eq(200)
     end
     it 'ステータス 440' do

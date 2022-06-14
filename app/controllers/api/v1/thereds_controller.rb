@@ -49,12 +49,12 @@ class Api::V1::TheredsController < ApplicationController
       if user_signed_in?
         @user_like_review = LikeReview.find_by(review_id:params[:id],user_id:current_user.id)
       end
-      @review_length = LikeThread.where(thered_id:params[:thered_id]).length
-      @review_good = LikeThread.where(thered_id:params[:thered_id],goodbad:1).length
+      @review_length = LikeThread.where(thered_id:params[:id]).length
+      @review_good = LikeThread.where(thered_id:params[:id],goodbad:1).length
       @score = @review_good / @review_length * 100
 
       render :show,formats: :json
-    rescue 
+    rescue => e
       if Thered.exists?(id:params[:id])
         @EM = ErrorManage.new(controller:"thered/show",error:"#{e}".slice(0,200))
         @EM.save
@@ -81,7 +81,7 @@ class Api::V1::TheredsController < ApplicationController
         @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_review_id) FROM like_comment_threads where like_comment_reviews.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
       end
       render :sort, formats: :json
-    rescue 
+    rescue => e
       if Thered.exists?(id:params[:thered_id])
         @EM = ErrorManage.new(controller:"thered/sort",error:"#{e}".slice(0,200))
         @EM.save

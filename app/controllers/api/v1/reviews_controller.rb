@@ -149,7 +149,7 @@ class Api::V1::ReviewsController < ApplicationController
       @score = @review_good / @review_length.to_f * 100
 
       render :show,formats: :json
-    rescue 
+    rescue => e
       if Review.exists?(id:params[:id])
         @EM = ErrorManage.new(controller:"review/show",error:"#{e}".slice(0,200))
         @EM.save
@@ -175,7 +175,7 @@ class Api::V1::ReviewsController < ApplicationController
         @review_comments = @review.comment_reviews.includes(:like_comment_reviews,:return_comment_reviews,:user).order(Arel.sql('(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id) DESC')).page(params[:page]).per(5)
       end
       render :sort, formats: :json
-    rescue 
+    rescue => e
       if Review.exists?(id:params[:review_id])
         @EM = ErrorManage.new(controller:"review/sort",error:"#{e}".slice(0,200))
         @EM.save

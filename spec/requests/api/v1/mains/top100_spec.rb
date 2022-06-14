@@ -12,9 +12,9 @@ RSpec.describe 'Mains', type: :request do
       it 'データーが返却されること' do
         subject
         expect(json['products'].size).to eq(10)
-        expect(json['products'][0]['product_styles'].size).to eq(1)
-        expect(json['products'][0]['product_genres'].size).to eq(1)
-        expect(json['products'][0]['product_year_season2'].size).to eq(2)
+        expect(json['products'][0]['productStyles'].size).to eq(1)
+        expect(json['products'][0]['productGenres'].size).to eq(1)
+        expect(json['products'][0]['productYearSeason2'].size).to eq(2)
         expect(json['scores']['avgScore'].size).to eq(10)
       end
     end
@@ -28,9 +28,9 @@ RSpec.describe 'Mains', type: :request do
       it 'データーが返却されること' do
         subject
         expect(json['products'].size).to eq(10)
-        expect(json['products'][0]['product_styles'].size).to eq(1)
-        expect(json['products'][0]['product_genres'].size).to eq(1)
-        expect(json['products'][0]['product_year_season2'].size).to eq(2)
+        expect(json['products'][0]['productStyles'].size).to eq(1)
+        expect(json['products'][0]['productGenres'].size).to eq(1)
+        expect(json['products'][0]['productYearSeason2'].size).to eq(2)
         expect(json['scores']['avgScore'].size).to eq(10)
       end
     end
@@ -44,9 +44,9 @@ RSpec.describe 'Mains', type: :request do
       it 'データーが返却されること' do
         subject
         expect(json['products'].size).to eq(10)
-        expect(json['products'][0]['product_styles'].size).to eq(1)
-        expect(json['products'][0]['product_genres'].size).to eq(1)
-        expect(json['products'][0]['product_year_season2'].size).to eq(2)
+        expect(json['products'][0]['productStyles'].size).to eq(1)
+        expect(json['products'][0]['productGenres'].size).to eq(1)
+        expect(json['products'][0]['productYearSeason2'].size).to eq(2)
         expect(json['scores']['avgScore'].size).to eq(10)
       end
     end
@@ -61,9 +61,9 @@ RSpec.describe 'Mains', type: :request do
       it 'データーが返却されること' do
         subject
         expect(json['products'].size).to eq(10)
-        expect(json['products'][0]['product_styles'].size).to eq(1)
-        expect(json['products'][0]['product_genres'].size).to eq(1)
-        expect(json['products'][0]['product_year_season2'].size).to eq(2)
+        expect(json['products'][0]['productStyles'].size).to eq(1)
+        expect(json['products'][0]['productGenres'].size).to eq(1)
+        expect(json['products'][0]['productYearSeason2'].size).to eq(2)
         expect(json['scores']['avgScore'].size).to eq(10)
       end
     end
@@ -78,9 +78,9 @@ RSpec.describe 'Mains', type: :request do
     it 'データーが返却されること' do
       subject
       expect(json['products'].size).to eq(10)
-      expect(json['products'][0]['product_styles'].size).to eq(1)
-      expect(json['products'][0]['product_genres'].size).to eq(1)
-      expect(json['products'][0]['product_year_season2'].size).to eq(2)
+      expect(json['products'][0]['productStyles'].size).to eq(1)
+      expect(json['products'][0]['productGenres'].size).to eq(1)
+      expect(json['products'][0]['productYearSeason2'].size).to eq(2)
       expect(json['scores']['avgScore'].size).to eq(10)
     end
   end

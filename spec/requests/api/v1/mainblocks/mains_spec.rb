@@ -108,10 +108,10 @@ RSpec.describe 'MainBlocks/Mains', type: :request do
       subject
       expect(response.status).to eq(200)
     end
-    it 'データーが返ってくるか' do
-      subject
-      expect(json["worldRanking"].size).to eq(10)
-    end
+    # it 'データーが返ってくるか' do
+    #   subject
+    #   expect(json["worldRanking"].size).to eq(10)
+    # end
   end
  
 

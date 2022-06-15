@@ -14,7 +14,7 @@ RSpec.describe 'comment_reviews', type: :request do
         # binding.pry
         # subject
         post "/api/v1/products/#{Product.first.id}/reviews/#{Product.first.reviews[0].id}/comment_reviews",params: {comment_review: {user_id:User.first.id,review_id:Review.first.id,comment:"test"}, headers: auth_tokens}
-        binding.pry
+        # binding.pry
         expect(json['status']).to eq(200)
       end
     end

@@ -1,4 +1,6 @@
 class Api::V1::CommentThreadsController < ApplicationController
+  before_action :check_user_logined, only:[:create,:destroy]
+
   def create
     begin
       @commentReview = CommentThread.new(commentReview_params)

@@ -1,6 +1,8 @@
 class Api::V1::UsersController < ApplicationController
-  
+  before_action :check_user_logined, only:[:setting,:background,:topimage,:overview,:destroy]
+
   def setting
+    puts user_signed_in?
     @user = User.find(params[:user_id])
     if @user.update(update_params)
       render json:{status:200,message:"nicknameを更新しました。",user:@user}

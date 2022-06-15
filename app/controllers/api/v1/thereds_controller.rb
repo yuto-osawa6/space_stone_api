@@ -1,4 +1,6 @@
 class Api::V1::TheredsController < ApplicationController
+  before_action :check_user_logined, only:[:create,:destroy]
+
   def create 
     begin
       content = params[:content]
@@ -46,6 +48,10 @@ class Api::V1::TheredsController < ApplicationController
       @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).include_tp_img.order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)
 
       # 追加
+      # puts"ssae"
+      # puts user_signed_in?
+      # puts"ssae"
+
       if user_signed_in?
         @user_like_review = LikeThread.find_by(thered_id:params[:id],user_id:current_user.id)
       end

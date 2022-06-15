@@ -1,4 +1,6 @@
 class Api::V1::ReviewsController < ApplicationController
+  before_action :check_user_logined, only:[:create,:update,:update2,:destroy]
+
   # before_action :authenticate_user!, only:[:show]
   # before_action :authenticate_user!
   def create 

@@ -1,4 +1,6 @@
 class Api::V1::LikesController < ApplicationController
+  before_action :check_user_logined, only:[:create,:destroy,:check]
+
   def create
     begin
       @user = User.find(params[:like][:user_id])

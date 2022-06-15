@@ -1,4 +1,5 @@
 class Api::V1::Mainblocks::MainsController < ApplicationController
+  before_action :check_user_logined, only:[:create_tier]
   def new_netflix
     current = Time.current
 

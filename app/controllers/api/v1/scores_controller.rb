@@ -1,4 +1,6 @@
 class Api::V1::ScoresController < ApplicationController
+  before_action :check_user_logined, only:[:create,:update]
+
   def create
     @pss = {
       "10"=> 0,

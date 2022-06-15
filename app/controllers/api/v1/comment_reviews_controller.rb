@@ -1,4 +1,6 @@
 class Api::V1::CommentReviewsController < ApplicationController
+  before_action :check_user_logined, only:[:create,:destroy]
+
   def create
     begin
       @commentReview = CommentReview.new(commentReview_params)

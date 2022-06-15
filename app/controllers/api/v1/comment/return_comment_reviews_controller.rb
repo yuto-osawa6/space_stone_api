@@ -1,4 +1,6 @@
 class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
+  before_action :check_user_logined, only:[:create,:destroy,:returnreturn]
+
   def index
     # params[:comment_review_id]
     # userは対１関係なため、includesに含めない。

@@ -43,11 +43,11 @@ class ApplicationController < ActionController::API
     }
   end
 
-  # private
-
-  # def check_xhr_header
-  #   return if request.xhr?
-
-  #   render json: { error: 'forbidden' }, status: :forbidden
-  # end
+  def check_user_logined
+    # puts user_signed_in?
+    if user_signed_in?
+    else
+      render json:{status:401}
+    end
+  end
 end

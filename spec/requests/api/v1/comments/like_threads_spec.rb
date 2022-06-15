@@ -51,7 +51,7 @@ RSpec.describe 'like_threads', type: :request do
       subject { get "/api/v1/products/#{Product.first.id}/thereds/#{Product.first.thereds[0].id}/like_threads/check",params: {user_id:User.first.id,thered_id:Thered.first.id}}
       it 'ステータス 200' do
         subject
-        expect(json['status']).to eq(200)
+        expect(json['status']).to eq(201)
       end
     end
   end

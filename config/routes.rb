@@ -44,7 +44,7 @@ Rails.application.routes.draw do
             get "check"
           end
         end
-        resources :scores, only:[:create, :update] do
+        resources :scores, only:[:create, :update,:destroy] do
         end
         resources :acsesses,only:[:create] do
         end

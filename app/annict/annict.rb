@@ -185,7 +185,7 @@ class Annict
       @product.image_url = work["image"]["recommendedImageUrl"] if !work["image"].nil?
       @product.image_url2 = work["image"]["facebookOgImageUrl"] if !work["image"].nil?
       @product.copyright = work["image"]["copyright"] if !work["image"].nil?
-      @product.finished = 1
+      @product.finished = 0
       @product.save
       # binding.pry
 

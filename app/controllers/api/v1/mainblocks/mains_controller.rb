@@ -155,21 +155,21 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   end
 
   def toptens
-     # nouse toptencontrollerに移した。notest 2022 4/19
-     now = Time.current 
-     from = now.prev_month
-     to = now
-     @like_topten_month =  Product.with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
-     @like_topten_all =  Product.with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where.not(likes:{id:nil}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
-     @score_topten_month = Product.with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10)
-     @score_topten_all = Product.with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).where.not(scores:{value:nil}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10)
-     @acsess_topten_month = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10)
-     @acsess_topten_all = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where.not(acsesses:{id:nil}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10)
+    # nouse toptencontrollerに移した。notest 2022 4/19
+    now = Time.current 
+    from = now.prev_month
+    to = now
+    @like_topten_month =  Product.with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
+    @like_topten_all =  Product.with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where.not(likes:{id:nil}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
+    @score_topten_month = Product.with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10)
+    @score_topten_all = Product.with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).where.not(scores:{value:nil}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10)
+    @acsess_topten_month = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10)
+    @acsess_topten_all = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where.not(acsesses:{id:nil}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10)
 
-     @review_topten_month = Product.with_attached_bg_images.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where(reviews:{updated_at:from...to}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10)
-     @review_topten_all = Product.with_attached_bg_images.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where.not(reviews:{id:nil}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10)
+    @review_topten_month = Product.with_attached_bg_images.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where(reviews:{updated_at:from...to}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10)
+    @review_topten_all = Product.with_attached_bg_images.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where.not(reviews:{id:nil}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10)
 
-     render :toptens,formats: :json
+    render :toptens,formats: :json
   end
 
   def populur_rt

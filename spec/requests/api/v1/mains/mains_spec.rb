@@ -149,7 +149,7 @@ RSpec.describe 'Mains', type: :request do
     end
     it 'データーが返却されること' do
       subject
-      expect(json['user'].size).to eq(1)
+      expect(json['user'].size).to eq(2)
     end
   end
   

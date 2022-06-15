@@ -14,9 +14,9 @@ json.set! :review do
   json.user_id @review.user_id
   json.like_reviews @review.like_threads
   json.user do
-    json.id comment.user.id
-    json.nickname comment.user.nickname
-    json.image comment.user.topimage_url
+    json.id @review.user.id
+    json.nickname @review.user.nickname
+    json.image @review.user.topimage_url
   end
   json.updated_at @review.updated_at.strftime("%Y/%-m/%-d")
   json.questions @review.questions

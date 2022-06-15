@@ -1,4 +1,5 @@
 class Api::V1::UsersController < ApplicationController
+  
   def setting
     @user = User.find(params[:user_id])
     if @user.update(update_params)

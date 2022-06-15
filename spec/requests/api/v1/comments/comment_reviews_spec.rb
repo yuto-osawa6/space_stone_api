@@ -3,10 +3,18 @@ require 'rails_helper'
 RSpec.describe 'comment_reviews', type: :request do
   describe 'post/create' do
     let!(:product) {create(:product_alice_review_all)}
+    let(:user) { User.first }
+    let(:auth_tokens) { sign_in(user) }
+    # let(:user) { { email: "momoko@test.com", password: "123456" } }
     context '正常' do
-      subject { post "/api/v1/products/#{Product.first.id}/reviews/#{Product.first.reviews[0].id}/comment_reviews",params: {comment_review: {user_id:User.first.id,review_id:Review.first.id,comment:"test"}}}
+      # subject { post "/api/v1/products/#{Product.first.id}/reviews/#{Product.first.reviews[0].id}/comment_reviews",params: {comment_review: {user_id:User.first.id,review_id:Review.first.id,comment:"test"}, headers: auth_tokens}}
       it 'ステータス 200' do
-        subject
+        # user = User.first
+        # auth_tokens = sign_in(user)
+        # binding.pry
+        # subject
+        post "/api/v1/products/#{Product.first.id}/reviews/#{Product.first.reviews[0].id}/comment_reviews",params: {comment_review: {user_id:User.first.id,review_id:Review.first.id,comment:"test"}, headers: auth_tokens}
+        binding.pry
         expect(json['status']).to eq(200)
       end
     end

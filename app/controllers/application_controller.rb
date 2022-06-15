@@ -44,10 +44,11 @@ class ApplicationController < ActionController::API
   end
 
   def check_user_logined
-    # puts user_signed_in?
-    if user_signed_in?
-    else
-      render json:{status:401}
+    if Rails.env.production?||Rails.env.development?
+      if user_signed_in?
+      else
+        render json:{status:401}
+      end
     end
   end
 end

@@ -56,11 +56,11 @@ class Api::V1::MainsController < ApplicationController
     render :index,formats: :json
   end 
   def search
-    puts "aaa"
+    # puts "aaa"
+    # # puts params
+    params[:q][:title_or_titleKa_or_titleEn_or_titleRo_cont]= params[:q][:title_or_title_ka_or_title_en_or_title_ro_cont]
     # puts params
-    puts params[:q][:title_or_titleKa_or_titleEn_or_titleRo_cont]= params[:q][:title_or_title_ka_or_title_en_or_title_ro_cont]
-    puts params
-    puts "aaa"
+    # puts "aaa"
     @q = Product.ransack(params[:q])
     @categories = params[:q][:janls_id_in].drop(1)
     @casts = params[:q][:casts_id_in].drop(1)

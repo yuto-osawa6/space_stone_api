@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_09_230824) do
+ActiveRecord::Schema.define(version: 2022_06_16_045454) do
 
   create_table "acsess_articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -569,6 +569,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_230824) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "tier_group_id", null: false
     t.bigint "user_tier_group_id", null: false
+    t.integer "sort"
     t.index ["product_id"], name: "index_tiers_on_product_id"
     t.index ["tier_group_id"], name: "index_tiers_on_tier_group_id"
     t.index ["user_id"], name: "index_tiers_on_user_id"

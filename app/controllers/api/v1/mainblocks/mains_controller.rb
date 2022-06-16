@@ -257,8 +257,11 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
       tier_array = []
       params[:group_product].each do |e|
-        e[:product].each do |product|
+        # e[:product].each do |product|
+        e[:product].each_with_index do |product,index|
           @tier = Tier.where(product_id:product,user_id:params[:user_id],tier_group_id: @tier_group.id,user_tier_group_id:@user_tier_group.id).first_or_initialize
+          # puts product
+          @tier.sort = index
           case e[:group]
           when 0 then
             @tier.tier = 100
@@ -321,7 +324,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
     group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
     if group.present?
-      @tier_group =  group.tiers.includes(product: {bg_images_attachment: :blob}).where(user_id:params[:user_id])
+      @tier_group =  group.tiers.includes(product: {bg_images_attachment: :blob}).where(user_id:params[:user_id]).order(sort: :asc)
     else
 
     end
@@ -355,7 +358,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
     group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
     if group.present?
-      @tier_group =  group.tiers.includes(product: {bg_images_attachment: :blob}).where(user_id:params[:user_id])
+      @tier_group =  group.tiers.includes(product: {bg_images_attachment: :blob}).where(user_id:params[:user_id]).order(sort: :asc)
     else
 
     end
@@ -371,7 +374,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @kisetsu = Kisetsu.find(params[:kisetsu])
     group = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
     if group.present?
-      @tier_group =  group.tiers.includes(:product).where(user_id:params[:user_id])
+      @tier_group =  group.tiers.includes(:product).where(user_id:params[:user_id]).order(sort: :asc)
     else
 
     end

@@ -203,22 +203,44 @@ class Api::V1::ProductsController < ApplicationController
         @episord.save
     end
 
+    # params[:staff_middle].each do |s|
+    #   @staff = Occupation.where(staff_id:s[:cast_id],product_id:@product.id).first_or_initialize
+    #   @staff.name = s[:character_name]
+    #   @staff.save
+    # end
+    staff = []
     params[:staff_middle].each do |s|
       @staff = Occupation.where(staff_id:s[:cast_id],product_id:@product.id).first_or_initialize
       @staff.name = s[:character_name]
-      @staff.save
+      # @staff.save
+      staff << @staff
     end
-    
+    @product.occupations = staff
 
-    params[:character_middle_data].each do |c|
+    character = []
+    params[:character_middle_data].each do |c| 
       @character = Character.where(cast_id:c[:cast_id],product_id:@product.id,name:c[:character_name]).first_or_initialize
       @character.image = c[:character_image]
-      @character.save
+      # @character.save
+      character << @character
     end
+    @product.characters = character
+    
+
+    # params[:character_middle_data].each do |c|
+    #   @character = Character.where(cast_id:c[:cast_id],product_id:@product.id,name:c[:character_name]).first_or_initialize
+    #   @character.image = c[:character_image]
+    #   @character.save
+    # end
 
     yearSeason = []  
     params[:product][:year_season].each do |y|
-      year_id = Year.where(year:"#{y[:year]}-01-01")[0].id
+      year = Year.where(year:"#{y[:year]}-01-01").first_or_initialize
+      if year.new_record?
+        year.save
+      end
+      # year_id = Year.where(year:"#{y[:year]}-01-01")[0].id
+      year_id = year.id
       y[:season].each do |s|
         @yearSeason = YearSeasonProduct.where(product_id:@product.id,kisetsu_id:s,year_id:year_id).first_or_initialize
         yearSeason << @yearSeason
@@ -226,10 +248,19 @@ class Api::V1::ProductsController < ApplicationController
     end
     @product.year_season_products = yearSeason
     begin
-      if params[:product][:image_url].present?
-        file = open(params[:product][:image_url])
-        puts file.base_uri
-        @product.bg_images.attach(io: file, filename: "gorld_field/#{@product.id}")
+      if !@product.bg_images.attached?
+        if params[:product][:image_url].present?
+          file = open(params[:product][:image_url])
+          puts file.base_uri
+          @product.bg_images.attach(io: file, filename: "meruplanet/#{}")
+        end
+      end
+      if !@product.bg_images.attached?
+        if params[:product][:image_url2].present?
+          file = open(params[:product][:image_url2])
+          puts file.base_uri
+          @product.bg_images2.attach(io: file, filename: "meruplanet/#{}")
+        end
       end
     rescue => exception
         
@@ -323,7 +354,11 @@ class Api::V1::ProductsController < ApplicationController
 
     yearSeason = []  
     params[:product][:year_season].each do |y|
-      year_id = Year.where(year:"#{y[:year]}-01-01")[0].id
+      year = Year.where(year:"#{y[:year]}-01-01").first_or_initialize
+      if year.new_record?
+        year.save
+      end
+      year_id = year.id
      
       y[:season].each do |s|
         @yearSeason = YearSeasonProduct.where(product_id:@product.id,kisetsu_id:s,year_id:year_id).first_or_initialize
@@ -333,17 +368,26 @@ class Api::V1::ProductsController < ApplicationController
 
     @product.year_season_products = yearSeason
 
-    begin
-      if params[:product][:image_url].present?
-        file = open(params[:product][:image_url])
-        puts file.base_uri
-        @product.bg_images.attach(io: file, filename: "gorld_field/#{@product.id}")
-      end
-    rescue => exception
+     begin
+        if !@product.bg_images.attached?
+          if params[:product][:image_url].present?
+            file = open(params[:product][:image_url])
+            puts file.base_uri
+            @product.bg_images.attach(io: file, filename: "meruplanet/#{}")
+          end
+        end
+        if !@product.bg_images.attached?
+          if params[:product][:image_url2].present?
+            file = open(params[:product][:image_url2])
+            puts file.base_uri
+            @product.bg_images2.attach(io: file, filename: "meruplanet/#{}")
+          end
+        end
+      rescue => exception
+          
+      else
         
-    else
-      
-    end
+      end
 
     @product.save
 
@@ -352,7 +396,8 @@ class Api::V1::ProductsController < ApplicationController
 
   def product_episords
     @product = Product.find(params[:product_id])
-    @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings)
+    @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings).order(episord: :asc).page(params[:page]).per(2)
+    @episordsLength = @product.episords.length
     render :product_episords,formats: :json
   end
 

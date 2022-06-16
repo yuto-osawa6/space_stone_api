@@ -83,6 +83,9 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :episords,only:[:create,:destroy] do
+      end
+
       resources :users,only:[:show,:destroy] do
         collection do
           patch "setting"

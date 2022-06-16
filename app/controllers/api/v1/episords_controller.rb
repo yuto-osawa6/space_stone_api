@@ -2,7 +2,7 @@ class Api::V1::EpisordsController < ApplicationController
   before_action :check_user_logined, only:[:create,:destroy]
   def create
     if params[:product_id].nil?
-      render json:{status:401}
+      render json:{status:400}
       return
     end
     @episord = Episord.where(product_id:params[:product_id],episord:params[:episord]).first_or_initialize

@@ -732,4 +732,10 @@ class Scra2
     @product =  Product.left_outer_joins(:scores).includes(:styles,:janls,:scores,:likes).where(scores:{updated_at: from...to}).year_season_scope.group("products.id").order(Arel.sql('avg(scores.value) DESC')).limit(100)
     @scores = Score.where(product_id:@product.ids).group("product_id").average_value
   end
+
+  def ota35
+    to = Time.current
+    puts to
+
+  end
 end

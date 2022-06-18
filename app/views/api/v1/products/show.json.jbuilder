@@ -10,6 +10,9 @@ json.set! :products do
   json.arasuzi @product.description
   json.list @product.list
   json.overview @product.overview
+  json.annict @product.annitict
+  json.shoboi @product.shoboiTid
+
   if @episord.present?
     json.productEpisord do
       json.arasuzi @episord[0].arasuzi

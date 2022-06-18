@@ -18,7 +18,7 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
         render json:{status:494}
         return
       end
-      if @review.return_comment_reviews.includes(:user).where(user_id:current_user.id).length >= Concerns::LIMIT_COMMENT[:user_comment]
+      if @review.return_comment_reviews.includes(:user).where(user_id:params[:return_comment_review][:user_id]).length >= Concerns::LIMIT_COMMENT[:user_comment]
         render json:{status:495}
         return
       end
@@ -27,7 +27,7 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
         last3 = @review.return_comment_reviews.last(Concerns::LIMIT_COMMENT[:last])
         last3_count = last3.map{|k| k.user_id }.uniq.count
         if last3_count ==1
-          if last3[0].user_id == current_user.id
+          if last3[0].user_id == params[:return_comment_review][:user_id]
             render json:{status:490}
             return
           end
@@ -61,7 +61,7 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
         render json:{status:494}
         return
       end
-      if @review.return_comment_reviews.includes(:user).where(user_id:current_user.id).length >= Concerns::LIMIT_COMMENT[:user_comment]
+      if @review.return_comment_reviews.includes(:user).where(user_id:params[:return_comment_review][:user_id]).length >= Concerns::LIMIT_COMMENT[:user_comment]
         render json:{status:495}
         return
       end
@@ -70,7 +70,7 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
         last3 = @review.return_comment_reviews.last(Concerns::LIMIT_COMMENT[:return_last])
         last3_count = last3.map{|k| k.user_id }.uniq.count
         if last3_count ==1
-          if last3[0].user_id == current_user.id
+          if last3[0].user_id == params[:return_comment_review][:user_id]
             render json:{status:490}
             return
           end

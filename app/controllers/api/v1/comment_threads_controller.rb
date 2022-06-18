@@ -10,7 +10,7 @@ class Api::V1::CommentThreadsController < ApplicationController
         render json:{status:493}
         return
       end
-      if @review.comment_threads.includes(:user).where(user_id:current_user.id).length >= Concerns::LIMIT_COMMENT[:user_comment]
+      if @review.comment_threads.includes(:user).where(user_id:params[:comment_thread][:user_id]).length >= Concerns::LIMIT_COMMENT[:user_comment]
         render json:{status:493}
         return
       end
@@ -19,7 +19,7 @@ class Api::V1::CommentThreadsController < ApplicationController
         last3 = @review.comment_threads.last(Concerns::LIMIT_COMMENT[:last])
         last3_count = last3.map{|k| k.user_id }.uniq.count
         if last3_count ==1
-          if last3[0].user_id == current_user.id
+          if last3[0].user_id == params[:comment_thread][:user_id]
             render json:{status:490}
             return
           end

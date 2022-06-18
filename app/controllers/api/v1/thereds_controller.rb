@@ -4,8 +4,8 @@ class Api::V1::TheredsController < ApplicationController
   def create
     begin
       @product = Product.find(params[:thered][:product_id])
-      puts @product.thereds.where(user_id:current_user.id).length
-      if @product.thereds.where(user_id:current_user.id).length>=3
+      puts @product.thereds.where(user_id:params[:thered][:user_id]).length
+      if @product.thereds.where(user_id:params[:thered][:user_id]).length>=3
         render json: {status:492}
         return
       end

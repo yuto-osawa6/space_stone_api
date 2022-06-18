@@ -3,13 +3,14 @@ class Api::V1::CommentReviewsController < ApplicationController
 
   def create
     begin
+      # binding.pry
       @review = Review.find(params[:review_id])
       @review_length = @review.comment_reviews.length
       if @review_length>=Concerns::LIMIT_COMMENT[:comment]
         render json:{status:491}
         return
       end
-      if @review.comment_reviews.includes(:user).where(user_id:current_user.id).length >= Concerns::LIMIT_COMMENT[:user_comment]
+      if @review.comment_reviews.includes(:user).where(user_id:params[:comment_review][:user_id]).length >= Concerns::LIMIT_COMMENT[:user_comment]
         render json:{status:491}
         return
       end
@@ -18,7 +19,7 @@ class Api::V1::CommentReviewsController < ApplicationController
         last3 = @review.comment_reviews.last(Concerns::LIMIT_COMMENT[:last])
         last3_count = last3.map{|k| k.user_id }.uniq.count
         if last3_count ==1
-          if last3[0].user_id == current_user.id
+          if last3[0].user_id == params[:comment_review][:user_id]
             render json:{status:490}
             return
           end

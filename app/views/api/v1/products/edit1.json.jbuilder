@@ -16,6 +16,7 @@ json.set! :product do
 
   json.year @product.year
   json.delivery_start @product.delivery_start
+  json.delivery_end @product.delivery_end
   json.overview @product.overview
   
   json.form_style do

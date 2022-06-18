@@ -3,8 +3,31 @@ class Api::V1::CommentThreadsController < ApplicationController
 
   def create
     begin
-      @commentReview = CommentThread.new(commentReview_params)
       @review = Thered.find(params[:thered_id])
+      @review_length = @review.comment_threads.length
+      # puts @review_length
+      if @review_length>=Concerns::LIMIT_COMMENT[:comment]
+        render json:{status:493}
+        return
+      end
+      if @review.comment_threads.includes(:user).where(user_id:current_user.id).length >= Concerns::LIMIT_COMMENT[:user_comment]
+        render json:{status:493}
+        return
+      end
+
+      if @review_length>=Concerns::LIMIT_COMMENT[:fortsetzen]
+        last3 = @review.comment_threads.last(Concerns::LIMIT_COMMENT[:last])
+        last3_count = last3.map{|k| k.user_id }.uniq.count
+        if last3_count ==1
+          if last3[0].user_id == current_user.id
+            render json:{status:490}
+            return
+          end
+        end
+      end
+
+      @commentReview = CommentThread.new(commentReview_params)
+      # @review = Thered.find(params[:thered_id])
       case params[:value]
       when 0 then
         @review_comments = @review.comment_threads.includes(:like_comment_threads,:return_comment_threads,:user).include_tp_img.order(Arel.sql('(SELECT COUNT(like_comment_threads.comment_thread_id) FROM like_comment_threads where like_comment_threads.comment_thread_id = comment_threads.id GROUP BY like_comment_threads.comment_thread_id) DESC')).page(params[:page]).per(5)

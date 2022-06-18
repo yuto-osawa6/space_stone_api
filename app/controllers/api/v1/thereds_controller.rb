@@ -1,13 +1,21 @@
 class Api::V1::TheredsController < ApplicationController
   before_action :check_user_logined, only:[:create,:destroy]
 
-  def create 
+  def create
     begin
+      @product = Product.find(params[:thered][:product_id])
+      puts @product.thereds.where(user_id:current_user.id).length
+      if @product.thereds.where(user_id:current_user.id).length>=3
+        render json: {status:492}
+        return
+      end
+
+
       content = params[:content]
       @thered = Thered.new(reviews_params)
       @thered.question_ids
       @thered.save!
-      @product = Product.find(params[:thered][:product_id])
+      
       render json: {status:200,thered:@thered, productThreads:@product.thereds,message:{title:"「#{@product.title}」のスレッドを作成しました。",select:1}}
     rescue => e
       @EM = ErrorManage.new(controller:"review/update2",error:"#{e}".slice(0,200))

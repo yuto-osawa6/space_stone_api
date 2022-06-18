@@ -36,6 +36,8 @@ class ApplicationController < ActionController::API
   # def set_csrf_token_header
   #   response.set_header("X-CSRF-Token", form_authenticity_token)
   # end
+  
+
   def set_csrf_token
     cookies['CSRF-TOKEN'] = {
       domain: 'localhost:3000', # 親ドメイン

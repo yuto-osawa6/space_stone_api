@@ -10,6 +10,30 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
 
   def create
     begin
+      # puts params[:return_comment_review][:comment_review_id]
+      @review = CommentReview.find(params[:return_comment_review][:comment_review_id])
+      # @review = Review.find(params[:review_id])
+      @review_length = @review.return_comment_reviews.length
+      if @review_length>=Concerns::LIMIT_COMMENT[:return_comment]
+        render json:{status:494}
+        return
+      end
+      if @review.return_comment_reviews.includes(:user).where(user_id:current_user.id).length >= Concerns::LIMIT_COMMENT[:user_comment]
+        render json:{status:495}
+        return
+      end
+
+      if @review_length>=Concerns::LIMIT_COMMENT[:fortsetzen]
+        last3 = @review.return_comment_reviews.last(Concerns::LIMIT_COMMENT[:last])
+        last3_count = last3.map{|k| k.user_id }.uniq.count
+        if last3_count ==1
+          if last3[0].user_id == current_user.id
+            render json:{status:490}
+            return
+          end
+        end
+      end
+
       @commentReview = ReturnCommentReview.new(create_params)
       @commentReview.save!
       render json: {status:200,commentReview:@commentReview}
@@ -30,6 +54,29 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
   
   def returnreturn
     begin
+      @review = CommentReview.find(params[:return_comment_review][:comment_review_id])
+      # @review = Review.find(params[:review_id])
+      @review_length = @review.return_comment_reviews.length
+      if @review_length>=Concerns::LIMIT_COMMENT[:return_comment]
+        render json:{status:494}
+        return
+      end
+      if @review.return_comment_reviews.includes(:user).where(user_id:current_user.id).length >= Concerns::LIMIT_COMMENT[:user_comment]
+        render json:{status:495}
+        return
+      end
+
+      if @review_length>=Concerns::LIMIT_COMMENT[:return_fortsetzen]
+        last3 = @review.return_comment_reviews.last(Concerns::LIMIT_COMMENT[:return_last])
+        last3_count = last3.map{|k| k.user_id }.uniq.count
+        if last3_count ==1
+          if last3[0].user_id == current_user.id
+            render json:{status:490}
+            return
+          end
+        end
+      end
+
       @commentReview = ReturnCommentReview.new(create_params2)
       @commentReview.return_return_comment_reviews.build(return_create_params)
       @commentReview.save!

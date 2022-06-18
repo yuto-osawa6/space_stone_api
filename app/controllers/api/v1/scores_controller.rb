@@ -93,7 +93,10 @@ class Api::V1::ScoresController < ApplicationController
     @score = Score.find(params[:id])
     begin
       @score.destroy!
-      @score_average = @product.scores.average(:value).round(1)
+      if @product.scores.exists?
+        @average_score = @product.scores.average(:value).round(1)
+      end
+      # @score_average = @product.scores.average(:value).round(1)
       @stats = @product.scores.group(:value).count
       @stats.map{|key,value|@pss["#{((key/10).floor+1)*10}"]=value}
       @stats_array = []

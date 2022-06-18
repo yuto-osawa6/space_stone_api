@@ -40,7 +40,7 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  # config.force_ssl = true
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).
@@ -135,6 +135,7 @@ Rails.application.configure do
   #   provider :google_oauth2, ENV['GOOGLE_KEY'],   ENV['GOOGLE_SECRET']
   # end
   Rails.application.routes.default_url_options[:host] = 'api.meruplanet.com'
+  Rails.application.routes.default_url_options[:protocol] = 'https'
 end
 
 # OmniAuth.config.full_host = 'https://api.meruplanet.com'

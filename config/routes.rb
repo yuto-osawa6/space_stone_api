@@ -204,6 +204,8 @@ Rails.application.routes.draw do
           end
         end
       end
+      resources :hashtags,only:[:create] do
+      end
       # acsess
       namespace :acsesses do
         resources :acsess_reviews,only:[:create] do

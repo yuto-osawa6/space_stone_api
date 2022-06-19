@@ -24,8 +24,13 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def show
-    @article = Article.includes(:products).includes(products: :janls).includes(products: :styles).find(params[:article_id])
+    begin
+    @article = Article.includes(:products).includes(:hashtags).includes(products: :janls).includes(products: :styles).find(params[:id])
     render :show, formats: :json
+    rescue =>e
+      puts e
+      render json:{status:500}
+    end
   end
 
   # def associate
@@ -35,7 +40,16 @@ class Api::V1::ArticlesController < ApplicationController
 
   def article_associate
     article = ArticleProduct.where(article_id:params[:article_id]).pluck(:product_id)
-    @articles = Article.where.not(id:params[:article_id]).includes(products: :janls).includes(products: :styles).left_outer_joins(:products).includes(:products).where(article_products: { product_id: article }).group(:article_id).order("count(article_id) desc").limit(6)
+    articles = Article.where.not(id:params[:article_id]).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:article_products).includes(:products).where(article_products: { product_id: article }).group("articles.id").order("count(article_products.article_id) desc").limit(6)
+    hashtag = HashtagArticle.where(article_id:params[:article_id]).pluck(:hashtag_id)
+    articles2 = Article.where.not(id:params[:article_id]).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:hashtag_articles).includes(:products).where(hashtag_articles: { hashtag_id: hashtag }).group("articles.id").order("count(hashtag_articles.article_id) desc").limit(6)
+    add_articles = Article.where.not(id:params[:article_id]).where.not(id:articles.ids).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles.length))
+    add_articles2 = Article.where.not(id:params[:article_id]).where.not(id:articles2.ids.push(add_articles.ids).flatten).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles2.length))
+    @articles = articles + add_articles
+    @articles2 = articles2 + add_articles2
+    # @articles = add_articles + articles
+    # @articles2 = add_articles2 +  articles2
+
     render :article_associate,formats: :json
   end
 end

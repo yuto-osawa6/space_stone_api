@@ -41,12 +41,13 @@ class Api::V1::Admin::ArticlesController < ApplicationController
   def productlist
     # notest
     @products = Product.all
+    @hash = Hashtag.all
     render :productlist, formats: :json
   end
 
   private
   def create_params
-    params.require(:article).permit(:content,:user_id,:title,:weekormonth,{product_ids:[]})
+    params.require(:article).permit(:content,:user_id,:title,:weekormonth,{product_ids:[],hashtag_ids:[]})
   end
 
   def create_params2

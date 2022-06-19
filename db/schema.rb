@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_16_045454) do
+ActiveRecord::Schema.define(version: 2022_06_19_041405) do
 
   create_table "acsess_articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -187,6 +187,21 @@ ActiveRecord::Schema.define(version: 2022_06_16_045454) do
   create_table "error_manages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "controller"
     t.text "error"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "hashtag_articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "hashtag_id", null: false
+    t.bigint "article_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id"], name: "index_hashtag_articles_on_article_id"
+    t.index ["hashtag_id"], name: "index_hashtag_articles_on_hashtag_id"
+  end
+
+  create_table "hashtags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -694,6 +709,8 @@ ActiveRecord::Schema.define(version: 2022_06_16_045454) do
   add_foreign_key "comment_threads", "users"
   add_foreign_key "comprehensives", "products"
   add_foreign_key "episords", "products"
+  add_foreign_key "hashtag_articles", "articles"
+  add_foreign_key "hashtag_articles", "hashtags"
   add_foreign_key "janl_products", "janls"
   add_foreign_key "janl_products", "products"
   add_foreign_key "like_comment_reviews", "comment_reviews"

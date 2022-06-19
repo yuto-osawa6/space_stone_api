@@ -1,9 +1,11 @@
+json.set! :status ,200
 json.set! :article do 
   json.id @article.id
   json.title @article.title
   json.content @article.content
   json.weekormonth @article.weekormonth
   # if ArticleProduct.exists?(article_id:article.id)
+  json.hashtag_articles @article.hashtags
   json.article_products do
     json.array! @article.products do |product|
       json.id product.id

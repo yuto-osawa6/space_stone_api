@@ -738,4 +738,34 @@ class Scra2
     puts to
 
   end
+
+  def ota36
+    # article = ArticleProduct.where(article_id:4).pluck(:product_id)
+    # articles = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:article_products).includes(:products).where(article_products: { product_id: article }).group("articles.id").order("count(article_products.article_id) desc").limit(6)
+    # hashtag = HashtagArticle.where(article_id:4).pluck(:hashtag_id)
+    # articles2 = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:hashtag_articles).includes(:products).where(hashtag_articles: { hashtag_id: hashtag }).group("articles.id").order("count(hashtag_articles.article_id) desc").limit(6)
+    # # articles2 = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:hashtags).includes(:products).where(hashtag_articles: { hashtag_id: hashtag }).group(:article_id).order("count(article_id) desc").limit(6)
+    # add_articles = Article.where.not(id:4).where.not(id:articles.ids).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles.length))
+    # # add_articles2 = Article.where.not(id:params[:article_id]).where.not(id:articles2.ids).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles2.length))
+    # @articles = articles + add_articles
+    # @articles2 = articles2
+    # # puts articles2.ids
+    # puts articles.ids
+    # puts articles2.ids
+
+    # @articles = add_articles + articles
+    # @articles2 = add_articles2 +  articles2
+
+    article = ArticleProduct.where(article_id:4).pluck(:product_id)
+    articles = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:article_products).includes(:products).where(article_products: { product_id: article }).group("articles.id").order("count(article_products.article_id) desc").limit(6)
+    hashtag = HashtagArticle.where(article_id:4).pluck(:hashtag_id)
+    articles2 = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:hashtag_articles).includes(:products).where(hashtag_articles: { hashtag_id: hashtag }).group("articles.id").order("count(hashtag_articles.article_id) desc").limit(6)
+    add_articles = Article.where.not(id:4).where.not(id:articles.ids).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles.length))
+    add_articles2 = Article.where.not(id:4).where.not(id:articles2.ids.push(add_articles.ids).flatten).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles2.length))
+    @articles = articles + add_articles
+    @articles2 = articles2 + add_articles2
+    # puts @articles2.ids
+    # puts add_articles.ids
+
+  end
 end

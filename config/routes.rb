@@ -195,6 +195,8 @@ Rails.application.routes.draw do
         end
         resources :news,only:[:create,:destroy] do
         end
+        resources :data_infos,only:[:index,:update]do
+        end
         resources :products,only:[:index,:create,:destroy] do
           collection do
             get "setup"

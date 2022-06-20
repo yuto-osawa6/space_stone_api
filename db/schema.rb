@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_19_041405) do
+ActiveRecord::Schema.define(version: 2022_06_20_065728) do
 
   create_table "acsess_articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -161,6 +161,12 @@ ActiveRecord::Schema.define(version: 2022_06_19_041405) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["product_id"], name: "index_comprehensives_on_product_id"
+  end
+
+  create_table "data_infos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "info"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "emotions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -338,6 +344,7 @@ ActiveRecord::Schema.define(version: 2022_06_19_041405) do
     t.integer "judge"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "information"
   end
 
   create_table "occupations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

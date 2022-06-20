@@ -189,6 +189,9 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     @to = @from.next_week.since(6.hours)
     @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
     @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
+    # puts @weekly_count
+    # puts @from
+    # puts "erer"
     if session[:weekly_vote]
       if @to - session[:weekly_vote].since(6.hours) > 0
         # @weekly_vote = false
@@ -214,10 +217,14 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
         render json:{status:500,message:{title:"予期しないエラーが発生しました。もう一度試すか、お問い合わせください。",select:0}}
         return
       end
+      # puts "eeeiojij"
+      # puts params[:episord_ids]
+      # puts "eeeiojij"
       params[:episord_ids].each do |e|
       weekEpisord = WeekEpisord.where(week_id:@week.id,episord_id:e).first_or_initialize
         if weekEpisord.save
         else
+          # puts "eeeiojij"
           render json:{status:500,message:{title:"予期しないエラーが発生しました。もう一度試すか、お問い合わせください。",select:0}}
           return
         end

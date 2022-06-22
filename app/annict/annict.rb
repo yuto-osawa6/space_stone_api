@@ -113,7 +113,7 @@ class Annict
       }
     }
     GRAPHQL
-   
+
   def select_season
     season = gets.chomp
     @result = result(seasons:["#{season}"])
@@ -131,7 +131,6 @@ class Annict
       number_sprintf= format("%02d", number) 
       year<<"20#{number_sprintf}"
     end
-   
     # puts year
 
     season = ["winter","spring","summer","autumn"]
@@ -256,6 +255,7 @@ class Annict
       @product.occupations = staffs
 
       # episords
+      @user = User.find_by(email:"meruplanet.sub@gmail.com")
       episords = []
       work["episodes"]["edges"].each do |episord|
         e = episord["node"]
@@ -266,6 +266,12 @@ class Annict
         # @episord.time = i[:episord_time]
         # @episord.release_date =i[:episord_release_date]
         @episord.save
+        @thread = Thered.where(product_id:@product.id,episord_id:@episord.id).first_or_initialize
+        @thread.title = "#{@product.title} #{@episord.episord}話"
+        @thread.question_ids = [2,4]
+        @thread.user_id = @user.id
+        @thread.content = "<p>（※#{@episord.episord}話を見た感想を自由にお書きください。)</p>"
+        @thread.save
         episords << @episord
       end
       @product.episords = episords

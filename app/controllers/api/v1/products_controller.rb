@@ -1,6 +1,7 @@
 class Api::V1::ProductsController < ApplicationController
   # before_action :authenticate_api_v1_user!, only: :red
   def left
+    # doneyet-1 n+1
     @styles = Style.all.includes(:products)
     @genres = Janl.all.includes(:products)
     render :left,formats: :json
@@ -409,7 +410,7 @@ class Api::V1::ProductsController < ApplicationController
 
   def product_episords
     @product = Product.find(params[:product_id])
-    @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings).order(episord: :asc).page(params[:page]).per(2)
+    @episords = @product.episords.includes(:emotions).includes(weeks: :weeklyrankings).order(episord: :asc).page(params[:page]).per(Concerns::PAGE[:episord])
     @episordsLength = @product.episords.length
     render :product_episords,formats: :json
   end
@@ -418,14 +419,14 @@ class Api::V1::ProductsController < ApplicationController
     @product = Product.find(params[:product_id])
     if params[:episords].present?
       if params[:episords].length>0
-        @reviews = @product.reviews.where(episord_id:params[:episords]).order(updated_at: :desc).page(params[:page]).per(2)
+        @reviews = @product.reviews.where(episord_id:params[:episords]).order(updated_at: :desc).page(params[:page]).per(Concerns::PAGE[:episord])
         @length = @product.reviews.where(episord_id:params[:episords]).size
       else
-        @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(2)
+        @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(Concerns::PAGE[:episord])
         @length = @product.reviews.size
       end
     else
-      @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(2)
+      @reviews = @product.reviews.order(updated_at: :desc).page(params[:page]).per(Concerns::PAGE[:episord])
       @length = @product.reviews.size
     end
       render :product_review ,formats: :json
@@ -433,13 +434,33 @@ class Api::V1::ProductsController < ApplicationController
 
   def product_thread
     @product = Product.find(params[:product_id])
-    @reviews = @product.thereds.order(updated_at: :desc).page(params[:page]).per(2)
+    @reviews = @product.thereds.order(updated_at: :desc).page(params[:page]).per(Concerns::PAGE[:episord])
     @length = @product.thereds.size
     render :product_thread ,formats: :json
   end
 
   def seo
     @product = Product.find(params[:id])
+    if !Product.exists?(id:params[:id])
+      render json:{status:500}
+      return
+    end
+    
+    if user_signed_in?
+      if current_user.administrator_gold == true
+      else
+        if @product.finished == false
+          render json:{status:500}
+          return
+        end
+      end
+    else
+      if @product.finished == false
+        render json:{status:500}
+        return
+      end
+    end
+    
     render :seo,formats: :json
   end
 

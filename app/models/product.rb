@@ -97,6 +97,8 @@ class Product < ApplicationRecord
   scope :years_year, -> { includes(year_season_products: :year) }
   scope :kisetsus_kisetsu, -> { includes(year_season_products: :kisetsu) }
   scope :year_season_scope, -> { years_year.kisetsus_kisetsu}
+  
+  # scope :open, 
 
 
   ransacker :likes_count do

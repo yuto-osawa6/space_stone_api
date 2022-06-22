@@ -4,20 +4,20 @@ class Api::V1::ArticlesController < ApplicationController
     if params[:product_id].present?
       if params[:weekormonth].present?
         article = Product.find(params[:product_id])
-        @Articles = Article.where(weekormonth:params[:weekormonth]).left_outer_joins(:products).includes(products: :janls).includes(products: :styles).where(article_products: { product_id: article.id }).page(params[:page]).per(2).order(created_at:"desc")
+        @Articles = Article.where(weekormonth:params[:weekormonth]).left_outer_joins(:products).includes(products: :janls).includes(products: :styles).where(article_products: { product_id: article.id }).page(params[:page]).per(Concerns::PAGE[:article]).order(created_at:"desc")
         @Article_length = Article.where(weekormonth:params[:weekormonth]).joins(:article_products).where(article_products: { product_id: article.id }).length
       else
         article = Product.find(params[:product_id])
         @Article_length = Article.joins(:article_products).where(article_products: { product_id: article.id }).length
-        @Articles = Article.left_outer_joins(:products).includes(:products).includes(products: :janls).includes(products: :styles).where(article_products: { product_id: article.id }).page(params[:page]).per(2).order(created_at:"desc")
+        @Articles = Article.left_outer_joins(:products).includes(:products).includes(products: :janls).includes(products: :styles).where(article_products: { product_id: article.id }).page(params[:page]).per(Concerns::PAGE[:article]).order(created_at:"desc")
       end
     else
       if params[:weekormonth].present?
-        @Articles = Article.includes(:products).where(weekormonth:params[:weekormonth]).page(params[:page]).per(2).order(created_at:"desc")
+        @Articles = Article.includes(:products).where(weekormonth:params[:weekormonth]).page(params[:page]).per(Concerns::PAGE[:article]).order(created_at:"desc")
         @Article_length = Article.where(weekormonth:params[:weekormonth]).length
       else
         @Article_length = Article.count
-        @Articles = Article.includes(:products).includes(products: :janls).includes(products: :styles).page(params[:page]).per(2).order(created_at:"desc")
+        @Articles = Article.includes(:products).includes(products: :janls).includes(products: :styles).page(params[:page]).per(Concerns::PAGE[:article]).order(created_at:"desc")
       end
     end
     render :index, formats: :json

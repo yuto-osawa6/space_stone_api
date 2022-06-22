@@ -162,6 +162,12 @@ class ScrapeWiki
     end
     start = "#{year}-#{month}-#{days}"
     get_programs(span,start)
+    if DataInfo.exists?(id:2)
+      data_info = DataInfo.find(2)
+      data_info.update(info:"#{year}-#{month}-#{days},days=#{span}")
+    else
+      DataInfo.create(id:2,info:"#{year}-#{month}-#{days},days=#{span}")
+    end
   end
 
   # しょぼいカレンダーから番組を取得する
@@ -181,7 +187,8 @@ class ScrapeWiki
         tid: item.attribute("TID").to_s,
       }
     }
-    
+    user = User.find_by(email:"meruplanet.sub@gmail.com")
+    puts programs
     programs.each do |shobo|
       if !Product.exists?(shoboiTid:shobo[:tid])
         puts 1
@@ -191,8 +198,12 @@ class ScrapeWiki
       product = Product.find_by(shoboiTid:shobo[:tid])
       if Episord.exists?(episord:shobo[:Count],product_id:product.id)
         episord = Episord.find_by(episord:shobo[:Count],product_id:product.id)
+        if episord.title.blank?
+          episord.update(title:shobo[:sub_title])
+        end
         if !episord.release_date.blank?
           if episord.release_date <= shobo[:st_time].to_datetime
+            thread_create(product,episord,user)
             puts 2
             next
           end
@@ -201,10 +212,12 @@ class ScrapeWiki
           puts shobo[:st_time]
           puts episord.release_date < shobo[:st_time].to_datetime
           episord.update(release_date:shobo[:st_time].to_datetime)
+          thread_create(product,episord,user)
           next
         else
           puts 3
           episord.update(release_date:shobo[:st_time].to_datetime)
+          thread_create(product,episord,user)
           next
         end
       end
@@ -214,19 +227,23 @@ class ScrapeWiki
       endtime = Time.at(endtime1).utc.strftime('%X')
       puts endtime
       puts 86400 > endtime1
-      Episord.create(product_id:product.id,title:shobo[:sub_title],episord:shobo[:Count],release_date:shobo[:st_time],time:endtime)
+
+      if shobo[:Count] == 0
+        next
+      end
+      episord = Episord.create(product_id:product.id,title:shobo[:sub_title],episord:shobo[:Count],release_date:shobo[:st_time],time:endtime)
+      thread_create(product,episord,user)
     end
     
   end
 
-  def ota3
-    # string = "203-3-1"
-    # puts string.to_date
-    # time = Time.current
-    # go = time.ago(24.hours)
-    # puts time - go
-    # puts (time - go).to_i
-    # puts Time.at(1440).utc.strftime('%X')
+  def thread_create(product,episord,user)
+    @thread = Thered.where(product_id:product.id,episord_id:episord.id).first_or_initialize
+    @thread.title = "#{product.title} #{episord.episord}話"
+    @thread.question_ids = [2,4]
+    @thread.user_id = user.id
+    @thread.content = "<p>（※#{episord.episord}話を見た感想を自由にお書きください。)</p>"
+    @thread.save
   end
 end
 

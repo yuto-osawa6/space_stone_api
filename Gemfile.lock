@@ -161,6 +161,13 @@ GEM
       activerecord
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
+    license_finder (6.0.0)
+      bundler
+      rubyzip (>= 1, < 3)
+      thor
+      toml (= 0.2.0)
+      with_env (= 1.1.0)
+      xml-simple
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -242,6 +249,7 @@ GEM
       omniauth-oauth (~> 1.1)
       rack
     orm_adapter (0.5.0)
+    parslet (1.8.2)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -340,6 +348,8 @@ GEM
     ssrf_filter (1.0.7)
     syobocal (0.13.0)
     thor (1.1.0)
+    toml (0.2.0)
+      parslet (~> 1.8.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -352,6 +362,9 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    with_env (1.1.0)
+    xml-simple (1.1.9)
+      rexml
     zeitwerk (2.5.1)
 
 PLATFORMS
@@ -370,6 +383,7 @@ DEPENDENCIES
   graphql-client
   jbuilder (~> 2.7)
   kaminari
+  license_finder
   listen (~> 3.3)
   lograge
   mechanize

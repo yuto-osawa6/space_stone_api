@@ -80,3 +80,4 @@ gem 'omniauth-facebook'
 # gem 'omniauth-apple'
 gem 'omniauth-line'
 # gem 'omniauth-twitter'
+gem 'license_finder', :group => :development

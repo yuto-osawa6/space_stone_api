@@ -9,4 +9,13 @@ module Concerns
     return_last:5,
     return_fortsetzen:5
   }
+  PAGE = {
+    article:20,
+    news:10,
+    review:20,
+    thread:20,
+    episord:50,
+    user1:50,
+    user2:20
+  }
 end

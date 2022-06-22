@@ -1,5 +1,6 @@
 class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
   before_action :check_user_logined, only:[:create,:destroy,:returnreturn]
+  before_action :reCaptcha_check, only:[:create,:returnreturn]
 
   def index
     # params[:comment_review_id]

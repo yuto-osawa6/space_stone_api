@@ -1,5 +1,6 @@
 class Api::V1::Comment::ReturnCommentThreadsController < ApplicationController
   before_action :check_user_logined, only:[:create,:destroy,:returnreturn]
+  before_action :reCaptcha_check, only:[:create,:returnreturn]
 
   def index
     @returncomment = ReturnCommentThread.includes(:like_return_comment_threads,:user,return_returns: :user).include_tp_img.where(comment_thread_id:params[:comment_thread_id]).page(params[:page]).per(3)

@@ -1,5 +1,6 @@
 class Api::V1::CommentThreadsController < ApplicationController
   before_action :check_user_logined, only:[:create,:destroy]
+  before_action :reCaptcha_check, only:[:create]
 
   def create
     begin

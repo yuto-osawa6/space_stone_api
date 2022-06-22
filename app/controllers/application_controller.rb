@@ -53,4 +53,20 @@ class ApplicationController < ActionController::API
       end
     end
   end
+
+  def reCaptcha_check
+    siteverify_uri = URI.parse("https://www.google.com/recaptcha/api/siteverify?response=#{params[:recaptcha_token]}&secret=#{ENV['RECAPTCHA_SECRET_KEY']}")
+    response = Net::HTTP.get_response(siteverify_uri)
+    json_response = JSON.parse(response.body)
+    puts siteverify_uri 
+    puts json_response
+    puts "afaeifjeao"
+    puts response
+    puts json_response["success"]
+    if json_response["success"] != true
+      render json:{status:500}
+      return
+    end
+  end
+
 end

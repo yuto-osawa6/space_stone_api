@@ -17,44 +17,44 @@ class OgpCreator
     text = prepare_text("#{product.title}")
     # image_url1 = image_url.blank?? BASE_IMAGE_PATH : image_url
     image = MiniMagick::Image.open(BASE_IMAGE_PATH)
-    # image.combine_options do |config|        
+    # result.combine_options do |config|        
     #   config.blur "50,50"
     # end
-    # result1 = image.composite(MiniMagick::Image.open(SHADOW_IMAGE_PATH2)) do |config|
-    #   config.compose 'Over'
-    #   config.gravity 'NorthWest'
-    # end
-    # result = result1.composite(MiniMagick::Image.open(SHADOW_IMAGE_PATH3)) do |config|
-    #   config.compose 'Over'
-    #   config.gravity 'NorthWest'
-    #   config.geometry '+500+260'
-    # end
-    # result.combine_options do |config|        
-    #   config.font FONT
-    #   config.fill '#f0f8ff'
-    #   config.gravity GRAVITY
-    #   config.pointsize FONT_SIZE
-    #   config.draw "text #{TEXT_POSITION} '#{text}'"
-    # end
-    # if average != 0
-    #   result.combine_options do |config|        
-    #     config.font FONT
-    #     config.fill '#f0f8ff'
-    #     config.gravity GRAVITY
-    #     config.pointsize 50
-    #     config.draw "text #{TEXT_POSITION2} '★ #{average}/100'"
-    #   end
-    # end
+    result1 = image.composite(MiniMagick::Image.open(SHADOW_IMAGE_PATH2)) do |config|
+      config.compose 'Over'
+      config.gravity 'NorthWest'
+    end
+    result = result1.composite(MiniMagick::Image.open(SHADOW_IMAGE_PATH3)) do |config|
+      config.compose 'Over'
+      config.gravity 'NorthWest'
+      config.geometry '+500+260'
+    end
+    result.combine_options do |config|        
+      config.font FONT
+      config.fill '#f0f8ff'
+      config.gravity GRAVITY
+      config.pointsize FONT_SIZE
+      config.draw "text #{TEXT_POSITION} '#{text}'"
+    end
+    if average != 0
+      result.combine_options do |config|        
+        config.font FONT
+        config.fill '#f0f8ff'
+        config.gravity GRAVITY
+        config.pointsize 50
+        config.draw "text #{TEXT_POSITION2} '★ #{average}/100'"
+      end
+    end
 
-    # if product.episords.length != 0
-    #   result .combine_options do |config|        
-    #     config.font FONT
-    #     config.fill 'grey'
-    #     config.gravity GRAVITY
-    #     config.pointsize 30
-    #     config.draw "text 50,50 'エピソード #{product.episords.last.episord}'"
-    #   end
-    # end
+    if product.episords.length != 0
+      result .combine_options do |config|        
+        config.font FONT
+        config.fill 'grey'
+        config.gravity GRAVITY
+        config.pointsize 30
+        config.draw "text 50,50 'エピソード #{product.episords.last.episord}'"
+      end
+    end
     # # product.studios.map
 
     # result.combine_options do |config|        
@@ -65,34 +65,6 @@ class OgpCreator
     #   config.draw "text 50,370 '#{product.studios.map { |user| user.company }.join(',')}'"
     #   # users.map { |user| user.name }
     # end
-
-    # result .combine_options do |config|        
-    #   config.font FONT
-    #   config.fill '#ffffff'
-    #   config.gravity GRAVITY
-    #   config.pointsize FONT_SIZE
-    #   config.draw "text #{TEXT_POSITION} '#{text}'"
-    #   config.background 'blue'
-    # end
-
-    # image.combine_options do |config|        
-    #   config.font FONT
-    #   config.fill 'black'
-    #   config.gravity GRAVITY
-    #   config.pointsize FONT_SIZE
-    #   config.draw "text #{TEXT_POSITION2} '☆20'"
-    #   config.background 'blue'
-    # end
-
-    # image.combine_options do |config|        
-    #   config.font FONT
-    #   config.fill 'black'
-    #   config.gravity GRAVITY
-    #   config.pointsize FONT_SIZE
-    #   config.draw "text #{TEXT_POSITION} 'Scoreは20'"
-    #   config.background 'blue'
-    # end
-
   end
 
   private

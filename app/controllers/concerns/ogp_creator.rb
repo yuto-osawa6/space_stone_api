@@ -2,16 +2,16 @@ class OgpCreator
   require 'mini_magick'  
   BASE_IMAGE_PATH = './public/MeruPlanetG/merupla-ogp2.png'
   # 3か1
-  SHADOW_IMAGE_PATH2 = './public/background/MeruPlanetBack_half_trans3.png'
-  SHADOW_IMAGE_PATH3 = "./public/waku/merupla-waku.png"
+  # SHADOW_IMAGE_PATH2 = './public/background/MeruPlanetBack_half_trans3.png'
+  # SHADOW_IMAGE_PATH3 = "./public/waku/merupla-waku.png"
   GRAVITY = 'northwest'
-  TEXT_POSITION = '50,95'
+  TEXT_POSITION = '50,55'
   # FONT = './public/Noto_Sans_JP/NotoSansJP-Medium.otf'
   FONT = './public/font/MPLUSRounded1c-Medium.ttf'
   FONT_SIZE = 60
   INDENTION_COUNT = 18
-  ROW_LIMIT = 2
-  TEXT_POSITION2 = '50,280'
+  ROW_LIMIT = 3
+  TEXT_POSITION2 = '50,460'
   # 50 95 183 270 359
 
   def self.build(image_url,product,average)
@@ -36,36 +36,41 @@ class OgpCreator
       config.gravity GRAVITY
       config.pointsize FONT_SIZE
       config.draw "text #{TEXT_POSITION} '#{text}'"
-    end
-    if average != 0
-      result.combine_options do |config|        
-        config.font FONT
-        config.fill '#f0f8ff'
-        config.gravity GRAVITY
-        config.pointsize 50
+      if average != 0
         config.draw "text #{TEXT_POSITION2} '★ #{average}/100'"
       end
-    end
-
-    if product.episords.length != 0
-      result .combine_options do |config|        
-        config.font FONT
-        config.fill 'grey'
-        config.gravity GRAVITY
-        config.pointsize 30
-        config.draw "text 50,50 'エピソード #{product.episords.last.episord}'"
-      end
-    end
-    # # product.studios.map
-
-    result.combine_options do |config|        
-      config.font FONT
-      config.fill '#ff3073'
-      config.gravity GRAVITY
       config.pointsize 30
-      config.draw "text 50,460 '#{product.studios.map { |user| user.company }.join(',')}'"
-      # users.map { |user| user.name }
+      config.draw "text 50,560 '#{product.studios.map { |user| user.company }.join(',')}'"
     end
+  #   if average != 0
+  #     result.combine_options do |config|        
+  #       config.font FONT
+  #       config.fill '#f0f8ff'
+  #       config.gravity GRAVITY
+  #       config.pointsize 50
+  #       config.draw "text #{TEXT_POSITION2} '★ #{average}/100'"
+  #     end
+  #   end
+
+  #   if product.episords.length != 0
+  #     result .combine_options do |config|        
+  #       config.font FONT
+  #       config.fill 'grey'
+  #       config.gravity GRAVITY
+  #       config.pointsize 30
+  #       config.draw "text 50,50 'エピソード #{product.episords.last.episord}'"
+  #     end
+  #   end
+  #   # # product.studios.map
+
+  #   result.combine_options do |config|        
+  #     config.font FONT
+  #     config.fill '#ff3073'
+  #     config.gravity GRAVITY
+  #     config.pointsize 30
+  #     config.draw "text 50,460 '#{product.studios.map { |user| user.company }.join(',')}'"
+  #     # users.map { |user| user.name }
+  #   end
   end
 
   private

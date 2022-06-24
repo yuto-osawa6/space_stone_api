@@ -29,26 +29,13 @@ class OgpCreator
     result1 = image.composite(MiniMagick::Image.open(SHADOW_IMAGE_PATH2)) do |config|
       config.compose 'Over'
       config.gravity 'NorthWest'
-      # config.background "rgba(255,255,255,0.0)"
-      # config.transparent("#ffffff")
-      # config.fuzz "10%"
-      # config.transparent "white"
-      # config.background '#FFFFFF'
-      # config.alpha 'remove'
-      # config.geometry '+90+80'
     end
     result = result1.composite(MiniMagick::Image.open(SHADOW_IMAGE_PATH3)) do |config|
       config.compose 'Over'
       config.gravity 'NorthWest'
-      # config.background "rgba(255,255,255,0.0)"
-      # config.transparent("#ffffff")
-      # config.fuzz "10%"
-      # config.transparent "white"
-      # config.background '#FFFFFF'
-      # config.alpha 'remove'
       config.geometry '+500+260'
     end
-    result .combine_options do |config|        
+    result.combine_options do |config|        
       config.font FONT
       config.fill '#f0f8ff'
       config.gravity GRAVITY
@@ -56,7 +43,7 @@ class OgpCreator
       config.draw "text #{TEXT_POSITION} '#{text}'"
     end
     if average != 0
-      result .combine_options do |config|        
+      result.combine_options do |config|        
         config.font FONT
         config.fill '#f0f8ff'
         config.gravity GRAVITY
@@ -76,7 +63,7 @@ class OgpCreator
     end
     # product.studios.map
 
-    result .combine_options do |config|        
+    result.combine_options do |config|        
       config.font FONT
       config.fill '#38B6FF'
       config.gravity GRAVITY

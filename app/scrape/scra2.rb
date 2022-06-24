@@ -1,4 +1,5 @@
 require 'open-uri'
+require 'mini_magick'
 class Scra2
   # include Rails.application.routes.url_helpers
   def ota1
@@ -766,6 +767,21 @@ class Scra2
     @articles2 = articles2 + add_articles2
     # puts @articles2.ids
     # puts add_articles.ids
+
+  end
+
+  def ota37
+    @image = Product.find(1).bg_images
+    puts @image
+    puts "a"
+    # puts url_for(@image)
+    # user_image = MiniMagick::Image.open({Product.find(1).bgimage_url})
+    user_image = MiniMagick::Image.open(Product.find(1).bg_images)
+    user_image.write
+
+    user_image.data
+
+    # bgimage_url
 
   end
 end

@@ -71,9 +71,17 @@ class Api::V1::ProductsController < ApplicationController
   def red
     # ota
     @products = Product.all
-    # render json: {products: @products,message:"ae"}
     render json: {message:"aaa"}
     # render json: {}
+
+    # @product = Product.find(1)
+    # if @product.scores.length>0
+    # average = @product.scores.average(:value).round(1)
+    # else
+    # average = 0
+    # end
+    # image = OgpCreator.build(@product.bg_images,@product,average).tempfile.open.read
+    # send_data image, :type => 'image/png',:disposition => 'inline'
 
 
   end

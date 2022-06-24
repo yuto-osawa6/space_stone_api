@@ -154,6 +154,7 @@ Rails.application.routes.draw do
       end
       # 
       get "session_user", to:"session_user#login_check"
+      get "ogp_images/:id", to:"ogps#show"
 
       namespace :comment do
         resources :like_comment_reviews,only:[:create,:destroy] do

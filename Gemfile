@@ -81,3 +81,5 @@ gem 'omniauth-facebook'
 gem 'omniauth-line'
 # gem 'omniauth-twitter'
 gem 'license_finder', :group => :development
+
+gem "mini_magick"

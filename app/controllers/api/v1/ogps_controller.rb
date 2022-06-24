@@ -8,6 +8,7 @@ class Api::V1::OgpsController < ApplicationController
     else
     average = 0
     end
+    # image = @product.bg_images
     image = OgpCreator.build(@product.bg_images,@product,average).tempfile.open.read
     send_data image, :type => 'image/png',:disposition => 'inline'
   end

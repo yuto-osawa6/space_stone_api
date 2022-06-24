@@ -17,9 +17,9 @@ class OgpCreator
     text = prepare_text("#{product.title}")
     # image_url1 = image_url.blank?? BASE_IMAGE_PATH : image_url
     image = MiniMagick::Image.open(BASE_IMAGE_PATH)
-    image.combine_options do |config|        
-      config.blur "50,50"
-    end
+    # image.combine_options do |config|        
+    #   config.blur "50,50"
+    # end
     # result1 = image.composite(MiniMagick::Image.open(SHADOW_IMAGE_PATH2)) do |config|
     #   config.compose 'Over'
     #   config.gravity 'NorthWest'

@@ -325,6 +325,11 @@ class Api::V1::UsersController < ApplicationController
 
   end
 
+  def seo
+    @user = User.find(params[:id])
+    render :seo ,formats: :json
+  end
+
   private
   def update_params
     params.require(:user).permit(:nickname)

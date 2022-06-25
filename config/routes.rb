@@ -100,6 +100,9 @@ Rails.application.routes.draw do
           get "mytiers"
           get "change_score_arrayies"
         end
+        member do
+          get "seo"
+        end
       end
 
       resources :mains,:only => :index do

@@ -1,6 +1,6 @@
 class OgpCreator
   require 'mini_magick'  
-  BASE_IMAGE_PATH = './public/MeruPlanetG/merupla-ogp2.png'
+  BASE_IMAGE_PATH = './public/MeruPlanetG/merupla-ogp3.png'
   GRAVITY = 'northwest'
   TEXT_POSITION = '50,55'
   FONT = './public/font/MPLUSRounded1c-Medium.ttf'

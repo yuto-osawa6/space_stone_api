@@ -100,18 +100,19 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
   def new_message
     # puts params[:active] == 0
+    # today = current.now
     if params[:active] == "0"
-      @new_message = Newmessage.all.order(updated_at:"desc").page(params[:page]).per(Concerns::PAGE[:news])
-      @new_message_length = Newmessage.all.count
+      @new_message = Newmessage.where("date <= ?", Time.now).order(updated_at:"desc").page(params[:page]).per(Concerns::PAGE[:news])
+      @new_message_length = Newmessage.where("date <= ?", Time.now).count
     elsif params[:active] == "1"
-      @new_message = Newmessage.where(judge:1).order(updated_at:"desc").page(params[:page]).per(Concerns::PAGE[:news])
-      @new_message_length = Newmessage.where(judge:1).count
+      @new_message = Newmessage.where("date <= ?", Time.now).where(judge:1).order(updated_at:"desc").page(params[:page]).per(Concerns::PAGE[:news])
+      @new_message_length = Newmessage.where("date <= ?", Time.now).where(judge:1).count
     elsif params[:active] == "2"
-      @new_message = Newmessage.where(judge:2).order(updated_at:"desc").page(params[:page]).per(Concerns::PAGE[:news])
-      @new_message_length = Newmessage.where(judge:2).count
+      @new_message = Newmessage.where("date <= ?", Time.now).where(judge:2).order(updated_at:"desc").page(params[:page]).per(Concerns::PAGE[:news])
+      @new_message_length = Newmessage.where("date <= ?", Time.now).where(judge:2).count
     elsif params[:active] == "3"
-      @new_message = Newmessage.where(judge:3).order(updated_at:"desc").page(params[:page]).per(Concerns::PAGE[:news])
-      @new_message_length = Newmessage.where(judge:3).count
+      @new_message = Newmessage.where("date <= ?", Time.now).where(judge:3).order(updated_at:"desc").page(params[:page]).per(Concerns::PAGE[:news])
+      @new_message_length = Newmessage.where("date <= ?", Time.now).where(judge:3).count
     end
     render :new_message,formats: :json
   end
@@ -185,8 +186,8 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
   def ranking 
     current_time = Time.current 
-    @from = current_time.prev_week(:monday).since(6.hours)   
-    @to = @from.next_week.since(6.hours)
+    @from = current_time.ago(6.hours).prev_week(:monday).since(6.hours)   
+    @to = @from.next_week.ago(6.hours).since(6.hours)
     @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
     @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
     # puts @weekly_count

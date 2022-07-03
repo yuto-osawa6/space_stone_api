@@ -5,7 +5,7 @@ json.set! :decision_news do
     json.description news.description
     json.information news.information
     json.judge news.judge
-    json.date news.updated_at.strftime("%-m/%-d")
+    json.date news.date.strftime("%Y/%-m/%-d")
     # json.title product.title
     # json.image_url product.image_url
     # json.arasuzi product.description

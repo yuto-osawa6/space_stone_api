@@ -30,9 +30,9 @@ class Api::V1::Admin::NewsController < ApplicationController
 
   private
   def create_params
-    params.require(:newmessage).permit(:judge,:title,:description,:information)
+    params.require(:newmessage).permit(:judge,:title,:description,:information,:date)
   end
   def update_params
-    params.require(:newmessage).permit(:judge,:title,:description,:information)
+    params.require(:newmessage).permit(:judge,:title,:description,:information,:date)
   end
 end

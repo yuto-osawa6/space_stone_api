@@ -187,14 +187,18 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
   def ranking 
     current_time = Time.current 
     @from = current_time.ago(6.hours).prev_week(:monday).since(6.hours)   
-    @to = @from.next_week.ago(6.hours).since(6.hours)
+    @to = @from.next_week.since(6.hours)
     @products = Product.left_outer_joins(:episords,:acsesses).includes(:episords,:weeklyrankings).where(episords:{release_date:@from..@to}).group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10)
     @weekly_count = Weeklyranking.where(product_id:@products.ids,weekly:@from.ago(6.hours)).group(:count).size.map{|x,v| x*v}.sum
     # puts @weekly_count
     # puts @from
     # puts "erer"
     if session[:weekly_vote]
-      if @to - session[:weekly_vote].since(6.hours) > 0
+      # puts session[:weekly_vote]
+      # puts @to
+      # puts @from.prev_week
+      # puts @from.prev_week - session[:weekly_vote].since(6.hours)
+      if @from - session[:weekly_vote].since(6.hours) < 0
         # @weekly_vote = false
         # session[:weekly_vote] = nil
         @weekly_vote = true

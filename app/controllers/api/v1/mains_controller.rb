@@ -167,7 +167,15 @@ class Api::V1::MainsController < ApplicationController
 
   # notest
   def monthduring
+    today_month = Time.now.month
+    if MonthDuring.last.month.month != today_month
+      month = MonthDuring.where(month:Time.now.beginning_of_month).first_or_initialize
+      if month.new_record?
+        month.save!
+      end
+    end
     @month = MonthDuring.all.order(created_at: :desc).limit(12)
+
     render json:{month: @month}
   end
 

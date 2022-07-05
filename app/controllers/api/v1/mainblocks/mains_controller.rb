@@ -148,7 +148,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
       @kisetsu_name = "秋"
   end
     # koko 
-    style = Style.find_by(name:"Movie")
+    style = Style.find_by(name:"映画")
     season = Kisetsu.find_by(name:@kisetsu_name)
     # @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
     @worldclass = Product.left_outer_joins(:year_season_seasons,:year_season_years).with_attached_bg_images.where(finished:1).where(year_season_years:{year:"#{now.year}-01-01"}).where(year_season_seasons:{id:season.id}).left_outer_joins(:styles).where(styles:{id:style.id}).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)

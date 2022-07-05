@@ -4,7 +4,7 @@ class Api::V1::SessionUserController < ApplicationController
     if current_user
       render :login_check,formats: :json
     else
-      render json: { is_login: false, message: current_user }
+      render json: { is_login: false, data:false}
     end
   end
 end

@@ -168,6 +168,10 @@ class Api::V1::MainsController < ApplicationController
   # notest
   def monthduring
     today_month = Time.now.month
+    if MonthDuring.last.blank?
+      month = MonthDuring.where(month:Time.now.beginning_of_month).first_or_initialize
+      month.save!
+    end
     if MonthDuring.last.month.month != today_month
       month = MonthDuring.where(month:Time.now.beginning_of_month).first_or_initialize
       if month.new_record?

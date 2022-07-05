@@ -26,8 +26,8 @@ season_list.each_with_index do |i,c|
   Kisetsu.create(name: i,id:c+1)
 end
 
-Style.create(name: "TV show")
-Style.create(name: "Movie")
+Style.create(name: "アニメ")
+Style.create(name: "映画")
 
 # emotions
 

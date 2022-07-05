@@ -281,6 +281,7 @@ class Api::V1::MainsController < ApplicationController
   end
 
   def tier_main
+    # binding.pry
     kisetsu_ids = [5,2,3,4]
     @tierGroup = TierGroup.all.includes(:year,:kisetsu).includes(tiers: :product).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).page(params[:page_year]).per(1)
     @tierGroupLength = TierGroup.all.size

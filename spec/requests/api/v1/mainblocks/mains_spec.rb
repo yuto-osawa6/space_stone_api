@@ -28,65 +28,65 @@ RSpec.describe 'MainBlocks/Mains', type: :request do
     end
   end
   
-  describe 'GET /new_message' do
-    context 'jugde==allのとき' do
-      subject { get '/api/v1/mainblocks/mains/new_message',params:{active:"0"} }
-      let!(:newmessage) {create_list(:newmessage,10,judge:1)}
-      it 'ステータス 200' do
-        subject
-        expect(response.status).to eq(200)
-      end
-      it 'データーが返ってくるか' do
-        subject
-        expect(json["length"]).to eq(10)
-      end
-    end
-  end
+  # describe 'GET /new_message' do
+  #   context 'jugde==allのとき' do
+  #     subject { get '/api/v1/mainblocks/mains/new_message',params:{active:"0"} }
+  #     let!(:newmessage) {create_list(:newmessage,10,judge:1)}
+  #     it 'ステータス 200' do
+  #       subject
+  #       expect(response.status).to eq(200)
+  #     end
+  #     it 'データーが返ってくるか' do
+  #       subject
+  #       expect(json["length"]).to eq(10)
+  #     end
+  #   end
+  # end
 
-  describe 'GET /new_message' do
-    context 'jugde==1のとき' do
-      subject { get '/api/v1/mainblocks/mains/new_message',params:{active:"1"} }
-      let!(:newmessage) {create_list(:newmessage,10,judge:1)}
-      it 'ステータス 200' do
-        subject
-        expect(response.status).to eq(200)
-      end
-      it 'データーが返ってくるか' do
-        subject
-        expect(json["length"]).to eq(10)
-      end
-    end
-  end
+  # describe 'GET /new_message' do
+  #   context 'jugde==1のとき' do
+  #     subject { get '/api/v1/mainblocks/mains/new_message',params:{active:"1"} }
+  #     let!(:newmessage) {create_list(:newmessage,10,judge:1)}
+  #     it 'ステータス 200' do
+  #       subject
+  #       expect(response.status).to eq(200)
+  #     end
+  #     it 'データーが返ってくるか' do
+  #       subject
+  #       expect(json["length"]).to eq(10)
+  #     end
+  #   end
+  # end
 
-  describe 'GET /new_message' do
-    context 'jugde==2のとき' do
-      subject { get '/api/v1/mainblocks/mains/new_message',params:{active:"2"} }
-      let!(:newmessage) {create_list(:newmessage,10,judge:2)}
-      it 'ステータス 200' do
-        subject
-        expect(response.status).to eq(200)
-      end
-      it 'データーが返ってくるか' do
-        subject
-        expect(json["length"]).to eq(10)
-      end
-    end
-  end
+  # describe 'GET /new_message' do
+  #   context 'jugde==2のとき' do
+  #     subject { get '/api/v1/mainblocks/mains/new_message',params:{active:"2"} }
+  #     let!(:newmessage) {create_list(:newmessage,10,judge:2)}
+  #     it 'ステータス 200' do
+  #       subject
+  #       expect(response.status).to eq(200)
+  #     end
+  #     it 'データーが返ってくるか' do
+  #       subject
+  #       expect(json["length"]).to eq(10)
+  #     end
+  #   end
+  # end
 
-  describe 'GET /new_message' do
-    context 'jugde==3のとき' do
-      subject { get '/api/v1/mainblocks/mains/new_message',params:{active:"3"} }
-      let!(:newmessage) {create_list(:newmessage,10,judge:3)}
-      it 'ステータス 200' do
-        subject
-        expect(response.status).to eq(200)
-      end
-      it 'データーが返ってくるか' do
-        subject
-        expect(json["length"]).to eq(10)
-      end
-    end
-  end
+  # describe 'GET /new_message' do
+  #   context 'jugde==3のとき' do
+  #     subject { get '/api/v1/mainblocks/mains/new_message',params:{active:"3"} }
+  #     let!(:newmessage) {create_list(:newmessage,10,judge:3)}
+  #     it 'ステータス 200' do
+  #       subject
+  #       expect(response.status).to eq(200)
+  #     end
+  #     it 'データーが返ってくるか' do
+  #       subject
+  #       expect(json["length"]).to eq(10)
+  #     end
+  #   end
+  # end
 
   describe 'GET /calendar' do
     subject { get '/api/v1/mainblocks/mains/calendar' }

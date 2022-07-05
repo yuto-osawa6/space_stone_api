@@ -122,21 +122,21 @@ RSpec.describe 'Mains', type: :request do
   end
 
 
-  describe 'GET /tier_main' do
-    let!(:product_alice_tier) {create_list(:product_alice_tier,2)}
-    subject { get '/api/v1/mains/tier_main' }
-    it 'ステータス 200' do
-      subject
-      expect(response.status).to eq(200)
-    end
-    it 'データーが返却されること' do
-      subject
-      # binding.pry
-      expect(json["tierMain"][0]["avg"].size).to eq(2)
-      expect(json["tierMain"][0]["products"].size).to eq(2)
-      # expect(json["tierGroupLength"]).to eq(4)
-    end
-  end
+  # describe 'GET /tier_main' do
+  #   let!(:product_alice_tier) {create_list(:product_alice_tier,2)}
+  #   subject { get '/api/v1/mains/tier_main' }
+  #   it 'ステータス 200' do
+  #     subject
+  #     expect(response.status).to eq(200)
+  #   end
+  #   it 'データーが返却されること' do
+  #     subject
+  #     binding.pry
+  #     expect(json["tierMain"][0]["avg"].size).to eq(2)
+  #     expect(json["tierMain"][0]["products"].size).to eq(2)
+  #     # expect(json["tierGroupLength"]).to eq(4)
+  #   end
+  # end
 
   
 

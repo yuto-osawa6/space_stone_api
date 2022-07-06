@@ -264,8 +264,11 @@ class Api::V1::UsersController < ApplicationController
   def mytiers
     @user = User.find(params[:user_id])
     kisetsu_ids = [5,2,3,4]
-    @tierGroup = TierGroup.all.includes(:year,:kisetsu,:tiers).includes(:products).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).page(params[:page]).per(1)
-    @tierGroupLength = TierGroup.all.size
+    # @tierGroup = TierGroup.all.includes(:year,:kisetsu,:tiers).includes(:products).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).page(params[:page]).per(1)
+    # @tierGroupLength = TierGroup.all.size
+
+    @tierGroup = TierGroup.left_outer_joins(:users).where(users:{id:@user.id}).includes(:year,:kisetsu,:tiers).includes(:products).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).page(params[:page]).per(1)
+    @tierGroupLength = TierGroup.left_outer_joins(:users).where(users:{id:@user.id}).size
     render :mytiers,formats: :json
   end
 

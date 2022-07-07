@@ -5,6 +5,7 @@ json.set! :tier_main do
     json.year a.year
     json.kisetsu a.kisetsu
     json.avg a.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+    # json.aliceT a.id
     json.products do
       json.array! a.products.includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc")) do |a|
         json.id a.id
@@ -19,3 +20,5 @@ json.set! :tier_main do
 end
 
 json.set! :tierGroupLength, @tierGroupLength
+
+# json.set! :aliceT,@tierGroup.id

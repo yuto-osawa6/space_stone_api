@@ -17,6 +17,7 @@ class Product < ApplicationRecord
   has_many :scores_users, through: :scores, source: :user
 
   has_many :acsesses, dependent: :destroy
+  has_many :trends, dependent: :destroy
 
   has_many :reviews, dependent: :destroy
   has_many :reviews_users, through: :reviews, source: :user

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_03_003443) do
+ActiveRecord::Schema.define(version: 2022_07_06_031940) do
 
   create_table "acsess_articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -614,6 +614,14 @@ ActiveRecord::Schema.define(version: 2022_07_03_003443) do
     t.index ["product_id"], name: "index_toptens_on_product_id"
   end
 
+  create_table "trends", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.integer "count", default: 0
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_trends_on_product_id"
+  end
+
   create_table "user_tier_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "tier_group_id", null: false
     t.bigint "user_id", null: false
@@ -762,4 +770,5 @@ ActiveRecord::Schema.define(version: 2022_07_03_003443) do
   add_foreign_key "thereds", "users"
   add_foreign_key "toptens", "periods"
   add_foreign_key "toptens", "products"
+  add_foreign_key "trends", "products"
 end

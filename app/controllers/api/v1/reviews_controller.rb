@@ -20,6 +20,9 @@ class Api::V1::ReviewsController < ApplicationController
       if review.save
         @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
         @product = Product.find(params[:review][:product_id])
+        @productReviews = @product.reviews.includes(:like_reviews).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).limit(4)
+
+
         @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
         @emotionList.count
         render :create, formats: :json
@@ -58,6 +61,7 @@ class Api::V1::ReviewsController < ApplicationController
       if review.update(reviews_params)
         @userReview = Review.where(product_id:params[:review][:product_id],user_id:params[:review][:user_id])
         @product = Product.find(params[:review][:product_id])
+        @productReviews = @product.reviews.includes(:like_reviews).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).limit(4)
         @emotionList = @product.emotions.includes(:review_emotions).group(:emotion_id).order("count(emotion_id) desc")
         @emotionList.count
         render :update, formats: :json

@@ -36,6 +36,7 @@ json.set! :user do
         json.image_url a.product.bgimage_url
       end
       json.user_id a.user_id
+      json.aliceT a.tier_group_id
     end
   end
   

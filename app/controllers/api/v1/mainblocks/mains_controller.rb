@@ -1,5 +1,20 @@
 class Api::V1::Mainblocks::MainsController < ApplicationController
   before_action :check_user_logined, only:[:create_tier]
+  def trend
+    now = Time.current 
+    from = now.prev_month
+    to = now
+    current = Time.current
+    # @today_trends = Product.with_attached_bg_images.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).where(trends:{updated_at:Time.now.to_date..Time.now.to_datetime}).where(acsesses:{updated_at:from..to}).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(trends.count) DESC')).order(Arel.sql('sum(acsesses.count) DESC')).limit(10).ids
+    @today_trends = Product.with_attached_bg_images.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).where(trends:{updated_at:Time.now.to_date..Time.now.to_datetime}).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(trends.count) DESC')).limit(10)
+
+    @last_trends = Product.where.not(id:@today_trends.ids).with_attached_bg_images.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10 - @today_trends.length)
+    # @today_trends = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(trends.count) DESC')).limit(10).ids
+    # grid-template-rows
+    @trend = @today_trends + @last_trends
+    @scores = Score.where(product_id:@trend.map(&:id)).group("product_id").average_value
+    render :trend,formats: :json
+  end
   def new_netflix
     current = Time.current
 
@@ -420,10 +435,12 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
       year.save
     end
     @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
-    tierGroup = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
-    if tierGroup.present?
-      @tier = tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
-      @tier_p = tierGroup.products.with_attached_bg_images.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
+    @tierGroup = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
+    puts @tierGroup.id
+    puts "aojfoeijfoeiajfoieajfoeiajfoeajif"
+    if @tierGroup.present?
+      @tier = @tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
+      @tier_p = @tierGroup.products.with_attached_bg_images.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))
       render :update_tier_list,formats: :json
     else
       render json:{tier:[],tierAverage:[]}

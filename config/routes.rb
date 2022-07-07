@@ -33,9 +33,13 @@ Rails.application.routes.draw do
           get "product_episords"
           get "product_review"
           get "product_thread"
+          get "product_thread_official"
         end
         member do
           get "seo"
+          get "compare_score"
+          get "compare_emotion"
+          get "compare_tier"
         end
         resources :chats, only:[:create]
 
@@ -224,6 +228,7 @@ Rails.application.routes.draw do
       namespace :mainblocks do
         resources :mains,only:[:show] do
           collection do
+            get "trend"
             get "new_netflix"
             get "pickup"
             get "new_message"

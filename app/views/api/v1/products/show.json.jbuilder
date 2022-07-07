@@ -88,10 +88,10 @@ json.set! :products do
 end
 
 json.set! :productReviews do
-  json.array! @product.reviews
+  json.array! @productReviews
 end
 json.set! :productThreads do
-  json.array! @product.thereds
+  json.array! @productThreads
 end
 
 json.set! :EmotionLists do

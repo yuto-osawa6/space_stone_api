@@ -12,6 +12,7 @@ json.set! :user_tier do
     json.title a.product.title
     end
     json.user_id a.user_id
+    json.aliceT a.tier_group_id
   end
 end
 

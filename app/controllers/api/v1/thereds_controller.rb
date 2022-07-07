@@ -14,10 +14,12 @@ class Api::V1::TheredsController < ApplicationController
 
       content = params[:content]
       @thered = Thered.new(reviews_params)
+      @admin = User.find_by(email:"meruplanet.sub@gmail.com")
+      @productThreads = @admin.thereds.left_outer_joins(:episord).where(product_id:@product.id).order('episord.episord desc').limit(4)
       @thered.question_ids
       @thered.save!
       
-      render json: {status:200,thered:@thered, productThreads:@product.thereds,message:{title:"「#{@product.title}」のスレッドを作成しました。",select:1}}
+      render json: {status:200,thered:@thered, productThreads:@productThreads,message:{title:"「#{@product.title}」のスレッドを作成しました。",select:1}}
     rescue => e
       @EM = ErrorManage.new(controller:"review/update2",error:"#{e}".slice(0,200))
       @EM.save

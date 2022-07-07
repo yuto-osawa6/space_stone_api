@@ -15,7 +15,7 @@ json.set! :userReview do
 end
 
 json.set! :productReviews do
-  json.array! @product.reviews
+  json.array! @productReviews
 end
 # json.set! :productThreads do
 #   json.array! @product.thereds

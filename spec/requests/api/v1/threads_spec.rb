@@ -40,7 +40,7 @@ RSpec.describe 'thered', type: :request do
     #   }
     #   expect(json['status']).to eq(450)
     # end
-  end
+  # end
 
   describe 'delete/destroy' do
     let!(:product) {create(:product_alice_thered)}

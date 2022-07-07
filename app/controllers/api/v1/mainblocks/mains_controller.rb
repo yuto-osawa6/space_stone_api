@@ -436,8 +436,8 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     end
     @kisetsu = Kisetsu.find_by(name:@kisetsu_name)
     @tierGroup = TierGroup.find_by(year_id:@year.id,kisetsu_id:@kisetsu.id)
-    puts @tierGroup.id
-    puts "aojfoeijfoeiajfoieajfoeiajfoeajif"
+    # puts @tierGroup.id
+    # puts "aojfoeijfoeiajfoieajfoeiajfoeajif"
     if @tierGroup.present?
       @tier = @tierGroup.tiers.includes(:product).group("product_id").order(Arel.sql("avg(tiers.tier) desc")).average(:tier)
       @tier_p = @tierGroup.products.with_attached_bg_images.where(finished:1).includes(:tiers).group("product_id").order(Arel.sql("avg(tiers.tier) desc"))

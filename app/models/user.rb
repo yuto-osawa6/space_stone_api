@@ -54,7 +54,7 @@ class User < ActiveRecord::Base
   
   # article
   # doneyet-0(article書く人が増えたとき) dependent destroy
-  has_many :articles
+  has_many :articles,dependent: :destroy
 
   # bacground image
   # doneyet base64方式に変更

@@ -171,7 +171,9 @@ class Api::V1::ProductsController < ApplicationController
     @admin = User.find_by(email:"meruplanet.sub@gmail.com")
     @productReviews = @product.reviews.includes(:like_reviews).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).limit(4)
     # @product.thereds.
-    @productThreads = @admin.thereds.left_outer_joins(:episord).where(product_id:@product.id).order('episord.episord desc').limit(4)
+    @entThread = @admin.thereds.where(episord_id:nil).limit(1)
+    @entThread2 =  @admin.thereds.left_outer_joins(:episord).where(product_id:@product.id).order('episord.episord desc').limit(4 - @entThread.length)
+    @productThreads = @entThread + @entThread2
     # @reviews = @admin.thereds.left_outer_joins(:episord).where(product_id:params[:product_id]).order('episord.episord desc').limit(4)
     
 
@@ -227,14 +229,14 @@ class Api::V1::ProductsController < ApplicationController
       # @style.save
       # @product.style_ids = @style.id
       @user = User.find_by(email:"meruplanet.sub@gmail.com")
-      if @style.name == "映画" || @style.name == "アニメ"
-        @thread = Thered.where(product_id:@product.id).first_or_initialize
+      # if @style.name == "映画" || @style.name == "アニメ"
+        @thread = Thered.where(product_id:@product.id,episord_id:nil).first_or_initialize
         @thread.title = "#{@product.title}"
         @thread.question_ids = [2,4]
         @thread.user_id = @user.id
         @thread.content = "<p>#{@product.title}を見た感想を自由にお書きください。</p>"
         @thread.save
-      end
+      # end
 
       # # doneyet-1 (下@product.saveと同時に)
       params[:episord].each do |i|

@@ -231,7 +231,8 @@ class ScrapeWiki
       if shobo[:Count] == 0
         next
       end
-      episord = Episord.create(product_id:product.id,title:shobo[:sub_title],episord:shobo[:Count],release_date:shobo[:st_time],time:endtime)
+      episord = Episord.where(product_id:product.id,title:shobo[:sub_title],episord:shobo[:Count],release_date:shobo[:st_time],time:endtime).first_or_initialize
+      episord.save
       thread_create(product,episord,user)
     end
     

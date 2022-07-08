@@ -1,5 +1,6 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :check_user_logined, only:[:setting,:background,:topimage,:overview,:destroy]
+  before_action :check_user_logined, only:[:setting,:background,:topimage,:overview]
+  # before_action :authenticate_user!,only:[:destroy]
 
   def setting
     puts user_signed_in?
@@ -314,7 +315,9 @@ class Api::V1::UsersController < ApplicationController
     render json:{score_arrayies:@pss.map{|key,value|value}}
   end
 
+  # alice-1 外部サイトから消されるかどうか。
   def destroy
+    # puts current_user
     begin
       @user = User.find(params[:id])
       @user.destroy
@@ -324,8 +327,6 @@ class Api::V1::UsersController < ApplicationController
       @EM.save
       render json:{status:500}
     end
-
-
   end
 
   def seo

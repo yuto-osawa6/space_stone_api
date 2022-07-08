@@ -171,7 +171,7 @@ class Api::V1::ProductsController < ApplicationController
     @admin = User.find_by(email:"meruplanet.sub@gmail.com")
     @productReviews = @product.reviews.includes(:like_reviews).left_outer_joins(:like_reviews).group("reviews.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).limit(4)
     # @product.thereds.
-    @entThread = @admin.thereds.where(episord_id:nil).limit(1)
+    @entThread = @admin.thereds.where(product_id:@product.id,episord_id:nil).limit(1)
     @entThread2 =  @admin.thereds.left_outer_joins(:episord).where(product_id:@product.id).order('episord.episord desc').limit(4 - @entThread.length)
     @productThreads = @entThread + @entThread2
     # @reviews = @admin.thereds.left_outer_joins(:episord).where(product_id:params[:product_id]).order('episord.episord desc').limit(4)

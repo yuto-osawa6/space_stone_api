@@ -12,6 +12,7 @@ json.set! :products do
   json.overview @product.overview
   json.annict @product.annitict
   json.shoboi @product.shoboiTid
+  json.delivery_start @product.delivery_start
 
   if @episord.present?
     json.productEpisord do

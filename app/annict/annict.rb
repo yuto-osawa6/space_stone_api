@@ -200,6 +200,16 @@ class Annict
       @style.save
       @product.style_ids = @style.id
 
+      @user = User.find_by(email:"meruplanet.sub@gmail.com")
+      if @style.name == "アニメ"
+        @thread = Thered.where(product_id:@product.id).first_or_initialize
+        @thread.title = "#{@product.title}"
+        @thread.question_ids = [2,4]
+        @thread.user_id = @user.id
+        @thread.content = "<p>#{@product.title}を見た感想を自由にお書きください。</p>"
+        @thread.save
+      end
+
       # season
       case work["seasonName"]
       when "WINTER" then
@@ -255,7 +265,7 @@ class Annict
       @product.occupations = staffs
 
       # episords
-      @user = User.find_by(email:"meruplanet.sub@gmail.com")
+      # @user = User.find_by(email:"meruplanet.sub@gmail.com")
       episords = []
       work["episodes"]["edges"].each do |episord|
         e = episord["node"]

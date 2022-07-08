@@ -6,9 +6,9 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     to = now
     current = Time.current
     # @today_trends = Product.with_attached_bg_images.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).where(trends:{updated_at:Time.now.to_date..Time.now.to_datetime}).where(acsesses:{updated_at:from..to}).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(trends.count) DESC')).order(Arel.sql('sum(acsesses.count) DESC')).limit(10).ids
-    @today_trends = Product.with_attached_bg_images.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).where(trends:{updated_at:Time.now.to_date..Time.now.to_datetime}).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(trends.count) DESC')).limit(10)
+    @today_trends = Product.where(finished:1).with_attached_bg_images.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).where(trends:{updated_at:Time.now.to_date..Time.now.to_datetime}).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(trends.count) DESC')).limit(10)
 
-    @last_trends = Product.where.not(id:@today_trends.ids).with_attached_bg_images.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10 - @today_trends.length)
+    @last_trends = Product.where(finished:1).where.not(id:@today_trends.ids).with_attached_bg_images.left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(acsesses.count) DESC')).limit(10 - @today_trends.length)
     # @today_trends = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:acsesses,:year_season_seasons,:year_season_years,:trends).includes(:styles,:janls).year_season_scope.group("products.id").order(Arel.sql('sum(trends.count) DESC')).limit(10).ids
     # grid-template-rows
     @trend = @today_trends + @last_trends
@@ -166,7 +166,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     style = Style.find_by(name:"映画")
     season = Kisetsu.find_by(name:@kisetsu_name)
     # @worldclass = Product.with_attached_bg_images.where(finished:1).left_outer_joins(:styles).where(styles:{id:2}).where(delivery_start:from...to).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
-    @worldclass = Product.left_outer_joins(:year_season_seasons,:year_season_years).with_attached_bg_images.where(finished:1).where(year_season_years:{year:"#{now.year}-01-01"}).where(year_season_seasons:{id:season.id}).left_outer_joins(:styles).where(styles:{id:style.id}).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
+    @worldclass = Product.where(finished:1).left_outer_joins(:year_season_seasons,:year_season_years).with_attached_bg_images.where(finished:1).where(year_season_years:{year:"#{now.year}-01-01"}).where(year_season_seasons:{id:season.id}).left_outer_joins(:styles).where(styles:{id:style.id}).includes(:styles,:janls).year_season_scope.order(delivery_start: :asc).limit(10)
     @scores = Score.where(product_id:@worldclass.ids.uniq).group("product_id").average_value
     render :worldclass,formats: :json
   end
@@ -176,15 +176,15 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
     now = Time.current 
     from = now.prev_month
     to = now
-    @like_topten_month =  Product.with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
-    @like_topten_all =  Product.with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where.not(likes:{id:nil}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
-    @score_topten_month = Product.with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10)
-    @score_topten_all = Product.with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).where.not(scores:{value:nil}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10)
-    @acsess_topten_month = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10)
-    @acsess_topten_all = Product.with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where.not(acsesses:{id:nil}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10)
+    @like_topten_month =  Product.where(finished:1).with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where(likes:{updated_at: from...to}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
+    @like_topten_all =  Product.where(finished:1).with_attached_bg_images.left_outer_joins(:likes).includes(:styles,:janls,:scores,:likes).where.not(likes:{id:nil}).group("products.id").order(Arel.sql('count(product_id) DESC')).limit(10)
+    @score_topten_month = Product.where(finished:1).with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).where(scores:{updated_at: from...to}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10)
+    @score_topten_all = Product.where(finished:1).with_attached_bg_images.left_outer_joins(:scores).includes(:styles,:janls,:scores).where.not(scores:{value:nil}).group("products.id").order(Arel.sql('avg(value) DESC')).order(id: :asc).limit(10)
+    @acsess_topten_month = Product.where(finished:1).with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where(acsesses:{date:Time.current.prev_month.beginning_of_month...to}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10)
+    @acsess_topten_all = Product.where(finished:1).with_attached_bg_images.left_outer_joins(:acsesses).includes(:styles,:janls,:scores,:acsesses).where.not(acsesses:{id:nil}).group("products.id").order(Arel.sql('sum(count) DESC')).limit(10)
 
-    @review_topten_month = Product.with_attached_bg_images.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where(reviews:{updated_at:from...to}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10)
-    @review_topten_all = Product.with_attached_bg_images.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where.not(reviews:{id:nil}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10)
+    @review_topten_month = Product.where(finished:1).with_attached_bg_images.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where(reviews:{updated_at:from...to}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10)
+    @review_topten_all = Product.where(finished:1).with_attached_bg_images.left_outer_joins(:reviews).includes(:styles,:janls,:scores,:reviews).where.not(reviews:{id:nil}).group("products.id").order(Arel.sql('count(products.id) DESC')).limit(10)
 
     render :toptens,formats: :json
   end

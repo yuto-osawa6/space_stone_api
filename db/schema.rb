@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_06_031940) do
+ActiveRecord::Schema.define(version: 2022_07_08_121313) do
 
   create_table "acsess_articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -397,9 +397,9 @@ ActiveRecord::Schema.define(version: 2022_07_06_031940) do
     t.string "titleRo"
     t.integer "annitict"
     t.integer "shoboiTid"
-    t.string "wiki"
-    t.string "wikiEn"
-    t.string "copyright"
+    t.text "wiki"
+    t.text "wikiEn"
+    t.text "copyright"
   end
 
   create_table "questions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

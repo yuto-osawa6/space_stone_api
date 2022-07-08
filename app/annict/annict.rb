@@ -201,7 +201,7 @@ class Annict
       @product.style_ids = @style.id
 
       @user = User.find_by(email:"meruplanet.sub@gmail.com")
-      if @style.name == "アニメ"
+      if @style.name == "映画" || @style.name == "アニメ"
         @thread = Thered.where(product_id:@product.id).first_or_initialize
         @thread.title = "#{@product.title}"
         @thread.question_ids = [2,4]

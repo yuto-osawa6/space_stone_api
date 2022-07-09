@@ -212,7 +212,7 @@ class Api::V1::ProductsController < ApplicationController
       @product.copyright = params[:product][:copyright] 
       @product.annitict = params[:product][:annitict_id] 
       @product.shoboiTid = params[:product][:shoboi_tid] 
-
+      @product.arasuzi_copyright = params[:product][:arasuzi_copyright]
 
 
       @product.janl_ids = params[:genres_array]
@@ -349,6 +349,7 @@ class Api::V1::ProductsController < ApplicationController
     @product.shoboiTid = params[:product][:shoboi_tid] 
 
     @product.overview = params[:product][:overview]
+    @product.arasuzi_copyright = params[:product][:arasuzi_copyright]
 
     @product.janl_ids = params[:genres_array]
     @product.kisetsu_ids = params[:product][:kisetsu]

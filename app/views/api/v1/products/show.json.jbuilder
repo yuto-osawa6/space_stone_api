@@ -8,6 +8,8 @@ json.set! :products do
   # json.image_url @product.image_url
   json.imageUrl @product.bgimage_url
   json.arasuzi @product.description
+  json.copyright @product.copyright
+  json.arasuzi_copyright @product.arasuzi_copyright
   json.list @product.list
   json.overview @product.overview
   json.annict @product.annitict

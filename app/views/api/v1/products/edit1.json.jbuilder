@@ -11,6 +11,7 @@ json.set! :product do
   json.image_urlh3 @product.wiki
   json.wikiEn @product.wikiEn
   json.copyright @product.copyright
+  json.arasuzi_copyright @product.arasuzi_copyright
   json.annitictId @product.annitict
   json.shoboiTid @product.shoboiTid
 

@@ -1,10 +1,10 @@
 json.set! :product do 
   json.id @product.id
   json.title @product.title
-  json.image_url @product.image_url
+  json.image_url @product.bgimage_url
   json.arasuzi @product.description
   json.list @product.list
-  json.image_url2 @product.image_url2
+  json.image_url2 @product.bgimage2_url
   json.image_url3 @product.titleKa
   json.image_urlh1 @product.titleEn
   json.image_urlh2 @product.titleRo

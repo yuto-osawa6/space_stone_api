@@ -415,21 +415,30 @@ class Api::V1::ProductsController < ApplicationController
      
         if !@product.bg_images.attached?
           if params[:product][:image_url].present?
-            file = File.open(params[:product][:image_url]).read
+            puts "iaijeoifai0"
+            file = open(params[:product][:image_url])
             puts file.base_uri
             @product.bg_images.attach(io: file, filename: "meruplanet/#{}")
+            puts "iaijeoifai1"
           end
+          puts "iaijeoifai2"
         end
+        puts "iaijeoifai"
         if !@product.bg_images.attached?
           if params[:product][:image_url2].present?
-            file = File.open(params[:product][:image_url2]).read
+            file = open(params[:product][:image_url2])
             puts file.base_uri
             @product.bg_images2.attach(io: file, filename: "meruplanet/#{}")
+            puts "afjeioafjeioa1"
           end
+          puts "afjeioafjeioa2"
         end
+        puts "afjeioafjeioa3"
         @product.save
         render json:{status:200}
       rescue => e
+        puts "afjeioafjeioa5"
+        puts e
         render json:{status:500}
       end
 

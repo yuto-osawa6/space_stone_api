@@ -84,10 +84,15 @@ class Api::V1::ReviewsController < ApplicationController
       if params[:review][:episord_id]=="null"
         params[:review][:episord_id]=nil
       end
+      puts Review.exists?(id:params[:id])
+      puts Review.exists?(id:params[:id].to_i)
+      puts params[:id]
+
       @review = Review.find(params[:id])
+      puts "aaa"
       emotionArray = []
       params[:review][:emotion_ids].each do |i|
-        emotion = ReviewEmotion.where(product_id:params[:review][:product_id],review_id:@review.id,episord_id:@review.episord.id,emotion_id:i,user_id:params[:review][:user_id]).first_or_initialize
+        emotion = ReviewEmotion.where(product_id:params[:review][:product_id],review_id:@review.id,episord_id:params[:review][:episord_id],emotion_id:i,user_id:params[:review][:user_id]).first_or_initialize
         puts emotion.inspect
         if emotion.save!
           emotionArray << emotion

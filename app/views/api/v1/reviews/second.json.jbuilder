@@ -4,6 +4,7 @@ json.set! :userReview do
     json.content ue.content
     json.episord_id ue.episord_id
     json.emotions ue.emotions
+    json.score ue.score
   end
 end
 

@@ -78,6 +78,7 @@ json.set! :products do
       json.content ue.content
       json.episordId ue.episord_id
       json.emotions ue.emotions
+      json.score ue.score
     end
   end
 

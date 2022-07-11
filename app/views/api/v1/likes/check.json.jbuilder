@@ -15,6 +15,7 @@ json.set! :resouce do
       json.set! :emotions do
         json.array! a.emotions
       end
+      json.score a.score
     end
   end
   json.userScore do

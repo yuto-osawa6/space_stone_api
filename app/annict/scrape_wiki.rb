@@ -196,6 +196,10 @@ class ScrapeWiki
       end
 
       product = Product.find_by(shoboiTid:shobo[:tid])
+      if shobo[:Count] == 0
+        puts 1.5
+        next
+      end
       if Episord.exists?(episord:shobo[:Count],product_id:product.id)
         episord = Episord.find_by(episord:shobo[:Count],product_id:product.id)
         if episord.title.blank?

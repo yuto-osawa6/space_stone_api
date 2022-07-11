@@ -13,6 +13,9 @@ json.set! :review do
   json.title @review.title
   json.content @review.content
   json.user_id @review.user_id
+  json.episordScore @review.score
+  json.episord @episord
+  json.episordTitle @episordTitle
   # json.like_reviews @review.like_reviews
   # json.user @review.user
   json.updated_at @review.updated_at.strftime("%Y/%-m/%-d")

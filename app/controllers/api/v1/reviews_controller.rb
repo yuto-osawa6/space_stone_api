@@ -155,6 +155,17 @@ class Api::V1::ReviewsController < ApplicationController
       @review_good = LikeReview.where(review_id:params[:id],goodbad:1).length
       @score = @review_good / @review_length.to_f * 100
 
+      if !@review.episord.blank?
+        # puts "aooioi"
+        @episord = @review.episord.episord
+        @episordTitle = @review.episord.title
+      else
+        @episord = nil
+        @episordTitle = nil
+      end
+      # @episord = nil
+      # @episordTitle = nil
+
       render :show,formats: :json
     rescue => e
       if Review.exists?(id:params[:id])
@@ -769,7 +780,7 @@ class Api::V1::ReviewsController < ApplicationController
 
   private 
   def reviews_params
-    params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id)
+    params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id,:score)
     # params.require(:review).permit(:title,:discribe,:content,:user_id,:product_id,:episord_id,:review_emotions)
 
   end

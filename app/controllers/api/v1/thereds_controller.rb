@@ -112,6 +112,7 @@ class Api::V1::TheredsController < ApplicationController
 
   # ---------------------------------------------------------------------------------
   def index
+    @admin = User.find_by(email:"meruplanet.sub@gmail.com")
     # notest
     if params[:product_id].present?
       if params[:select_sort].present?
@@ -127,34 +128,34 @@ class Api::V1::TheredsController < ApplicationController
                 when "2" then
                   case params[:range_likes_number]
                     when "1" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).where.not(user_id:@admin.id).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
                     when "2" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
                     when "3" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
 
                     else
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from..to).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from..to).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from..to).group("thereds.id").length
                     end
                 when "3" then
                   case params[:range_likes_number]
                     when "1" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
                       @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
                     when "2" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
                       @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
                     when "3" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
 
                     else
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from_year..to).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from_year..to).group("thereds.id").length
                     end
               end
             else
@@ -164,18 +165,18 @@ class Api::V1::TheredsController < ApplicationController
               from_week = to.prev_week
               case params[:range_likes_number]
                 when "1" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
                 when "2" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
                 when "3" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
 
                 else
-                  @review_length = Thered.where(product_id:params[:product_id]).count
-                  @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).count
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
               end
             end
           when "1" then
@@ -190,26 +191,26 @@ class Api::V1::TheredsController < ApplicationController
                 when "2" then
                   case params[:range_populer_number]
                     when "2" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
                     when "3" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
                     else
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).count
+                      @reviews = Theredv.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from..to).left_outer_joins(:acsess_threads).count
                     end
                 when "3" then
                   case params[:range_populer_number]
                   when "2" then
-                    @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                    @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
+                    @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                    @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
                   when "3" then
                     @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                    @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
+                    @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
                   else
-                    @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                    @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from_year..to).count
+                    @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                    @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from_year..to).count
                   end
               end
             else
@@ -220,14 +221,14 @@ class Api::V1::TheredsController < ApplicationController
               from_year_accsess = to.beginning_of_year
               case params[:range_populer_number]
                 when "2" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.where(product_id:params[:product_id]).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
                 when "3" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.where(product_id:params[:product_id]).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
                 else
-                  @review_length = Thered.where(product_id:params[:product_id]).count
-                  @reviews = Thered..includes(:product,:user).include_bg_imageswhere(product_id:params[:product_id]).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).count
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_imageswhere(product_id:params[:product_id]).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
                 end
           end
         end
@@ -239,15 +240,15 @@ class Api::V1::TheredsController < ApplicationController
           from_year = to.prev_year
           case params[:range_number]
             when "2" then
-              @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from..to).page(params[:page]).per(Concerns::PAGE[:thread])
-              @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from..to).count
+              @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from..to).page(params[:page]).per(Concerns::PAGE[:thread])
+              @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from..to).count
             when "3" then
-              @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from_year..to).page(params[:page]).per(Concerns::PAGE[:thread])
-              @review_length = Thered.where(product_id:params[:product_id]).where(updated_at:from_year..to).count
+              @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).where(updated_at:from_year..to).page(params[:page]).per(Concerns::PAGE[:thread])
+              @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).where(updated_at:from_year..to).count
           end
         else
-          @reviews = Thered.includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).page(params[:page]).per(Concerns::PAGE[:thread])
-          @review_length = Thered.where(product_id:params[:product_id]).count
+          @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(product_id:params[:product_id]).page(params[:page]).per(Concerns::PAGE[:thread])
+          @review_length = Thered.where.not(user_id:@admin.id).where(product_id:params[:product_id]).count
         end
       end
       
@@ -265,34 +266,34 @@ class Api::V1::TheredsController < ApplicationController
                 when "2" then
                   case params[:range_likes_number]
                     when "1" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
                     when "2" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
                     when "3" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at: from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
 
                     else
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at: from..to).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from..to).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at: from..to).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from..to).group("thereds.id").length
                     end
                 when "3" then
                   case params[:range_likes_number]
                     when "1" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
                     when "2" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
                     when "3" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at: from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from_year..to).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
 
                     else
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at:from_year..to).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from_year..to).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at:from_year..to).left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from_year..to).group("thereds.id").length
                     end
               end
             else
@@ -302,18 +303,18 @@ class Api::V1::TheredsController < ApplicationController
               from_week = to.prev_week
               case params[:range_likes_number]
                 when "1" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_week..to}).group("thereds.id").length
                 when "2" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).left_outer_joins(:like_threads).where(like_threads:{updated_at:from..to}).group("thereds.id").length
                 when "3" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).left_outer_joins(:like_threads).where(like_threads:{updated_at:from_year..to}).group("thereds.id").length
 
                 else
-                  @review_length = Thered.count
-                  @reviews = Thered.includes(:product,:user).include_bg_images.left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).count
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.left_outer_joins(:like_threads).group("thereds.id").order(Arel.sql("sum(CASE WHEN goodbad = 1 THEN 1 ELSE 0 END)/count(goodbad) desc")).order("count(goodbad) desc").page(params[:page]).per(Concerns::PAGE[:thread])
               end
             end
           when "1" then
@@ -328,26 +329,26 @@ class Api::V1::TheredsController < ApplicationController
                 when "2" then
                   case params[:range_populer_number]
                     when "2" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
                     when "3" then
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
                     else
-                      @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at:from..to).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                      @review_length = Thered.where(updated_at:from..to).left_outer_joins(:acsess_threads).count
+                      @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at:from..to).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                      @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from..to).left_outer_joins(:acsess_threads).count
                     end
                 when "3" then
                   case params[:range_populer_number]
                   when "2" then
-                    @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                    @review_length = Thered.where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
+                    @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                    @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
                   when "3" then
-                    @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                    @review_length = Thered.where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
+                    @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                    @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from_year..to).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
                   else
-                    @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at:from_year..to).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                    @review_length = Thered.where(updated_at:from_year..to).count
+                    @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at:from_year..to).left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                    @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from_year..to).count
                   end
               end
             else
@@ -358,14 +359,14 @@ class Api::V1::TheredsController < ApplicationController
               from_year_accsess = to.beginning_of_year
               case params[:range_populer_number]
                 when "2" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_acsess..to}).group("thereds.id").length
                 when "3" then
-                  @reviews = Thered.includes(:product,:user).include_bg_images.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
-                  @review_length = Thered.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).left_outer_joins(:acsess_threads).where(acsess_threads:{updated_at:from_year_accsess..to}).group("thereds.id").length
                 else
-                  @review_length = Thered.count
-                  @reviews = Thered.includes(:product,:user).include_bg_images.left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
+                  @review_length = Thered.where.not(user_id:@admin.id).count
+                  @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.left_outer_joins(:acsess_threads).group("thereds.id").order(Arel.sql("sum(count) desc")).page(params[:page]).per(Concerns::PAGE[:thread])
                 end
           end
         end
@@ -377,15 +378,15 @@ class Api::V1::TheredsController < ApplicationController
           from_year = to.prev_year
           case params[:range_number]
             when "2" then
-              @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at:from..to).page(params[:page]).per(Concerns::PAGE[:thread])
-              @review_length = Thered.where(updated_at:from..to).count
+              @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at:from..to).page(params[:page]).per(Concerns::PAGE[:thread])
+              @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from..to).count
             when "3" then
-              @reviews = Thered.includes(:product,:user).include_bg_images.where(updated_at:from_year..to).page(params[:page]).per(Concerns::PAGE[:thread])
-              @review_length = Thered.where(updated_at:from_year..to).count
+              @reviews = Thered.where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.where(updated_at:from_year..to).page(params[:page]).per(Concerns::PAGE[:thread])
+              @review_length = Thered.where.not(user_id:@admin.id).where(updated_at:from_year..to).count
           end
         else
-          @reviews = Thered.order(created_at: :desc).includes(:product,:user).include_bg_images.page(params[:page]).per(Concerns::PAGE[:thread])
-          @review_length = Thered.count
+          @reviews = Thered.order(created_at: :desc).where.not(user_id:@admin.id).includes(:product,:user).include_bg_images.page(params[:page]).per(Concerns::PAGE[:thread])
+          @review_length = Thered.where.not(user_id:@admin.id).count
         end
       end
     end

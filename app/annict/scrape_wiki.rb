@@ -200,6 +200,14 @@ class ScrapeWiki
         puts 1.5
         next
       end
+      if product.episords.order(episord: :asc)[0].episord > shobo[:Count]
+        puts 1.51
+        next
+      end
+      if shobo[:sub_title].length == 0
+        puts 1.52
+        next
+      end
       if Episord.exists?(episord:shobo[:Count],product_id:product.id)
         episord = Episord.find_by(episord:shobo[:Count],product_id:product.id)
         if episord.title.blank?

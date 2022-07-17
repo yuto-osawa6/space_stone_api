@@ -134,7 +134,8 @@ Rails.application.configure do
   #   #ここにOmniAuthの設定
   #   provider :google_oauth2, ENV['GOOGLE_KEY'],   ENV['GOOGLE_SECRET']
   # end
-  Rails.application.routes.default_url_options[:host] = 'api.meruplanet.com'
+  # Rails.application.routes.default_url_options[:host] = 'api.meruplanet.com'
+  Rails.application.routes.default_url_options[:host] = 'api.anime-tier.com'
   Rails.application.routes.default_url_options[:protocol] = 'https'
 end
 

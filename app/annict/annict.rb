@@ -206,7 +206,7 @@ class Annict
         @thread.title = "#{@product.title}"
         @thread.question_ids = [2,4]
         @thread.user_id = @user.id
-        @thread.content = "<p>#{@product.title}を見た感想を自由にお書きください。</p>"
+        @thread.content = "<p>#{@product.title}を見た感想をお書きください。</p>"
         @thread.save
       # end
 
@@ -280,7 +280,7 @@ class Annict
         @thread.title = "#{@product.title} #{@episord.episord}話"
         @thread.question_ids = [2,4]
         @thread.user_id = @user.id
-        @thread.content = "<p>#{@episord.episord}話を見た感想を自由にお書きください。</p>"
+        @thread.content = "<p>#{@episord.episord}話を見た感想をお書きください。</p>"
         @thread.save
         episords << @episord
       end

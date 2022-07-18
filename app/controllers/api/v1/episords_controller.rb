@@ -16,7 +16,7 @@ class Api::V1::EpisordsController < ApplicationController
       @thread.title = "#{Product.find(params[:product_id]).title} #{@episord.episord}話"
       @thread.question_ids = [2,4]
       @thread.user_id = @user.id
-      @thread.content = "<p>#{@episord.episord}話を見た感想を自由にお書きください。</p>"
+      @thread.content = "<p>#{@episord.episord}話を見た感想をお書きください。</p>"
       @thread.save
       render json:{status:200,message:"#{@episord.episord}話の#{@episord.title}を追加・更新しました。"}
     else

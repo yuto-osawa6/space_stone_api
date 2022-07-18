@@ -200,9 +200,11 @@ class ScrapeWiki
         puts 1.5
         next
       end
-      if product.episords.order(episord: :asc)[0].episord > shobo[:Count]
-        puts 1.51
-        next
+      if product.episords.length > 0
+        if product.episords.order(episord: :asc)[0].episord > shobo[:Count]
+          puts 1.51
+          next
+        end
       end
       if shobo[:sub_title].length == 0
         puts 1.52

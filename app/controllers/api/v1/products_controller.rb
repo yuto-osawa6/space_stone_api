@@ -71,6 +71,24 @@ class Api::V1::ProductsController < ApplicationController
 
   def red
     # ota
+    # puts request.remote_ip
+
+    # 次の２種類の方法がある
+    puts "0"
+
+    puts request.env["HTTP_X_FORWARDED_FOR"]
+    puts "1"
+    puts request.remote_ip
+    puts "2"
+    
+    # １つ目で取得に失敗したら２つ目を試せる、ハイブリッドな書き方
+    puts request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip
+    puts "3"
+    
+    # こちらを勧めるサイトもあった（参考URLの３）
+    # puts request.env["HTTP_X_FORWARDED_FOR"].split(",")[0] || request.remote_ip
+
+
     @products = Product.all
     render json: {message:"aaa"}
     # render json: {}
@@ -234,7 +252,7 @@ class Api::V1::ProductsController < ApplicationController
         @thread.title = "#{@product.title}"
         @thread.question_ids = [2,4]
         @thread.user_id = @user.id
-        @thread.content = "<p>#{@product.title}を見た感想をお書きください。</p>"
+        @thread.content = "<p>#{@product.title}を見た感想をお書cきください。</p>"
         @thread.save
       # end
 

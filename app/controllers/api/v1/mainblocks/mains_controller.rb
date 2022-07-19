@@ -1,5 +1,6 @@
 class Api::V1::Mainblocks::MainsController < ApplicationController
   before_action :check_user_logined, only:[:create_tier]
+  before_action :reCaptcha_check, only:[:vote]
   def trend
     now = Time.current 
     from = now.prev_month

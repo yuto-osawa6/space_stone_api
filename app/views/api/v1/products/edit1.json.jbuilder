@@ -1,21 +1,23 @@
 json.set! :product do 
   json.id @product.id
   json.title @product.title
-  json.image_url @product.image_url
+  json.image_url @product.bgimage_url
   json.arasuzi @product.description
   json.list @product.list
-  json.image_url2 @product.image_url2
+  json.image_url2 @product.bgimage2_url
   json.image_url3 @product.titleKa
   json.image_urlh1 @product.titleEn
   json.image_urlh2 @product.titleRo
   json.image_urlh3 @product.wiki
   json.wikiEn @product.wikiEn
   json.copyright @product.copyright
+  json.arasuzi_copyright @product.arasuzi_copyright
   json.annitictId @product.annitict
   json.shoboiTid @product.shoboiTid
 
   json.year @product.year
   json.delivery_start @product.delivery_start
+  json.delivery_end @product.delivery_end
   json.overview @product.overview
   
   json.form_style do

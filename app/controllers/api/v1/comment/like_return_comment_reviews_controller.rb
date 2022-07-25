@@ -1,4 +1,6 @@
 class Api::V1::Comment::LikeReturnCommentReviewsController < ApplicationController
+  before_action :check_user_logined, only:[:create,:destroy]
+
   def create
     begin
       @LikeReturnCommentReview = LikeReturnCommentReview.where(user_id:params[:like_return_comment_review][:user_id],return_comment_review_id:params[:like_return_comment_review][:return_comment_review_id]).first_or_initialize
@@ -76,8 +78,9 @@ class Api::V1::Comment::LikeReturnCommentReviewsController < ApplicationControll
       @score = @review_good / @review_length * 100
     end
 
-    @user_check = User.exists?(id:params[:user_id])
-    if @user_check == false 
+    # @user_check = User.exists?(id:params[:user_id])
+    if user_signed_in?
+    else
       render json: { status: 201, message: "ログインされてません.",score:@score,review_length:@review_length,review_good:@review_good}
       return
     end

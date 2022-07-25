@@ -8,8 +8,14 @@ json.set! :products do
   # json.image_url @product.image_url
   json.imageUrl @product.bgimage_url
   json.arasuzi @product.description
+  json.copyright @product.copyright
+  json.arasuzi_copyright @product.arasuzi_copyright
   json.list @product.list
   json.overview @product.overview
+  json.annict @product.annitict
+  json.shoboi @product.shoboiTid
+  json.delivery_start @product.delivery_start
+
   if @episord.present?
     json.productEpisord do
       json.arasuzi @episord[0].arasuzi
@@ -72,6 +78,7 @@ json.set! :products do
       json.content ue.content
       json.episordId ue.episord_id
       json.emotions ue.emotions
+      json.score ue.score
     end
   end
 
@@ -85,10 +92,10 @@ json.set! :products do
 end
 
 json.set! :productReviews do
-  json.array! @product.reviews
+  json.array! @productReviews
 end
 json.set! :productThreads do
-  json.array! @product.thereds
+  json.array! @productThreads
 end
 
 json.set! :EmotionLists do

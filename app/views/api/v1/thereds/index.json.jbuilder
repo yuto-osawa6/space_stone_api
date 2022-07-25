@@ -11,7 +11,11 @@ json.set! :reviews do
       json.id review.product.id
       json.image_url review.product.bgimage_url
     end
-    json.reviewUser review.user
+    json.reviewUser do
+      json.id review.user.id
+      json.nickname review.user.nickname
+      # json.image comment.user.topimage_url
+    end
       # end
     # end
   end

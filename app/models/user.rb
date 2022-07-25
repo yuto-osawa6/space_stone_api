@@ -54,11 +54,12 @@ class User < ActiveRecord::Base
   
   # article
   # doneyet-0(article書く人が増えたとき) dependent destroy
-  has_many :articles
+  has_many :articles,dependent: :destroy
 
   # bacground image
   # doneyet base64方式に変更
   has_one_attached :bg_img
+  has_one_attached :tp_img
 
   # emotion
   has_many :review_emotions,dependent: :destroy
@@ -87,15 +88,25 @@ class User < ActiveRecord::Base
   has_many :tier_groups,through: :user_tier_groups,source: :tier_group
 
 
-  devise  :database_authenticatable, 
-          :registerable,
-          :recoverable, 
-          :rememberable, 
-          :trackable,
-          :validatable,
-          :omniauthable,
-          omniauth_providers: [:google_oauth2]
-
+  # devise  :database_authenticatable, 
+  #         :registerable,
+  #         :recoverable, 
+  #         :rememberable, 
+  #         :trackable,
+  #         :validatable,
+  #         :omniauthable,
+  #         omniauth_providers: [:google_oauth2]
+  extend Devise::Models
+  devise :database_authenticatable,:omniauthable
+  # devise :database_authenticatable,:omniauthable
+  # devise  :database_authenticatable, 
+  #         :registerable,
+  #         :recoverable, 
+  #         :rememberable, 
+  #         :trackable,
+  #         :validatable,
+  #         :omniauthable
+  # devise  :database_authenticatable,:rememberable, :omniauthable
   include DeviseTokenAuth::Concerns::User
 
 
@@ -104,13 +115,18 @@ class User < ActiveRecord::Base
     self.bg_img.attached? ? url_for(bg_img) : nil
   end
 
+  def topimage_url
+    self.tp_img.attached? ? url_for(tp_img) : self.image
+  end
+
   def self.signin_or_create_from_provider(provider_data)
     where(provider: provider_data[:body][:provider], uid: provider_data[:body][:uid]).first_or_create do |user|
       user.email = provider_data[:body][:info][:email]
       user.password = Devise.friendly_token[0, 20]
       user.nickname =  provider_data[:body][:info][:name]
       user.image = provider_data[:body][:info][:image]
-      # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmation
+
+      # user.skip_confirmation! # when you signup a new user, you can decide to skip confirmatio
     end
   end
 

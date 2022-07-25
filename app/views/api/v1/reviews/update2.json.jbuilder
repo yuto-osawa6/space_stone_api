@@ -37,4 +37,5 @@ end
     json.updated_at @review.updated_at.strftime("%Y/%-m/%-d")
     json.review_emotions @review.emotions
     json.episord_id @review.episord_id
+    json.episordScore @review.score
   end

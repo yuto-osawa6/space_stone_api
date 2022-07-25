@@ -1,13 +1,40 @@
 class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
+  before_action :check_user_logined, only:[:create,:destroy,:returnreturn]
+  before_action :reCaptcha_check, only:[:create,:returnreturn]
+
   def index
     # params[:comment_review_id]
     # userは対１関係なため、includesに含めない。
-    @returncomment = ReturnCommentReview.includes(:like_return_comment_reviews,:user,return_returns: :user).where(comment_review_id:params[:comment_review_id]).page(params[:page]).per(3)
+    @returncomment = ReturnCommentReview.includes(:like_return_comment_reviews,:user,return_returns: :user).include_tp_img.where(comment_review_id:params[:comment_review_id]).page(params[:page]).per(3)
     render :index,formats: :json
   end
 
   def create
     begin
+      # puts params[:return_comment_review][:comment_review_id]
+      @review = CommentReview.find(params[:return_comment_review][:comment_review_id])
+      # @review = Review.find(params[:review_id])
+      @review_length = @review.return_comment_reviews.length
+      if @review_length>=Concerns::LIMIT_COMMENT[:return_comment]
+        render json:{status:494}
+        return
+      end
+      if @review.return_comment_reviews.includes(:user).where(user_id:params[:return_comment_review][:user_id]).length >= Concerns::LIMIT_COMMENT[:user_comment]
+        render json:{status:495}
+        return
+      end
+
+      if @review_length>=Concerns::LIMIT_COMMENT[:fortsetzen]
+        last3 = @review.return_comment_reviews.last(Concerns::LIMIT_COMMENT[:last])
+        last3_count = last3.map{|k| k.user_id }.uniq.count
+        if last3_count ==1
+          if last3[0].user_id == params[:return_comment_review][:user_id]
+            render json:{status:490}
+            return
+          end
+        end
+      end
+
       @commentReview = ReturnCommentReview.new(create_params)
       @commentReview.save!
       render json: {status:200,commentReview:@commentReview}
@@ -28,6 +55,29 @@ class Api::V1::Comment::ReturnCommentReviewsController < ApplicationController
   
   def returnreturn
     begin
+      @review = CommentReview.find(params[:return_comment_review][:comment_review_id])
+      # @review = Review.find(params[:review_id])
+      @review_length = @review.return_comment_reviews.length
+      if @review_length>=Concerns::LIMIT_COMMENT[:return_comment]
+        render json:{status:494}
+        return
+      end
+      if @review.return_comment_reviews.includes(:user).where(user_id:params[:return_comment_review][:user_id]).length >= Concerns::LIMIT_COMMENT[:user_comment]
+        render json:{status:495}
+        return
+      end
+
+      if @review_length>=Concerns::LIMIT_COMMENT[:return_fortsetzen]
+        last3 = @review.return_comment_reviews.last(Concerns::LIMIT_COMMENT[:return_last])
+        last3_count = last3.map{|k| k.user_id }.uniq.count
+        if last3_count ==1
+          if last3[0].user_id == params[:return_comment_review][:user_id]
+            render json:{status:490}
+            return
+          end
+        end
+      end
+
       @commentReview = ReturnCommentReview.new(create_params2)
       @commentReview.return_return_comment_reviews.build(return_create_params)
       @commentReview.save!

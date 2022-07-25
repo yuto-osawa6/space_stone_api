@@ -1,4 +1,5 @@
 require 'open-uri'
+require 'mini_magick'
 class Scra2
   # include Rails.application.routes.url_helpers
   def ota1
@@ -731,5 +732,56 @@ class Scra2
     from = to.ago(5.years)
     @product =  Product.left_outer_joins(:scores).includes(:styles,:janls,:scores,:likes).where(scores:{updated_at: from...to}).year_season_scope.group("products.id").order(Arel.sql('avg(scores.value) DESC')).limit(100)
     @scores = Score.where(product_id:@product.ids).group("product_id").average_value
+  end
+
+  def ota35
+    to = Time.current
+    puts to
+
+  end
+
+  def ota36
+    # article = ArticleProduct.where(article_id:4).pluck(:product_id)
+    # articles = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:article_products).includes(:products).where(article_products: { product_id: article }).group("articles.id").order("count(article_products.article_id) desc").limit(6)
+    # hashtag = HashtagArticle.where(article_id:4).pluck(:hashtag_id)
+    # articles2 = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:hashtag_articles).includes(:products).where(hashtag_articles: { hashtag_id: hashtag }).group("articles.id").order("count(hashtag_articles.article_id) desc").limit(6)
+    # # articles2 = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:hashtags).includes(:products).where(hashtag_articles: { hashtag_id: hashtag }).group(:article_id).order("count(article_id) desc").limit(6)
+    # add_articles = Article.where.not(id:4).where.not(id:articles.ids).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles.length))
+    # # add_articles2 = Article.where.not(id:params[:article_id]).where.not(id:articles2.ids).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles2.length))
+    # @articles = articles + add_articles
+    # @articles2 = articles2
+    # # puts articles2.ids
+    # puts articles.ids
+    # puts articles2.ids
+
+    # @articles = add_articles + articles
+    # @articles2 = add_articles2 +  articles2
+
+    article = ArticleProduct.where(article_id:4).pluck(:product_id)
+    articles = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:article_products).includes(:products).where(article_products: { product_id: article }).group("articles.id").order("count(article_products.article_id) desc").limit(6)
+    hashtag = HashtagArticle.where(article_id:4).pluck(:hashtag_id)
+    articles2 = Article.where.not(id:4).includes(:hashtags).includes(products: :janls).includes(products: :styles).left_outer_joins(:hashtag_articles).includes(:products).where(hashtag_articles: { hashtag_id: hashtag }).group("articles.id").order("count(hashtag_articles.article_id) desc").limit(6)
+    add_articles = Article.where.not(id:4).where.not(id:articles.ids).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles.length))
+    add_articles2 = Article.where.not(id:4).where.not(id:articles2.ids.push(add_articles.ids).flatten).includes(products: :janls).includes(products: :styles).order(created_at: :desc).limit(6-(articles2.length))
+    @articles = articles + add_articles
+    @articles2 = articles2 + add_articles2
+    # puts @articles2.ids
+    # puts add_articles.ids
+
+  end
+
+  def ota37
+    @image = Product.find(1).bg_images
+    puts @image
+    puts "a"
+    # puts url_for(@image)
+    # user_image = MiniMagick::Image.open({Product.find(1).bgimage_url})
+    user_image = MiniMagick::Image.open(Product.find(1).bg_images)
+    user_image.write
+
+    user_image.data
+
+    # bgimage_url
+
   end
 end

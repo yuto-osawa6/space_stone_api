@@ -11,11 +11,12 @@ json.set! :userReview do
     json.content ue.content
     json.episord_id ue.episord_id
     json.emotions ue.emotions
+    json.score ue.score
   end
 end
 
 json.set! :productReviews do
-  json.array! @product.reviews
+  json.array! @productReviews
 end
 # json.set! :productThreads do
 #   json.array! @product.thereds

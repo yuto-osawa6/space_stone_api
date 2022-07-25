@@ -20,6 +20,13 @@ json.set! :products do
     json.scores do
       json.array! product.scores
     end
+    json.product_year_season2 do
+      json.array! product.year_season_products do |a|
+        json.id a.id
+        json.year a.year
+        json.season a.kisetsu
+      end
+    end 
   end
 
 end

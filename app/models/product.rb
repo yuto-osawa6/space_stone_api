@@ -17,6 +17,7 @@ class Product < ApplicationRecord
   has_many :scores_users, through: :scores, source: :user
 
   has_many :acsesses, dependent: :destroy
+  has_many :trends, dependent: :destroy
 
   has_many :reviews, dependent: :destroy
   has_many :reviews_users, through: :reviews, source: :user
@@ -97,6 +98,8 @@ class Product < ApplicationRecord
   scope :years_year, -> { includes(year_season_products: :year) }
   scope :kisetsus_kisetsu, -> { includes(year_season_products: :kisetsu) }
   scope :year_season_scope, -> { years_year.kisetsus_kisetsu}
+  
+  # scope :open, 
 
 
   ransacker :likes_count do

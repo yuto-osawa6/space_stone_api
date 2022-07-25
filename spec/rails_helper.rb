@@ -68,4 +68,5 @@ RSpec.configure do |config|
     load Rails.root.join('db', 'seeds.rb')
   end
   config.include Requests::JsonHelpers, type: :request
+  config.include AuthorizationSpecHelper, type: :request
 end

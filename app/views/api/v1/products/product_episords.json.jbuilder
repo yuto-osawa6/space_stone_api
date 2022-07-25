@@ -20,5 +20,8 @@ json.set! :episords do
       end
     end
 
+    
+
   end
 end
+json.set! :episordsLength, @episordsLength

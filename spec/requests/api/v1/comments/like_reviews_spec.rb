@@ -53,7 +53,7 @@ RSpec.describe 'like_reviews', type: :request do
       subject { get "/api/v1/products/#{Product.first.id}/reviews/#{Product.first.reviews[0].id}/like_reviews/check",params: {user_id:User.first.id,review_id:Review.first.id}}
       it 'ステータス 200' do
         subject
-        expect(json['status']).to eq(200)
+        expect(json['status']).to eq(201)
       end
     end
   end

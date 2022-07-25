@@ -1,0 +1,2 @@
+class DataInfo < ApplicationRecord
+end

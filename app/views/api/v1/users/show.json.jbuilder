@@ -2,7 +2,7 @@ json.set! :status,200
 json.set! :user do
   json.id @user.id
   json.nickname @user.nickname
-  json.image @user.image
+  json.image @user.topimage_url
   json.overview @user.overview
   json.background_image @user.image_url
   json.likeProducts do
@@ -36,6 +36,7 @@ json.set! :user do
         json.image_url a.product.bgimage_url
       end
       json.user_id a.user_id
+      json.aliceT a.tier_group_id
     end
   end
   

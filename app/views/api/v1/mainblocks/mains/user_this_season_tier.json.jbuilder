@@ -17,8 +17,8 @@ end
 
 json.set! :current_season, @current_season
 
-json.set! :products do
-  # doneyet-1これが何か不明
-  # userpageで必要な情報だった。
-  json.array! @new_netflix
-end
+# json.set! :products do
+#   # doneyet-1これが何か不明
+#   # userpageで必要な情報だった。
+#   # json.array! @new_netflix
+# end

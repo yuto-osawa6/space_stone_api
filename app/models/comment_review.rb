@@ -12,4 +12,5 @@ class CommentReview < ApplicationRecord
   #   # query = '(SELECT COUNT(like_comment_reviews.comment_review_id) FROM like_comment_reviews where like_comment_reviews.comment_review_id = comment_reviews.id GROUP BY like_comment_reviews.comment_review_id)'
   #   # Arel.sql(query)
   # end
+  scope :include_tp_img, -> { includes(user: {tp_img_attachment: :blob}) }
 end

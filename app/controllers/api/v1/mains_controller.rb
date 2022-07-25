@@ -56,6 +56,11 @@ class Api::V1::MainsController < ApplicationController
     render :index,formats: :json
   end 
   def search
+    # puts "aaa"
+    # # puts params
+    params[:q][:title_or_titleKa_or_titleEn_or_titleRo_cont]= params[:q][:title_or_title_ka_or_title_en_or_title_ro_cont]
+    # puts params
+    # puts "aaa"
     @q = Product.ransack(params[:q])
     @categories = params[:q][:janls_id_in].drop(1)
     @casts = params[:q][:casts_id_in].drop(1)
@@ -162,7 +167,19 @@ class Api::V1::MainsController < ApplicationController
 
   # notest
   def monthduring
+    today_month = Time.now.month
+    if MonthDuring.last.blank?
+      month = MonthDuring.where(month:Time.now.beginning_of_month).first_or_initialize
+      month.save!
+    end
+    if MonthDuring.last.month.month != today_month
+      month = MonthDuring.where(month:Time.now.beginning_of_month).first_or_initialize
+      if month.new_record?
+        month.save!
+      end
+    end
     @month = MonthDuring.all.order(created_at: :desc).limit(12)
+
     render json:{month: @month}
   end
 
@@ -268,6 +285,7 @@ class Api::V1::MainsController < ApplicationController
   end
 
   def tier_main
+    # binding.pry
     kisetsu_ids = [5,2,3,4]
     @tierGroup = TierGroup.all.includes(:year,:kisetsu).includes(tiers: :product).order(Arel.sql("year.year desc")).order(Arel.sql("FIELD(kisetsu_id, #{kisetsu_ids.join(',')})")).page(params[:page_year]).per(1)
     @tierGroupLength = TierGroup.all.size
@@ -275,7 +293,7 @@ class Api::V1::MainsController < ApplicationController
   end
 
   def user_search
-    @user = User.where("nickname LIKE ?", "%#{params[:text]}%").page(params[:page]).per(1)
+    @user = User.with_attached_tp_img.where("nickname LIKE ?", "%#{params[:text]}%").page(params[:page]).per(20)
     render :user_search,formats: :json
   end
 

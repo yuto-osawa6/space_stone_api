@@ -1,7 +1,7 @@
 class Api::V1::Admin::ProductsController < ApplicationController
   def index
     @q = Product.ransack(params[:q])
-    @products = @q.result(distinct: true).includes(:styles,:janls,:scores).with_attached_bg_images.page(params[:page]).per(50)
+    @products = @q.result(distinct: true).includes(:styles,:janls,:scores).year_season_scope.with_attached_bg_images.page(params[:page]).per(50)
     render :index,formats: :json
   end
 

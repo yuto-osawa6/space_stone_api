@@ -1,6 +1,8 @@
 version: '2.1'
 orbs:
   ruby: circleci/ruby@1.7.1
+  aws-ecr: circleci/aws-ecr@7.3.0
+  aws-ecs: circleci/aws-ecs@2.0.0
 jobs:
   build:
     docker:
@@ -18,6 +20,9 @@ jobs:
             sudo apt update -qq
             sudo apt-get install -y default-mysql-client
             sudo apt-get install -y libmysqlclient-dev
+      - run:
+          name: Run bundle install
+          command: bundle install
       - ruby/install-deps
   test:
     parallelism: 1
@@ -45,6 +50,9 @@ jobs:
       - run:
           name: RUN apt install tzdata
           command: sudo apt-get install -y tzdata
+      - run:
+          name: Run bundle install
+          command: bundle install
       - ruby/install-deps
       - run: bundle exec rails db:create
       - run: bundle exec rails db:schema:load
@@ -56,3 +64,23 @@ workflows:
       - test:
           requires:
             - build
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ACCOUNT_URL
+          region: AWS_REGION
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          # registry-id: AWS_ECR_REGISTRY_ID
+          # create-repo: true
+          repo: 'meruplanet-api'
+          tag: '${CIRCLE_SHA1}'
+          # extra-build-args: '--build-arg RAILS_MASTER_KEY=${RAILS_MASTER_KEY}'
+          requires:
+            - test
+      - aws-ecs/deploy-service-update:
+          cluster-name: 'meruplanet-cluster'
+          container-image-name-updates: 'container=meruplanet-api-container,tag=${CIRCLE_SHA1}'
+          family: 'meruplanet-api-task'
+          service-name: "meruplanet-api-service"
+          requires:
+            - aws-ecr/build-and-push-image
+            # - aws-ecr/build-and-push-imaa

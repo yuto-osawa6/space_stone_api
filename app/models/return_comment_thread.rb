@@ -11,4 +11,5 @@ class ReturnCommentThread < ApplicationRecord
   has_many :reverse_of_return_return_comment_threads,class_name:'ReturnReturnCommentThread',foreign_key:'return_return_thread_id'
   has_many :rereturn_returns,through: :reverse_of_return_return_comment_threads,source: :return_comment_thread,dependent: :destroy
   
+  scope :include_tp_img, -> { includes(user: {tp_img_attachment: :blob}) }
 end

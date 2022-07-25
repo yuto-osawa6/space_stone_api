@@ -1,4 +1,5 @@
 class Api::V1::LikeReviewsController < ApplicationController
+  before_action :check_user_logined, only:[:create,:destroy]
   def create
     begin
       @like = LikeReview.where(user_id:params[:user_id],review_id:params[:review_id]).first_or_initialize
@@ -59,8 +60,10 @@ class Api::V1::LikeReviewsController < ApplicationController
     else
       @score = @review_good / @review_length * 100
     end
-    @user_check = User.exists?(id:params[:user_id])
-    if @user_check == false 
+    # @user_check = User.exists?(id:params[:user_id])
+    # if @user_check == false 
+    if user_signed_in?
+    else
       render json: { status: 201, message: "ログインされてません.",score:@score,review_length:@review_length,review_good:@review_good}
       return
     end

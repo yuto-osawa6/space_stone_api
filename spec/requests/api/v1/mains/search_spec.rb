@@ -33,10 +33,10 @@ RSpec.describe 'Main/Search', type: :request do
         it '返却されるデーターに値が全て入っている' do
           get '/api/v1/mains/search',params:params
           expect(json['products'].size).to eq(10)
-          expect(json['products'][0]['product_styles'].size).to eq(1)
-          expect(json['products'][0]['product_genres'].size).to eq(1)
-          expect(json['products'][0]['product_year_season2'].size).to eq(2)
-          expect(json['products_pages'].size).to eq(1)
+          expect(json['products'][0]['productStyles'].size).to eq(1)
+          expect(json['products'][0]['productGenres'].size).to eq(1)
+          expect(json['products'][0]['productYearSeason2'].size).to eq(2)
+          expect(json['productsPages'].size).to eq(1)
           expect(json['scores']['avgScore'].size).to eq(10)
         end
       end
@@ -53,10 +53,10 @@ RSpec.describe 'Main/Search', type: :request do
           },
           page:1}
           expect(json['products'].size).to eq(1)
-          expect(json['products'][0]['product_styles'].size).to eq(1)
-          expect(json['products'][0]['product_genres'].size).to eq(1)
-          expect(json['products'][0]['product_year_season2'].size).to eq(2)
-          expect(json['products_pages'].size).to eq(1)
+          expect(json['products'][0]['productStyles'].size).to eq(1)
+          expect(json['products'][0]['productGenres'].size).to eq(1)
+          expect(json['products'][0]['productYearSeason2'].size).to eq(2)
+          expect(json['productsPages'].size).to eq(1)
           expect(json['scores']['avgScore'].size).to eq(1)
         end
       end
@@ -73,10 +73,10 @@ RSpec.describe 'Main/Search', type: :request do
           },
           page:1}
           expect(json['products'].size).to eq(1)
-          expect(json['products'][0]['product_styles'].size).to eq(1)
-          expect(json['products'][0]['product_genres'].size).to eq(1)
-          expect(json['products'][0]['product_year_season2'].size).to eq(2)
-          expect(json['products_pages'].size).to eq(1)
+          expect(json['products'][0]['productStyles'].size).to eq(1)
+          expect(json['products'][0]['productGenres'].size).to eq(1)
+          expect(json['products'][0]['productYearSeason2'].size).to eq(2)
+          expect(json['productsPages'].size).to eq(1)
           expect(json['scores']['avgScore'].size).to eq(1)
         end
       end
@@ -87,10 +87,10 @@ RSpec.describe 'Main/Search', type: :request do
         it '返却されるデーターに値が全て入っている' do
           get '/api/v1/mains/search',params:params2
           expect(json['products'].size).to eq(10)
-          expect(json['products'][0]['product_styles'].size).to eq(1)
-          expect(json['products'][0]['product_genres'].size).to eq(1)
-          expect(json['products'][0]['product_year_season2'].size).to eq(2)
-          expect(json['products_pages'].size).to eq(1)
+          expect(json['products'][0]['productStyles'].size).to eq(1)
+          expect(json['products'][0]['productGenres'].size).to eq(1)
+          expect(json['products'][0]['productYearSeason2'].size).to eq(2)
+          expect(json['productsPages'].size).to eq(1)
           expect(json['scores']['avgScore'].size).to eq(10)
         end
       end
@@ -107,10 +107,10 @@ RSpec.describe 'Main/Search', type: :request do
           },
           page:1}
           expect(json['products'].size).to eq(1)
-          expect(json['products'][0]['product_styles'].size).to eq(1)
-          expect(json['products'][0]['product_genres'].size).to eq(1)
-          expect(json['products'][0]['product_year_season2'].size).to eq(2)
-          expect(json['products_pages'].size).to eq(1)
+          expect(json['products'][0]['productStyles'].size).to eq(1)
+          expect(json['products'][0]['productGenres'].size).to eq(1)
+          expect(json['products'][0]['productYearSeason2'].size).to eq(2)
+          expect(json['productsPages'].size).to eq(1)
           expect(json['scores']['avgScore'].size).to eq(1)
         end
       end
@@ -128,10 +128,10 @@ RSpec.describe 'Main/Search', type: :request do
           },
           page:1}
           expect(json['products'].size).to eq(1)
-          expect(json['products'][0]['product_styles'].size).to eq(1)
-          expect(json['products'][0]['product_genres'].size).to eq(1)
-          expect(json['products'][0]['product_year_season2'].size).to eq(2)
-          expect(json['products_pages'].size).to eq(1)
+          expect(json['products'][0]['productStyles'].size).to eq(1)
+          expect(json['products'][0]['productGenres'].size).to eq(1)
+          expect(json['products'][0]['productYearSeason2'].size).to eq(2)
+          expect(json['productsPages'].size).to eq(1)
           expect(json['scores']['avgScore'].size).to eq(1)
         end
       end

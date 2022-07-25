@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_25_043736) do
+ActiveRecord::Schema.define(version: 2022_07_11_072938) do
 
   create_table "acsess_articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -163,6 +163,12 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
     t.index ["product_id"], name: "index_comprehensives_on_product_id"
   end
 
+  create_table "data_infos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "info"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "emotions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "emotion"
     t.datetime "created_at", precision: 6, null: false
@@ -171,7 +177,7 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
 
   create_table "episords", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "product_id", null: false
-    t.string "title"
+    t.text "title"
     t.text "arasuzi"
     t.integer "episord"
     t.integer "season"
@@ -187,6 +193,21 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
   create_table "error_manages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "controller"
     t.text "error"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "hashtag_articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "hashtag_id", null: false
+    t.bigint "article_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id"], name: "index_hashtag_articles_on_article_id"
+    t.index ["hashtag_id"], name: "index_hashtag_articles_on_hashtag_id"
+  end
+
+  create_table "hashtags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -323,6 +344,8 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
     t.integer "judge"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "information"
+    t.datetime "date"
   end
 
   create_table "occupations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -374,9 +397,10 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
     t.string "titleRo"
     t.integer "annitict"
     t.integer "shoboiTid"
-    t.string "wiki"
-    t.string "wikiEn"
-    t.string "copyright"
+    t.text "wiki"
+    t.text "wikiEn"
+    t.text "copyright"
+    t.text "arasuzi_copyright"
   end
 
   create_table "questions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -449,6 +473,7 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "episord_id"
+    t.integer "score"
     t.index ["episord_id"], name: "index_reviews_on_episord_id"
     t.index ["product_id"], name: "index_reviews_on_product_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
@@ -569,6 +594,7 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "tier_group_id", null: false
     t.bigint "user_tier_group_id", null: false
+    t.integer "sort"
     t.index ["product_id"], name: "index_tiers_on_product_id"
     t.index ["tier_group_id"], name: "index_tiers_on_tier_group_id"
     t.index ["user_id"], name: "index_tiers_on_user_id"
@@ -588,6 +614,14 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
     t.boolean "netflix_japan", default: false, null: false
     t.index ["period_id"], name: "index_toptens_on_period_id"
     t.index ["product_id"], name: "index_toptens_on_product_id"
+  end
+
+  create_table "trends", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.integer "count", default: 0
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["product_id"], name: "index_trends_on_product_id"
   end
 
   create_table "user_tier_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -622,7 +656,6 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
     t.boolean "administrator_gold", default: false, null: false
     t.text "overview", size: :long
     t.text "background_image", size: :long
-    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
@@ -694,6 +727,8 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
   add_foreign_key "comment_threads", "users"
   add_foreign_key "comprehensives", "products"
   add_foreign_key "episords", "products"
+  add_foreign_key "hashtag_articles", "articles"
+  add_foreign_key "hashtag_articles", "hashtags"
   add_foreign_key "janl_products", "janls"
   add_foreign_key "janl_products", "products"
   add_foreign_key "like_comment_reviews", "comment_reviews"
@@ -737,4 +772,5 @@ ActiveRecord::Schema.define(version: 2022_03_25_043736) do
   add_foreign_key "thereds", "users"
   add_foreign_key "toptens", "periods"
   add_foreign_key "toptens", "products"
+  add_foreign_key "trends", "products"
 end

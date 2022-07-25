@@ -2,8 +2,12 @@ Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
 
 
-  mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks]
+  # mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks]
+  mount_devise_token_auth_for 'User', at: 'auth', controllers: { omniauth_callbacks: "api/v1/auth/omniauth_callbacks" }
   post 'social_auth/callback', to: 'social_auth#authenticate_social_auth_user' # this is th
+
+  get 'ota/index', to: 'otas#index' # this is th
+
   # mount_devise_token_auth_for 'User', at: 'auth'
   #  mount_devise_token_auth_for 'User', at: 'auth', controllers: {
   #   omniauth_callbacks: 'overrides/omniauth_callbacks'
@@ -13,6 +17,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      get :health_check, to: 'health_check#index'
+      resources :sessions,only:[:show]
       # mount_devise_token_auth_for 'User', at: 'auth', controllers: {
       #   omniauth_callbacks: 'api/v1/auth/omniauth_callbacks'
       # }
@@ -27,9 +33,13 @@ Rails.application.routes.draw do
           get "product_episords"
           get "product_review"
           get "product_thread"
+          get "product_thread_official"
         end
         member do
           get "seo"
+          get "compare_score"
+          get "compare_emotion"
+          get "compare_tier"
         end
         resources :chats, only:[:create]
 
@@ -38,7 +48,7 @@ Rails.application.routes.draw do
             get "check"
           end
         end
-        resources :scores, only:[:create, :update] do
+        resources :scores, only:[:create, :update,:destroy] do
         end
         resources :acsesses,only:[:create] do
         end
@@ -77,10 +87,14 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :episords,only:[:create,:destroy] do
+      end
+
       resources :users,only:[:show,:destroy] do
         collection do
           patch "setting"
           patch "background"
+          patch "topimage"
           patch "overview"
           get "likes"
           get "scores"
@@ -89,6 +103,9 @@ Rails.application.routes.draw do
           get "likeGenres"
           get "mytiers"
           get "change_score_arrayies"
+        end
+        member do
+          get "seo"
         end
       end
 
@@ -144,6 +161,7 @@ Rails.application.routes.draw do
       end
       # 
       get "session_user", to:"session_user#login_check"
+      get "ogp_images/:id", to:"ogps#show"
 
       namespace :comment do
         resources :like_comment_reviews,only:[:create,:destroy] do
@@ -185,6 +203,8 @@ Rails.application.routes.draw do
         end
         resources :news,only:[:create,:destroy] do
         end
+        resources :data_infos,only:[:index,:update]do
+        end
         resources :products,only:[:index,:create,:destroy] do
           collection do
             get "setup"
@@ -193,6 +213,8 @@ Rails.application.routes.draw do
 
           end
         end
+      end
+      resources :hashtags,only:[:create] do
       end
       # acsess
       namespace :acsesses do
@@ -206,6 +228,7 @@ Rails.application.routes.draw do
       namespace :mainblocks do
         resources :mains,only:[:show] do
           collection do
+            get "trend"
             get "new_netflix"
             get "pickup"
             get "new_message"

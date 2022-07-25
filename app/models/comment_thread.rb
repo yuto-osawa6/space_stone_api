@@ -9,4 +9,6 @@ class CommentThread < ApplicationRecord
 
   has_many :return_comment_threads, dependent: :destroy
   has_many :comment_threads_users, through: :return_comment_threads, source: :users
+
+  scope :include_tp_img, -> { includes(user: {tp_img_attachment: :blob}) }
 end

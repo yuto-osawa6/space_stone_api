@@ -39,7 +39,7 @@ class Annict
       searchWorks(
         seasons: $seasons
         orderBy: { field:  WATCHERS_COUNT, direction: DESC },
-        first: 10
+        # first: 10
       ) {
         edges {
           node {
@@ -113,7 +113,7 @@ class Annict
       }
     }
     GRAPHQL
-   
+
   def select_season
     season = gets.chomp
     @result = result(seasons:["#{season}"])
@@ -131,7 +131,6 @@ class Annict
       number_sprintf= format("%02d", number) 
       year<<"20#{number_sprintf}"
     end
-   
     # puts year
 
     season = ["winter","spring","summer","autumn"]
@@ -140,10 +139,29 @@ class Annict
 
   def setup
     season,year = season()
-    puts season,year
-
-    use_season = "#{year[0]}-#{season[1]}"
+    season.each_with_index do |a,i|
+      puts "#{[i]}#{a}"
+    end
+    year.each_with_index do |a,i|
+      puts "#{[i]}#{a}"
+    end
+    puts "追加したいSEASONの番目を入力してください。"
+    input2 = gets.to_i
+    puts "追加したいYEARの番目を入力してください。"
+    input = gets.to_i
+    
+    use_season = "#{year[input]}-#{season[input2]}"
     puts use_season
+
+    puts "このシーズンのアニメの情報を追加します[y/n]"
+    yn = gets.chomp
+  if yn == "n"
+    puts "キャンセルされました。"
+    return
+  elsif yn != "y"
+    puts "予期しない文字が入力されたため、キャンセルしました。"
+    return
+  end
 
     @result = result(seasons:["#{use_season}"])
 
@@ -163,23 +181,34 @@ class Annict
       @product.wiki = work["wikipediaUrl"]
       @product.wikiEn = work["wikipediaUrlEn"]
       @product.shoboiTid = work["syobocalTid"]
-      @product.image_url = work["image"]["recommendedImageUrl"]
-      @product.image_url2 = work["image"]["facebookOgImageUrl"]
-      @product.copyright = work["image"]["copyright"]
-      @product.finished = 1
+      @product.image_url = work["image"]["recommendedImageUrl"] if !work["image"].nil?
+      @product.image_url2 = work["image"]["facebookOgImageUrl"] if !work["image"].nil?
+      @product.copyright = work["image"]["copyright"] if !work["image"].nil?
+      # @product.finished = 0
       @product.save
+      # binding.pry
 
       # style 
       if work["media"] == "TV"
-        media = "TV show"
+        media = "アニメ"
       elsif work["media"] == "MOVIE"
-        media = "Movie"
+        media = "映画"
       else
         media = work["media"]
       end
       @style = Style.where(name:media).first_or_initialize
       @style.save
       @product.style_ids = @style.id
+
+      @user = User.find_by(email:"meruplanet.sub@gmail.com")
+      # if @style.name == "映画" || @style.name == "アニメ"
+        @thread = Thered.where(product_id:@product.id,episord_id:nil).first_or_initialize
+        @thread.title = "#{@product.title}"
+        @thread.question_ids = [2,4]
+        @thread.user_id = @user.id
+        @thread.content = "<p>#{@product.title}を見た感想をお書きください。</p>"
+        @thread.save
+      # end
 
       # season
       case work["seasonName"]
@@ -236,6 +265,7 @@ class Annict
       @product.occupations = staffs
 
       # episords
+      # @user = User.find_by(email:"meruplanet.sub@gmail.com")
       episords = []
       work["episodes"]["edges"].each do |episord|
         e = episord["node"]
@@ -246,6 +276,12 @@ class Annict
         # @episord.time = i[:episord_time]
         # @episord.release_date =i[:episord_release_date]
         @episord.save
+        @thread = Thered.where(product_id:@product.id,episord_id:@episord.id).first_or_initialize
+        @thread.title = "#{@product.title} #{@episord.episord}話"
+        @thread.question_ids = [2,4]
+        @thread.user_id = @user.id
+        @thread.content = "<p>#{@episord.episord}話を見た感想をお書きください。</p>"
+        @thread.save
         episords << @episord
       end
       @product.episords = episords
@@ -257,26 +293,28 @@ class Annict
       yearSeason << @yearSeason
       puts yearSeason
       @product.year_season_products = yearSeason
-
+      
       # image activestorage
       begin
-        if work["image"]["recommendedImageUrl"].present?
-          file = open(work["image"]["recommendedImageUrl"])
-          puts file.base_uri
-          @product.bg_images.attach(io: file, filename: "gorld_field/#{}")
+        if !@product.bg_images.attached?
+          if work["image"]["recommendedImageUrl"].present?
+            file = open(work["image"]["recommendedImageUrl"])
+            puts file.base_uri
+            @product.bg_images.attach(io: file, filename: "meruplanet/#{}")
+          end
         end
-        if work["image"]["facebookOgImageUrl"].present?
-          file = open(work["image"]["facebookOgImageUrl"])
-          puts file.base_uri
-          @product.bg_images2.attach(io: file, filename: "gorld_field/#{}")
+        if !@product.bg_images.attached?
+          if work["image"]["facebookOgImageUrl"].present?
+            file = open(work["image"]["facebookOgImageUrl"])
+            puts file.base_uri
+            @product.bg_images2.attach(io: file, filename: "meruplanet/#{}")
+          end
         end
       rescue => exception
           
       else
         
       end
-     
-
       @product.save
     end
   end

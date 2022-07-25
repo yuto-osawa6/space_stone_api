@@ -52,14 +52,14 @@ RSpec.describe 'ProductsReds', type: :request do
     end
   end
 
-  describe 'GET /product_thread' do
-    let!(:product) {create(:product_alice)}
-    subject { get "/api/v1/products/product_thread",params:{product_id:Product.first.id,page:1} }
-    it 'ステータス 200' do
-      subject
-      expect(response.status).to eq(200)
-    end
-  end
+  # describe 'GET /product_thread' do
+  #   let!(:product) {create(:product_alice)}
+  #   subject { get "/api/v1/products/product_thread",params:{product_id:Product.first.id,page:1} }
+  #   it 'ステータス 200' do
+  #     subject
+  #     expect(response.status).to eq(200)
+  #   end
+  # end
 
   describe 'GET /seo' do
     let!(:product) {create(:product)}

@@ -19,7 +19,7 @@ RSpec.describe 'sessions', type: :request do
         "client": "#{json["headers"]["client"]}",
         "uid": "#{json["headers"]["uid"]}"
       }
-      expect(json['is_login']).to eq(true)
+      expect(json['isLogin']).to eq(true)
     end
   end
 end

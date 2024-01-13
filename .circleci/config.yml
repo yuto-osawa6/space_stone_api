@@ -17,7 +17,7 @@ jobs:
           name: Configure SSH Key
           command: |
             eval "$(ssh-agent -s)"
-            ssh-add ~/.ssh/your_project_ssh_key
+            ssh-add ~/.ssh/id_rsa
       - checkout
       - run:
           name: default mysql client install

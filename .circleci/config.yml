@@ -13,11 +13,11 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
         command: mysqld --default-authentication-plugin=mysql_native_password
     steps:
-      - run:
-          name: Configure SSH Key
-          command: |
-            eval "$(ssh-agent -s)"
-            ssh-add ~/.ssh/id_rsa
+      # - run:
+      #     name: Configure SSH Key
+      #     command: |
+      #       eval "$(ssh-agent -s)"
+      #       ssh-add ~/.ssh/id_rsa
       - checkout
       - run:
           name: default mysql client install

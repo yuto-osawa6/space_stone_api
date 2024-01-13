@@ -116,6 +116,7 @@ class Api::V1::Mainblocks::MainsController < ApplicationController
 
   def new_message
     # puts params[:active] == 0
+    # あ
     # today = current.now
     if params[:active] == "0"
       @new_message = Newmessage.where("date <= ?", Time.now).order(updated_at:"desc").page(params[:page]).per(Concerns::PAGE[:news])

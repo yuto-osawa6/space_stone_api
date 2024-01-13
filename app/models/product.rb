@@ -93,6 +93,11 @@ class Product < ApplicationRecord
     self.bg_images2.attached? ? url_for(bg_images2) : nil
   end
 
+  # 修正 2024 1/14
+  def bg_images
+    super.presence || bg_images2
+  end
+
 
 
   scope :years_year, -> { includes(year_season_products: :year) }

@@ -2,7 +2,12 @@ class Api::V1::Admin::DataInfosController < ApplicationController
 
   def index
     info = DataInfo.first
-    render json:{status:200,info:info.info}
+    # render json:{status:200,info:info.info}
+    if info
+      render json: { status: 200, info: info.info }
+    else
+      render json: { status: 200, info: "DataInfo not found" }
+    end
   end
   def update
     begin
